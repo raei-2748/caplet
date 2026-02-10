@@ -1,13 +1,97 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCourses } from '../contexts/CoursesContext';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 
+const CourseCard = ({ course, progress, isAuthenticated, onRequireAuth }) => {
+  const hasProgress = progress > 0;
+  const detailsPath = `/courses/${course.id}`;
+
+  const getLevelColor = (level) => {
+    const colors = {
+      beginner: 'bg-green-100 text-green-800',
+      intermediate: 'bg-yellow-100 text-yellow-800',
+      advanced: 'bg-red-100 text-red-800',
+    };
+    return colors[level] || 'bg-gray-100 text-gray-800';
+  };
+
+  const sharedClassName =
+    'block w-full text-left bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all border-2 border-transparent hover:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-50 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-gray-900';
+
+  const cardBody = (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getLevelColor(course.level)}`}>
+          {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
+        </span>
+      </div>
+
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        {course.title}
+      </h3>
+
+      <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+        {course.shortDescription}
+      </p>
+
+      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <span>⏱️ {course.duration} min</span>
+        <span>📚 {(course.modules || []).reduce((sum, m) => sum + (m.lessons || []).length, 0)} lessons</span>
+      </div>
+
+      {/* Progress Bar */}
+      {isAuthenticated && hasProgress && (
+        <div className="mb-4">
+          <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+            <span>Progress</span>
+            <span className="font-semibold">{Math.round(progress)}%</span>
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+            <div
+              className="bg-green-500 h-2.5 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center justify-end mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <span className="text-blue-600 dark:text-blue-400 font-medium text-sm">
+          {hasProgress ? 'Continue →' : 'Start →'}
+        </span>
+      </div>
+    </div>
+  );
+
+  if (isAuthenticated) {
+    return (
+      <Link
+        to={detailsPath}
+        className={sharedClassName}
+        aria-label={`Open course: ${course.title}`}
+      >
+        {cardBody}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onRequireAuth(course)}
+      className={sharedClassName}
+      aria-label={`Sign in required to open course: ${course.title}`}
+    >
+      {cardBody}
+    </button>
+  );
+};
+
 const Courses = () => {
   const { courses, loading, error, fetchCourses } = useCourses();
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     level: '',
     search: '',
@@ -60,21 +144,10 @@ const Courses = () => {
     }));
   };
 
-  const handleCourseClick = (courseId) => {
+  const handleRequireAuth = () => {
     if (!isAuthenticated) {
       alert('Please sign in to access courses.');
-      return;
     }
-    navigate(`/courses/${courseId}`);
-  };
-
-  const getLevelColor = (level) => {
-    const colors = {
-      beginner: 'bg-green-100 text-green-800',
-      intermediate: 'bg-yellow-100 text-yellow-800',
-      advanced: 'bg-red-100 text-red-800',
-    };
-    return colors[level] || 'bg-gray-100 text-gray-800';
   };
 
   if (loading) {
@@ -145,57 +218,15 @@ const Courses = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map((course) => {
             const progress = courseProgress[course.id] || 0;
-            const hasProgress = progress > 0;
-            
+
             return (
-              <div 
-                key={course.id} 
-                onClick={() => handleCourseClick(course.id)}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500"
-              >
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getLevelColor(course.level)}`}>
-                      {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    {course.title}
-                  </h3>
-
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                    {course.shortDescription}
-                  </p>
-
-                  <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    <span>⏱️ {course.duration} min</span>
-                    <span>📚 {(course.modules || []).reduce((sum, m) => sum + (m.lessons || []).length, 0)} lessons</span>
-                  </div>
-
-                  {/* Progress Bar */}
-                  {isAuthenticated && hasProgress && (
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
-                        <span>Progress</span>
-                        <span className="font-semibold">{Math.round(progress)}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                        <div 
-                          className="bg-green-500 h-2.5 rounded-full transition-all duration-300" 
-                          style={{ width: `${progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-end mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <span className="text-blue-600 dark:text-blue-400 font-medium text-sm">
-                      {hasProgress ? 'Continue →' : 'Start →'}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <CourseCard
+                key={course.id}
+                course={course}
+                progress={progress}
+                isAuthenticated={isAuthenticated}
+                onRequireAuth={handleRequireAuth}
+              />
             );
           })}
         </div>
