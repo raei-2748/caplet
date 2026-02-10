@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import api from '../services/api';
 import ReactMarkdown from 'react-markdown';
 import { useTheme } from '../contexts/ThemeContext';
+import AlertBanner from '../components/ui/AlertBanner';
 
 // Extract YouTube video ID from URL
 const getYouTubeId = (url) => {
@@ -182,6 +183,7 @@ const LessonPlayer = () => {
   const [progress, setProgress] = useState({ lessonProgress: [] });
   const [questionAnswer, setQuestionAnswer] = useState(null);
   const [questionSubmitted, setQuestionSubmitted] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     const load = async () => {
@@ -238,6 +240,7 @@ const LessonPlayer = () => {
   const markComplete = async () => {
     try {
       setSaving(true);
+      setSaveError('');
       await api.updateLessonProgress(lesson.id, { status: 'completed' });
       try {
         await api.completeLessonAssignments(lesson.id);
@@ -251,7 +254,7 @@ const LessonPlayer = () => {
         goTo(1);
       }
     } catch (e) {
-      alert('Failed to save progress: ' + e.message);
+      setSaveError(`Failed to save progress: ${e.message}`);
     } finally {
       setSaving(false);
     }
@@ -337,6 +340,12 @@ const LessonPlayer = () => {
       style={{ minHeight: '100vh', backgroundColor: pageBg }}
     >
       <div className="container-custom py-6">
+        <AlertBanner
+          message={saveError}
+          variant="error"
+          onDismiss={() => setSaveError('')}
+        />
+
         <div className="mb-4 flex items-center justify-between">
           <Link to={`/courses/${course.id}`} className="text-blue-600 dark:text-blue-400">← {course.title}</Link>
           <div className="text-sm text-gray-600 dark:text-gray-400">Lesson {idx + 1} of {flatLessons.length}</div>
@@ -655,5 +664,4 @@ const LessonPlayer = () => {
 };
 
 export default LessonPlayer;
-
 

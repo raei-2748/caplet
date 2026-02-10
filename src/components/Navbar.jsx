@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -27,6 +27,14 @@ const Navbar = () => {
   ];
 
   const isActive = (path) => location.pathname === path;
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('auth') === 'signin') {
+      setAuthMode('login');
+      setShowAuthModal(true);
+    }
+  }, [location.search]);
 
   return (
     <nav className="sticky top-0 z-40 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 backdrop-blur-xl">

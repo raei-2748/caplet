@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCourses } from '../contexts/CoursesContext';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import AlertBanner from '../components/ui/AlertBanner';
 
 const Courses = () => {
   const { courses, loading, error, fetchCourses } = useCourses();
@@ -13,6 +14,7 @@ const Courses = () => {
     search: '',
   });
   const [courseProgress, setCourseProgress] = useState({});
+  const [accessMessage, setAccessMessage] = useState('');
 
   useEffect(() => {
     fetchCourses(filters);
@@ -62,9 +64,10 @@ const Courses = () => {
 
   const handleCourseClick = (courseId) => {
     if (!isAuthenticated) {
-      alert('Please sign in to access courses.');
+      setAccessMessage('Please sign in to access courses.');
       return;
     }
+    setAccessMessage('');
     navigate(`/courses/${courseId}`);
   };
 
@@ -140,6 +143,14 @@ const Courses = () => {
             {error}
           </div>
         )}
+
+        <AlertBanner
+          message={accessMessage}
+          actionLabel="Sign in"
+          onAction={() => navigate('/?auth=signin')}
+          onDismiss={() => setAccessMessage('')}
+          live="polite"
+        />
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
