@@ -94,7 +94,7 @@ const Classes = () => {
   }
 
   return (
-    <div className="min-h-screen py-24 page-section-light font-sans">
+    <div className="min-h-screen py-24 font-sans">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-20">
           <div className="animate-slide-up">

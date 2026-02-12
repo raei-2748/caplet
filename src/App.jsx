@@ -21,8 +21,6 @@ import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import ModuleDetail from './pages/ModuleDetail';
 import LessonPlayer from './pages/LessonPlayer';
-import Survey from './pages/Survey';
-import SurveyResults from './pages/SurveyResults';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Classes from './pages/Classes';
@@ -77,8 +75,6 @@ function App() {
                     <Route path="account" element={<SettingsAccount />} />
                   </Route>
                   <Route path="/profile/:userId" element={<UserProfile />} />
-                  <Route path="/survey" element={<Survey />} />
-                  <Route path="/survey-results" element={<SurveyResults />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

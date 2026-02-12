@@ -74,12 +74,7 @@ const Footer = () => {
               © {new Date().getFullYear()} Caplet Education. All rights reserved.
             </p>
             <div className="flex items-center gap-10">
-              <Link to="/terms" className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
-                Terms
-              </Link>
-              <Link to="/terms" className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
-                Privacy
-              </Link>
+              {/* Legal links intentionally minimal for now */}
             </div>
           </div>
         </div>
