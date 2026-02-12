@@ -36,20 +36,17 @@ const UserProfile = () => {
   if (!isAuthenticated) return null;
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center page-section-light">
-        <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand border-t-transparent" />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent" />
       </div>
     );
   }
   if (error || !profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 page-section-light">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
         <div className="text-center">
-          <span className="section-kicker mb-4 text-red-500">System Notice</span>
-          <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-xs font-bold uppercase tracking-widest">
-            {error || 'User not found'}
-          </p>
-          <Link to="/courses" className="btn-primary text-[10px] px-8 py-3">Back to Courses</Link>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">{error || 'User not found'}</p>
+          <Link to="/courses" className="text-blue-600 dark:text-blue-400 hover:underline">Back to Courses</Link>
         </div>
       </div>
     );
@@ -69,9 +66,8 @@ const UserProfile = () => {
   const colorIndex = (profile.firstName + profile.lastName).split('').reduce((a, c) => a + c.charCodeAt(0), 0) % colors.length;
 
   return (
-    <div className="min-h-screen py-24 page-section-light">
-      <div className="container-custom">
-        <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <div className="max-w-lg mx-auto">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -79,24 +75,24 @@ const UserProfile = () => {
         >
           ← Back
         </button>
-        <div className="bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 overflow-hidden p-8">
-          <div className="pb-2 mb-6 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-6">
             <div className="flex items-center gap-4">
-              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center text-white text-xl font-bold shadow-lg`}>
+              <div
+                className={`w-16 h-16 rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center text-white text-xl font-bold shadow-lg`}
+              >
                 {initials}
               </div>
               <div>
-                <h1 className="text-xl font-extrabold text-black dark:text-white uppercase tracking-tight">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   {profile.firstName} {profile.lastName}
                 </h1>
-                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{roleLabel}</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">{roleLabel}</span>
               </div>
             </div>
             {profile.bio && (
-              <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap font-medium leading-relaxed uppercase tracking-tight">
-                  {profile.bio}
-                </p>
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{profile.bio}</p>
               </div>
             )}
           </div>
