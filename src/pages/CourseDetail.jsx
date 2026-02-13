@@ -73,7 +73,7 @@ const CourseDetail = () => {
   };
 
   return (
-    <div className="min-h-screen py-24 page-section-light">
+    <div className="min-h-screen py-24">
       <div className="container-custom">
         <div className="mb-10 animate-slide-up">
           <button

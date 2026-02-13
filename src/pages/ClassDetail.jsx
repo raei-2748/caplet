@@ -467,7 +467,7 @@ const ClassDetail = () => {
   };
 
   return (
-    <div className="min-h-screen py-24 px-6 page-section-light">
+    <div className="min-h-screen py-24 px-6">
       <div className="container-custom space-y-12">
         <div className="bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 p-10 animate-slide-up">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">

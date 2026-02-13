@@ -201,23 +201,23 @@ const Home = () => {
       </section>
 
       {/* Methodology */}
-      <section className="py-32 lg:py-48 page-section-soft text-white overflow-hidden">
+      <section className="py-32 lg:py-48 page-section-soft text-zinc-800 dark:text-white overflow-hidden">
         <div className="container-custom relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
               <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand mb-6">Our Sequence</p>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-10 tracking-tighter leading-none">The Caplet <br />Pathway.</h2>
-              <p className="text-zinc-400 text-lg font-medium leading-relaxed max-w-sm mb-12">
+              <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium leading-relaxed max-w-sm mb-12">
                 We transform complex financial data into a structured learning journey built for high-impact absorption.
               </p>
               <div className="flex gap-4">
                 <div className="w-12 h-[1px] bg-brand mt-3 shrink-0" />
-                <p className="text-xs uppercase font-bold tracking-widest text-white/50">Institutional Standards Applied Globally</p>
+                <p className="text-xs uppercase font-bold tracking-widest text-zinc-500 dark:text-white/50">Institutional Standards Applied Globally</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
-              <div className="p-10 border border-white/10 bg-white/5 backdrop-blur-sm">
+              <div className="p-10 border border-zinc-300 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-6">Phase Alpha: Foundations</h3>
                 <ul className="space-y-4">
                   {['Budgeting Systems', 'Tax Compliance', 'Superannuation'].map(item => (
@@ -384,7 +384,7 @@ const Home = () => {
       {/* Large Decorative Footer */}
       <section className="overflow-hidden py-40">
         <div className="container-custom">
-          <h2 className="text-[18vw] font-extrabold text-zinc-100 dark:text-zinc-950 leading-none tracking-tighter select-none reveal-up">
+          <h2 className="text-[18vw] font-extrabold text-zinc-500 dark:text-zinc-950 leading-none tracking-tighter select-none reveal-up">
             CAPLET.
           </h2>
         </div>

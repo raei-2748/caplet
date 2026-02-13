@@ -98,7 +98,7 @@ const ModuleDetail = () => {
   const progressWidth = totalInModule > 0 ? (completedInModule / totalInModule) * 100 : 0;
 
   return (
-    <div className="min-h-screen py-24 page-section-light">
+    <div className="min-h-screen py-24">
       <div className="container-custom">
         <div className="mb-12 animate-slide-up">
           <button
