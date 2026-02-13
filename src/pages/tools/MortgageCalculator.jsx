@@ -51,7 +51,7 @@ const MortgageCalculator = () => {
             <div className="flex items-center justify-between mb-8 animate-slide-up">
               <div>
                 <p className="text-[10px] font-black text-brand uppercase tracking-[0.3em] mb-4">
-                  Institutional Tools
+                  Financial Tools
                 </p>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
                   Mortgage <br />Calculator.

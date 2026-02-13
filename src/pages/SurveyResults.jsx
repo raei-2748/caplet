@@ -40,7 +40,7 @@ const SurveyResults = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-4 text-red-500">System Error</span>
+          <span className="section-kicker mb-4 text-red-500">Error</span>
           <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.25em]">
             {error}
           </p>
@@ -54,7 +54,7 @@ const SurveyResults = () => {
       <div className="min-h-screen py-24 page-section-light">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 p-10 text-center">
-            <span className="section-kicker mb-4">System Analytics</span>
+            <span className="section-kicker mb-4">Survey Results</span>
             <h1 className="text-3xl font-extrabold text-black dark:text-white mb-4 uppercase tracking-tight">Survey Results</h1>
             <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.25em]">
               No survey responses yet. Check back later.
@@ -103,7 +103,7 @@ const SurveyResults = () => {
       <div className="container-custom">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 p-10 mb-8">
-            <span className="section-kicker mb-4">System Analytics</span>
+            <span className="section-kicker mb-4">Survey Results</span>
             <h1 className="text-4xl font-extrabold text-black dark:text-white mb-2 uppercase tracking-tight">Survey Results</h1>
             <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.25em]">
               Total Responses:{' '}

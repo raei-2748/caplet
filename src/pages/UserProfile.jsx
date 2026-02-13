@@ -45,7 +45,7 @@ const UserProfile = () => {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 page-section-light">
         <div className="text-center">
-          <span className="section-kicker mb-4 text-red-500">System Notice</span>
+          <span className="section-kicker mb-4 text-red-500">Error</span>
           <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 mb-4 uppercase tracking-[0.25em]">
             {error || 'User not found'}
           </p>

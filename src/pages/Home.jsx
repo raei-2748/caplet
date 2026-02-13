@@ -27,7 +27,7 @@ const faqData = [
   {
     question: 'How is CapletEdu different from other platforms?',
     answer:
-      'CapletEdu is specifically designed for institutional integration into school curricula. We work directly with educators to develop structured lessons tailored to Australian students. Currently integrated into Knox Grammar School Commerce Department and used by Capital Finance Club.',
+      'CapletEdu is specifically designed for integration into school curricula. We work directly with educators to develop structured lessons tailored to Australian students. Currently used by Knox Grammar School Commerce Department and Capital Finance Club.',
   },
   {
     question: 'Is CapletEdu free to use?',
@@ -304,7 +304,7 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="reveal-up">
               <p className="section-kicker">Our Mission</p>
-              <h2 className="section-title mb-10">Institutional <br />standard.</h2>
+              <h2 className="section-title mb-10">Trusted by <br />schools.</h2>
               <p className="text-xl text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed max-w-xl mb-12">
                 CapletEdu delivers structured financial education for Australian students, integrated into school curricula and designed for effective learning. Currently serving Knox Grammar School Commerce Department for Years 9–10.
               </p>

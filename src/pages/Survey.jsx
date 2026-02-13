@@ -109,7 +109,7 @@ const Survey = () => {
       <div className="container-custom">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 p-10">
-            <span className="section-kicker mb-4">System Feedback</span>
+            <span className="section-kicker mb-4">Survey</span>
             <h1 className="text-3xl font-extrabold text-black dark:text-white mb-2 uppercase tracking-tight">Financial Literacy Survey</h1>
             <p className="text-zinc-600 dark:text-zinc-300 mb-8 text-sm leading-relaxed">
               Help us understand your financial education needs. Your responses are anonymous and will help us improve our content.

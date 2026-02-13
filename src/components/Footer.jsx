@@ -29,7 +29,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-zinc-500 dark:text-zinc-400 mb-8 max-w-sm leading-relaxed font-medium">
-              Professional financial education designed for the Australian context. Structured, data-driven, and built for institutional excellence.
+              Professional financial education designed for the Australian context. Structured, data-driven, and built for schools.
             </p>
           </div>
 

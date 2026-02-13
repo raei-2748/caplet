@@ -256,7 +256,7 @@ const LessonPlayer = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-4">System Notice</span>
+          <span className="section-kicker mb-4">Notice</span>
           <p className="text-xs font-bold uppercase tracking-widest text-red-500 mb-4">
             {error || 'Lesson not found'}
           </p>

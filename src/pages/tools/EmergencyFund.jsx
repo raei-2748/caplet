@@ -43,7 +43,7 @@ const EmergencyFund = () => {
             <div className="flex items-center justify-between mb-8 animate-slide-up">
               <div>
                 <p className="text-[10px] font-black text-brand uppercase tracking-[0.3em] mb-4">
-                  Institutional Tools
+                  Financial Tools
                 </p>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
                   Emergency Fund <br />Calculator.
@@ -96,7 +96,7 @@ const EmergencyFund = () => {
                     <option value="3">3 Months (Standard)</option>
                     <option value="6">6 Months (Recommended)</option>
                     <option value="9">9 Months (Conservative)</option>
-                    <option value="12">12 Months (Institutional)</option>
+                    <option value="12">12 Months</option>
                   </select>
                 </div>
 

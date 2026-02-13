@@ -45,7 +45,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, isPage = false }) => {
 
         <div className="relative z-10">
           <div className="mb-10 text-center">
-            <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand mb-4">Secure Access</p>
+            <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand mb-4">Sign In</p>
             <h2 className="text-4xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
               Sign In
             </h2>
@@ -61,7 +61,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, isPage = false }) => {
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
-                  Institutional Email
+                  Email Address
                 </label>
                 <input
                   type="email"
@@ -70,7 +70,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, isPage = false }) => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  placeholder="name@institution.com"
+                  placeholder="your@email.com"
                   className="w-full px-0 py-3 bg-transparent border-b-2 border-zinc-100 dark:border-zinc-800 focus:border-brand outline-none transition-all text-black dark:text-white font-medium"
                 />
               </div>
@@ -78,7 +78,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, isPage = false }) => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <label htmlFor="password" className="block text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
-                    Access Key
+                    Password
                   </label>
                   <button type="button" className="text-[10px] font-bold text-brand uppercase tracking-widest hover:underline">
                     Reset?
@@ -105,7 +105,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, isPage = false }) => {
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
-                    <span>Enter Terminal</span>
+                    <span>Sign In</span>
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </>
                 )}
@@ -115,7 +115,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, isPage = false }) => {
 
           <div className="mt-12 text-center pt-8 border-t border-zinc-100 dark:border-zinc-900">
             <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-              Not yet enrolled?{' '}
+              Don't have an account?{' '}
               <button
                 onClick={onSwitchToRegister}
                 className="text-brand hover:underline"

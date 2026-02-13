@@ -61,7 +61,7 @@ const Contact = () => {
                       'School curriculum integration',
                       'Educational partnerships',
                       'Platform support and maintenance',
-                      'System migrations'
+                      'System migrations and updates'
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-4 text-xs font-bold text-black dark:text-white uppercase tracking-widest">
                         <div className="w-1.5 h-1.5 bg-brand" />

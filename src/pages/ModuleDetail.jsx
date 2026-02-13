@@ -54,7 +54,7 @@ const ModuleDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-4">System Notice</span>
+          <span className="section-kicker mb-4">Notice</span>
           <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-6">
             {error || 'Course not found'}
           </p>
@@ -68,7 +68,7 @@ const ModuleDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-4">System Notice</span>
+          <span className="section-kicker mb-4">Notice</span>
           <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-6">
             Module not found
           </p>

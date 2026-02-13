@@ -38,7 +38,7 @@ const CourseDetail = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand border-t-transparent mx-auto"></div>
           <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-            Loading course blueprint...
+            Loading course...
           </p>
         </div>
       </div>
@@ -49,7 +49,7 @@ const CourseDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-4">System Notice</span>
+          <span className="section-kicker mb-4">Notice</span>
           <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-6">
             {error || 'Course not found'}
           </p>
@@ -145,7 +145,7 @@ const CourseDetail = () => {
                 Course Summary
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">
-                This course is part of the institutional CapletEdu curriculum and is structured into modules and
+                This course is part of the CapletEdu curriculum and is structured into modules and
                 lessons that can be used directly in the classroom.
               </p>
             </div>
