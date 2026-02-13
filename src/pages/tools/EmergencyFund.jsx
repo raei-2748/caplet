@@ -46,14 +46,14 @@ const EmergencyFund = () => {
                   Institutional Tools
                 </p>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Resilience <br />Terminal.
+                  Emergency Fund <br />Calculator.
                 </h1>
                 <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest leading-relaxed max-w-xl">
-                  Strategic redundancy planning and liquid reserve architecture.
+                  Calculate how much you should have in your emergency fund to cover unexpected expenses.
                 </p>
               </div>
               <Link to="/tools" className="text-[10px] font-black text-zinc-400 hover:text-brand uppercase tracking-widest transition-colors mb-auto">
-                ← Return to Base
+                ← Back to Tools
               </Link>
             </div>
           </div>
@@ -189,7 +189,7 @@ const EmergencyFund = () => {
                 <div className="flex flex-col items-center justify-center h-full py-20 text-center">
                   <span className="w-1.5 h-1.5 bg-zinc-200 dark:bg-zinc-800 mb-4" />
                   <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-widest">
-                    Awaiting operational input.
+                    Enter values to calculate.
                   </p>
                 </div>
               )}

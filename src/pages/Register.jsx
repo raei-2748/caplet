@@ -52,11 +52,11 @@ const Register = () => {
 
                     <div className="max-w-xl ml-auto">
                         <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tighter leading-[0.95] mb-8">
-                            Join the new <br />
-                            <span className="text-zinc-500">standard.</span>
+                            Join Caplet <br />
+                            <span className="text-zinc-500">today.</span>
                         </h1>
                         <p className="text-lg text-zinc-400 font-medium leading-relaxed max-w-md ml-auto">
-                            Create your institutional capability profile. Access structured learning modules, financial tools, and real-time progress tracking.
+                            Create your account to access courses, financial tools, and track your learning progress.
                         </p>
                     </div>
                 </div>
@@ -65,15 +65,15 @@ const Register = () => {
                 <div className="relative z-10 border-t border-white/10 pt-8 mt-auto">
                     <div className="grid grid-cols-2 gap-8 text-right">
                         <div className="col-start-2">
-                            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-2">Student Access</h3>
-                            <p className="text-zinc-500 text-xs font-medium">Full curriculum, progress tracking, interactive quizzes.</p>
+                            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-2">For Students</h3>
+                            <p className="text-zinc-500 text-xs font-medium">Access all courses, track your progress, and take quizzes.</p>
                         </div>
                         <div>
                             {/* Empty or another stat */}
                         </div>
                         <div className="col-start-2 col-span-1">
-                            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-2">Faculty Access</h3>
-                            <p className="text-zinc-500 text-xs font-medium">Class management, assignment distribution, analytics.</p>
+                            <h3 className="text-white font-bold uppercase tracking-widest text-xs mb-2">For Teachers</h3>
+                            <p className="text-zinc-500 text-xs font-medium">Create classes, assign work, and track student progress.</p>
                         </div>
                     </div>
                 </div>

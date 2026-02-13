@@ -70,13 +70,13 @@ const Tools = () => {
         <div className="container-custom">
           <div className="animate-slide-up">
             <span className="section-kicker mb-6">
-              Interactive Terminals
+              Financial Tools
             </span>
             <h1 className="text-5xl md:text-6xl font-extrabold text-black dark:text-white mb-8 tracking-tighter uppercase">
-              Financial <br />Utility Hub.
+              Financial <br />Calculators.
             </h1>
             <p className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl font-medium leading-relaxed">
-              Professional-grade tools designed to help you analyze, calculate, and plan your financial sequence with absolute precision.
+              Free tools to help you calculate tax, plan your budget, and make better financial decisions.
             </p>
           </div>
         </div>
@@ -92,7 +92,7 @@ const Tools = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="IDENTIFY UTILITY..."
+                placeholder="Search tools..."
                 className="w-full px-5 py-5 pl-14 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 text-black dark:text-white font-bold text-xs uppercase tracking-[0.2em] focus:border-brand outline-none transition-all placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
               />
               <div className="absolute left-5 top-1/2 transform -translate-y-1/2 text-zinc-400">
@@ -130,7 +130,7 @@ const Tools = () => {
                     </p>
                     {tool.path ? (
                       <div className="inline-flex items-center justify-between w-full text-[10px] font-bold uppercase tracking-[0.2em] text-brand border-t border-zinc-50 dark:border-zinc-900 pt-8">
-                        Launch Terminal
+                        Open Tool
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
                       </div>
                     ) : (
@@ -168,10 +168,10 @@ const Tools = () => {
           ) : (
             <div className="text-center py-32 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 animate-fade-in">
               <p className="text-zinc-500 font-extrabold text-xs uppercase tracking-[0.3em]">
-                Filter Yielded Zero results
+                No tools found
               </p>
               <p className="text-zinc-400 font-bold text-[10px] uppercase tracking-widest mt-4">
-                Redefine your parameters
+                Try a different search term
               </p>
             </div>
           )}

@@ -24,7 +24,7 @@ const Footer = () => {
                   Caplet
                 </p>
                 <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand">
-                  Systemic Education
+                  Financial Education Platform
                 </p>
               </div>
             </div>
@@ -39,12 +39,12 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <Link to="/courses" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
-                  Academy
+                  Courses
                 </Link>
               </li>
               <li>
                 <Link to="/tools" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
-                  Calculators
+                  Tools
                 </Link>
               </li>
               <li>

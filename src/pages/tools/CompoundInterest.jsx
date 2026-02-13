@@ -56,14 +56,14 @@ const CompoundInterest = () => {
                   Institutional Tools
                 </p>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Growth <br />Terminal.
+                  Compound Interest <br />Calculator.
                 </h1>
                 <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest leading-relaxed max-w-xl">
-                  Advanced projections for compound interest yields and contribution stacking.
+                  See how your money grows with compound interest and regular contributions.
                 </p>
               </div>
               <Link to="/tools" className="text-[10px] font-black text-zinc-400 hover:text-brand uppercase tracking-widest transition-colors mb-auto">
-                ← Return to Base
+                ← Back to Tools
               </Link>
             </div>
           </div>
@@ -74,11 +74,11 @@ const CompoundInterest = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-6xl">
             <div className="lg:col-span-2 bg-white dark:bg-black border border-zinc-100 dark:border-zinc-900 p-10 reveal-up">
-              <h2 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-10">Projection Base</h2>
+              <h2 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-10">Input Values</h2>
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div>
                   <label className="block text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-3 italic">
-                    Initial Reservoir (AUD)
+                    Starting Amount (AUD)
                   </label>
                   <input
                     type="number"
@@ -93,7 +93,7 @@ const CompoundInterest = () => {
 
                 <div>
                   <label className="block text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-3 italic">
-                    Monthly Contribution Influx
+                    Monthly Contribution
                   </label>
                   <input
                     type="number"
@@ -144,7 +144,7 @@ const CompoundInterest = () => {
                   type="submit"
                   className="w-full py-5 bg-black dark:bg-white text-white dark:text-black font-black text-[10px] uppercase tracking-[0.3em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all active:scale-[0.98] mt-4"
                 >
-                  Execute Projection
+                  Calculate
                 </button>
               </form>
             </div>
@@ -184,7 +184,7 @@ const CompoundInterest = () => {
                 <div className="flex flex-col items-center justify-center h-full py-20 text-center">
                   <span className="w-1.5 h-1.5 bg-zinc-200 dark:bg-zinc-800 mb-4" />
                   <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-widest">
-                    Awaiting operational input.
+                    Enter values to calculate.
                   </p>
                 </div>
               )}

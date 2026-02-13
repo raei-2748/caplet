@@ -50,14 +50,14 @@ const BudgetPlanner = () => {
                   Institutional Tools
                 </p>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Budget <br />Terminal.
+                  Budget <br />Planner.
                 </h1>
                 <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest leading-relaxed max-w-xl">
-                  Strategic allocation protocols and monthly expenditure analysis.
+                  Plan your monthly budget and track spending across different categories.
                 </p>
               </div>
               <Link to="/tools" className="text-[10px] font-black text-zinc-400 hover:text-brand uppercase tracking-widest transition-colors mb-auto">
-                ← Return to Base
+                ← Back to Tools
               </Link>
             </div>
           </div>
@@ -68,11 +68,11 @@ const BudgetPlanner = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-6xl">
             <div className="lg:col-span-2 bg-white dark:bg-black border border-zinc-100 dark:border-zinc-900 p-10 reveal-up">
-              <h2 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-10">Allocation Parameters</h2>
+              <h2 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-10">Budget Input</h2>
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div>
                   <label className="block text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-3 italic">
-                    Gross Monthly Yield (AUD)
+                    Monthly Income (AUD)
                   </label>
                   <input
                     type="number"
@@ -86,7 +86,7 @@ const BudgetPlanner = () => {
                 </div>
 
                 <div className="space-y-6">
-                  <h3 className="text-[10px] font-black text-brand uppercase tracking-widest mt-12 mb-6">Expense Distribution</h3>
+                  <h3 className="text-[10px] font-black text-brand uppercase tracking-widest mt-12 mb-6">Monthly Expenses</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.keys(expenses).map((key) => (
                       <div key={key}>
@@ -111,30 +111,30 @@ const BudgetPlanner = () => {
                   type="submit"
                   className="w-full py-5 bg-black dark:bg-white text-white dark:text-black font-black text-[10px] uppercase tracking-[0.3em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all active:scale-[0.98] mt-10"
                 >
-                  Analyze Strategy
+                  Calculate Budget
                 </button>
               </form>
             </div>
 
             <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 p-10 reveal-up" style={{ animationDelay: '200ms' }}>
-              <h2 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-10">Yield Summary</h2>
+              <h2 className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-10">Budget Summary</h2>
               {result ? (
                 <div className="space-y-10">
                   <div>
-                    <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1 italic">Total Influx</p>
+                    <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1 italic">Total Income</p>
                     <p className="text-2xl font-extrabold text-black dark:text-white tracking-tighter">
                       {formatCurrency(result.income)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1 italic">Total Outflow</p>
+                    <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1 italic">Total Expenses</p>
                     <p className="text-2xl font-extrabold text-black dark:text-white tracking-tighter">
                       {formatCurrency(result.totalExpenses)}
                     </p>
                   </div>
                   <div className="pt-6 border-t border-zinc-200 dark:border-zinc-800">
                     <p className="text-[9px] font-black text-brand uppercase tracking-widest mb-1 italic">
-                      {result.remaining >= 0 ? 'Surplus Protocol' : 'Deficit Alert'}
+                      {result.remaining >= 0 ? 'Remaining' : 'Over Budget'}
                     </p>
                     <p className={`text-3xl font-extrabold tracking-tighter ${result.remaining >= 0 ? 'text-brand' : 'text-black dark:text-white'
                       }`}>
@@ -144,7 +144,7 @@ const BudgetPlanner = () => {
 
                   {result.savingsRate > 0 && (
                     <div className="p-6 bg-white dark:bg-black border border-zinc-100 dark:border-zinc-900">
-                      <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1 italic">Savings Efficiency</p>
+                      <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1 italic">Savings Rate</p>
                       <p className="text-xl font-extrabold text-brand tracking-tighter">
                         {result.savingsRate.toFixed(1)}%
                       </p>
@@ -152,7 +152,7 @@ const BudgetPlanner = () => {
                   )}
 
                   <div className="mt-4">
-                    <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-6">Distribution Map</p>
+                    <p className="text-[10px] font-black text-black dark:text-white uppercase tracking-[0.2em] mb-6">Expense Breakdown</p>
                     <div className="space-y-4">
                       {result.breakdown.map((item) => (
                         item.amount > 0 && (
@@ -171,7 +171,7 @@ const BudgetPlanner = () => {
                 <div className="flex flex-col items-center justify-center h-full py-20 text-center">
                   <span className="w-1.5 h-1.5 bg-zinc-200 dark:bg-zinc-800 mb-4" />
                   <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-widest">
-                    Awaiting operational input.
+                    Enter values to calculate.
                   </p>
                 </div>
               )}

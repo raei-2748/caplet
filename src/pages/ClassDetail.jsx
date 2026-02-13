@@ -132,15 +132,15 @@ const ClassDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-6">Security Protocol</span>
+          <span className="section-kicker mb-6">Sign In Required</span>
           <h2 className="text-3xl font-extrabold text-black dark:text-white uppercase tracking-tighter mb-6">
-            Authentication <br />Terminal Offline.
+            Please Sign In <br />to Continue.
           </h2>
           <button
             onClick={() => navigate('/')}
             className="btn-primary"
           >
-            Access Mainframe
+            Go to Home
           </button>
         </div>
       </div>
@@ -152,7 +152,7 @@ const ClassDetail = () => {
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Extracting Class Meta...</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Loading class...</p>
         </div>
       </div>
     );
@@ -162,16 +162,16 @@ const ClassDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center max-w-md mx-auto px-6">
-          <span className="section-kicker mb-6 text-red-500">System Error</span>
+          <span className="section-kicker mb-6 text-red-500">Error</span>
           <h2 className="text-3xl font-extrabold text-black dark:text-white uppercase tracking-tighter mb-6">
-            Protocol Breach <br />Detected.
+            Something Went <br />Wrong.
           </h2>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs font-bold uppercase tracking-widest mb-10">{error}</p>
           <button
             onClick={() => navigate('/classes')}
             className="btn-secondary"
           >
-            Reset Vector
+            Back to Classes
           </button>
         </div>
       </div>
@@ -476,7 +476,7 @@ const ClassDetail = () => {
                 onClick={() => navigate('/classes')}
                 className="mb-8 inline-flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest hover:text-brand transition-colors"
               >
-                ← Back to Terminals
+                ← Back to Classes
               </button>
               <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter mb-4">
                 {classroom.name}
@@ -487,7 +487,7 @@ const ClassDetail = () => {
                 </p>
               ) : null}
               <div className="mt-8 inline-flex items-center gap-4 px-5 py-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
-                <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest">Access Key:</span>
+                <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest">Class Code:</span>
                 <span className="font-mono font-bold text-black dark:text-white text-xs">{classroom.code}</span>
               </div>
             </div>
@@ -497,12 +497,12 @@ const ClassDetail = () => {
                   {getInitials(user)}
                 </div>
                 <div>
-                  <p className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Authenticated As</p>
+                  <p className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Signed in as</p>
                   <p className="text-xs font-bold text-black dark:text-white uppercase tracking-tight">
                     {user?.firstName} {user?.lastName}
                   </p>
                   <span className="text-[9px] text-brand font-bold uppercase tracking-widest mt-1 block">
-                    {membership?.role === 'teacher' ? 'Instructor Layer' : 'Participant Layer'}
+                    {membership?.role === 'teacher' ? 'Teacher' : 'Student'}
                   </span>
                 </div>
               </div>
@@ -513,7 +513,7 @@ const ClassDetail = () => {
                     onClick={handleLeaveClass}
                     className="px-6 py-3 border border-zinc-200 dark:border-zinc-800 text-[9px] font-bold uppercase tracking-widest hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all"
                   >
-                    Discard membership
+                    Leave Class
                   </button>
                 )}
                 {isOwner && (
@@ -522,7 +522,7 @@ const ClassDetail = () => {
                     onClick={handleDeleteClass}
                     className="px-6 py-3 bg-red-500 text-white text-[9px] font-bold uppercase tracking-widest hover:bg-red-600 shadow-sm transition-all"
                   >
-                    Terminate Class
+                    Delete Class
                   </button>
                 )}
               </div>
@@ -532,7 +532,7 @@ const ClassDetail = () => {
 
         {error && (
           <div className="p-6 border border-red-500 text-red-500 text-[10px] font-bold uppercase tracking-widest bg-red-50/50 dark:bg-red-900/10 animate-fade-in">
-            System Conflict: {error}
+            Error: {error}
           </div>
         )}
 
@@ -546,7 +546,7 @@ const ClassDetail = () => {
               : 'text-zinc-400 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-zinc-800'
               }`}
           >
-            Sequence Stream
+            Stream
           </button>
           <button
             type="button"
@@ -556,7 +556,7 @@ const ClassDetail = () => {
               : 'text-zinc-400 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-zinc-800'
               }`}
           >
-            Operational Tasks
+            Classwork
           </button>
           <button
             type="button"
@@ -566,7 +566,7 @@ const ClassDetail = () => {
               : 'text-zinc-400 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-zinc-800'
               }`}
           >
-            Personnel
+            People
           </button>
         </nav>
         {/* Page content: only the active tab is rendered — screen changes, no route change */}
@@ -590,7 +590,7 @@ const ClassDetail = () => {
                           onChange={(e) =>
                             setAnnouncementForm((prev) => ({ ...prev, content: e.target.value }))
                           }
-                          placeholder="ESTABLISH SEQUENCE DIRECTIVE..."
+                          placeholder="Post an announcement..."
                           rows={3}
                           className="w-full px-5 py-4 bg-transparent border border-zinc-100 dark:border-zinc-800 text-black dark:text-white placeholder-zinc-300 dark:placeholder-zinc-600 text-sm font-bold uppercase tracking-widest leading-relaxed resize-none focus:border-brand outline-none transition-all"
                         />
@@ -600,7 +600,7 @@ const ClassDetail = () => {
                           onChange={(e) =>
                             setAnnouncementForm((prev) => ({ ...prev, attachmentUrl: e.target.value }))
                           }
-                          placeholder="PROTOCOL ATTACHMENT URL..."
+                          placeholder="Attachment URL (optional)..."
                           className="mt-4 w-full px-5 py-3 bg-transparent border border-zinc-100 dark:border-zinc-800 text-black dark:text-white placeholder-zinc-300 dark:placeholder-zinc-600 text-[10px] font-bold uppercase tracking-widest focus:border-brand outline-none transition-all"
                         />
                         <div className="flex justify-end mt-6">
@@ -609,7 +609,7 @@ const ClassDetail = () => {
                             disabled={postingAnnouncement || !announcementForm.content.trim()}
                             className="px-10 py-3 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-widest hover:bg-brand dark:hover:bg-brand dark:hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                           >
-                            {postingAnnouncement ? 'transmitting...' : 'transmit protocol'}
+                            {postingAnnouncement ? 'Posting...' : 'Post Announcement'}
                           </button>
                         </div>
                       </div>
@@ -623,8 +623,8 @@ const ClassDetail = () => {
                 <div className="p-20 border border-zinc-100 dark:border-zinc-900 text-center bg-zinc-50 dark:bg-zinc-950">
                   <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.3em]">
                     {isTeacher
-                      ? 'No protocols transmitted to stream.'
-                      : 'Awaiting primary transmission...'}
+                      ? 'No announcements yet. Post one to get started.'
+                      : 'No announcements yet.'}
                   </p>
                 </div>
               ) : (
@@ -655,7 +655,7 @@ const ClassDetail = () => {
                                 </span>
                               )}
                               <span className="text-[8px] font-bold text-zinc-400 mt-1 uppercase tracking-widest">
-                                Transmission {formatRelativeTime(a.createdAt)}
+                                Posted {formatRelativeTime(a.createdAt)}
                               </span>
                             </div>
                           </div>
@@ -664,7 +664,7 @@ const ClassDetail = () => {
                               type="button"
                               onClick={() => handleDeleteAnnouncement(a.id)}
                               className="text-zinc-300 hover:text-red-500 transition-colors p-2"
-                              title="Terminate transmission"
+                              title="Delete announcement"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -809,9 +809,9 @@ const ClassDetail = () => {
           <div className="min-h-[50vh] pt-6 animate-slide-up" role="region" aria-label="Classwork page">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-12">
               <div>
-                <span className="section-kicker mb-4">Operational Layer</span>
+                <span className="section-kicker mb-4">Assignments</span>
                 <h2 className="text-3xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Instructional <br />Protocols.
+                  Class <br />Assignments.
                 </h2>
               </div>
               {isTeacher && (
@@ -819,7 +819,7 @@ const ClassDetail = () => {
                   onClick={() => setShowNewAssignment(true)}
                   className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all shadow-sm"
                 >
-                  Register Protocol
+                  Create Assignment
                 </button>
               )}
             </div>
@@ -827,7 +827,7 @@ const ClassDetail = () => {
             {assignments.length === 0 ? (
               <div className="p-20 border border-zinc-100 dark:border-zinc-900 text-center bg-zinc-50 dark:bg-zinc-950">
                 <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.3em]">
-                  Zero operational protocols detected.
+                  No assignments yet. Create one to get started.
                 </p>
               </div>
             ) : (
@@ -871,7 +871,7 @@ const ClassDetail = () => {
                                 to={`/courses/${a.course?.id || ''}/lessons/${a.lesson.id}`}
                                 className="inline-flex items-center gap-2 px-3 py-1 bg-brand text-white text-[9px] font-bold uppercase tracking-widest hover:bg-brand/90 transition-colors"
                               >
-                                📖 LINKED SEQUENCE: {a.lesson.title}
+                                📖 Linked Lesson: {a.lesson.title}
                               </Link>
                             )}
                           </div>
@@ -882,7 +882,7 @@ const ClassDetail = () => {
                               {typeof completedCount === 'number' && (
                                 <div className="px-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
                                   <span className="text-[9px] font-extrabold text-zinc-400 uppercase tracking-widest">
-                                    COMPLETION: {completedCount}/{totalStudents}
+                                    Completed: {completedCount}/{totalStudents}
                                   </span>
                                 </div>
                               )}
@@ -891,7 +891,7 @@ const ClassDetail = () => {
                                 onClick={() => handleDeleteAssignment(a.id)}
                                 className="w-full px-6 py-2 border border-zinc-200 dark:border-zinc-800 text-[9px] font-bold uppercase tracking-widest hover:text-red-500 hover:border-red-500 transition-all"
                               >
-                                TERMINATE
+                                Delete
                               </button>
                             </>
                           ) : (
@@ -901,7 +901,7 @@ const ClassDetail = () => {
                                 : 'border-zinc-200 dark:border-zinc-800 text-zinc-400'
                                 }`}
                             >
-                              {isCompleted ? 'VERIFIED' : 'PENDING'}
+                              {isCompleted ? 'Completed' : 'Not Started'}
                             </span>
                           )}
                           {!isTeacher && !isCompleted && (
@@ -909,7 +909,7 @@ const ClassDetail = () => {
                               onClick={() => handleCompleteAssignment(a.id)}
                               className="w-full px-6 py-3 bg-black dark:bg-white text-white dark:text-black text-[9px] font-bold uppercase tracking-widest hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all shadow-sm"
                             >
-                              FINALIZE
+                              Mark Complete
                             </button>
                           )}
                           {!isTeacher && isCompleted && !a.lesson && (
@@ -917,7 +917,7 @@ const ClassDetail = () => {
                               onClick={() => handleUncompleteAssignment(a.id)}
                               className="w-full px-6 py-2 border border-zinc-200 dark:border-zinc-800 text-[9px] font-bold uppercase tracking-widest hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all"
                             >
-                              REVERT
+                              Mark Incomplete
                             </button>
                           )}
                         </div>
@@ -930,19 +930,19 @@ const ClassDetail = () => {
                           onClick={() => toggleAssignmentComments(a.id)}
                           className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-widest hover:text-brand transition-colors"
                         >
-                          {openCommentSections.assignment.has(a.id) ? 'CLOSE LOGS' : 'ACCESS LOGS'}
+                          {openCommentSections.assignment.has(a.id) ? 'Hide Comments' : 'Show Comments'}
                           {totalComments > 0 && ` [${totalComments}]`}
                         </button>
                         {openCommentSections.assignment.has(a.id) && (
                           <div className="mt-6 space-y-6 min-h-[2rem]">
                             {loadingComments.assignment === a.id || assignmentComments[a.id] === undefined ? (
-                              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Fetching records...</p>
+                              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Loading comments...</p>
                             ) : (
                               <>
                                 {/* Class comments (public) */}
                                 <div>
                                   <h4 className="text-[10px] font-black text-zinc-300 uppercase tracking-widest mb-4">
-                                    PUBLIC LOGS
+                                    Class Comments
                                   </h4>
                                   {classComments.map((c) => (
                                     <div key={c.id} className="flex gap-4 text-xs mb-4">
@@ -971,7 +971,7 @@ const ClassDetail = () => {
                                           assignmentClass: { ...prev.assignmentClass, [a.id]: e.target.value },
                                         }))
                                       }
-                                      placeholder="ESTABLISH PUBLIC LOG ENTRY..."
+                                      placeholder="Add a class comment..."
                                       className="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest placeholder-zinc-400 focus:border-brand outline-none transition-all"
                                       onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -986,7 +986,7 @@ const ClassDetail = () => {
                                       onClick={() => handlePostAssignmentComment(a.id, { isPrivate: false })}
                                       className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-widest hover:bg-brand dark:hover:bg-brand dark:hover:text-white disabled:opacity-30 transition-all"
                                     >
-                                      LOG
+                                      Post
                                     </button>
                                   </div>
                                 </div>
@@ -994,7 +994,7 @@ const ClassDetail = () => {
                                 {/* Private comments (student–teacher) */}
                                 <div>
                                   <h4 className="text-[10px] font-black text-brand uppercase tracking-widest mb-4">
-                                    SECURE CHANNEL
+                                    Private Messages
                                   </h4>
                                   {privateComments.map((c) => (
                                     <div key={c.id} className="flex gap-4 text-xs mb-4">
@@ -1035,7 +1035,7 @@ const ClassDetail = () => {
                                         }
                                         className="w-full px-4 py-2 bg-white dark:bg-black border border-zinc-100 dark:border-zinc-800 text-[10px] font-bold uppercase tracking-widest focus:border-brand outline-none transition-all"
                                       >
-                                        <option value="">Target Participant...</option>
+                                        <option value="">Select student...</option>
                                         {students.map((s) => (
                                           <option key={s.id} value={s.id}>
                                             {s.firstName} {s.lastName}
@@ -1052,7 +1052,7 @@ const ClassDetail = () => {
                                               assignmentPrivate: { ...prev.assignmentPrivate, [a.id]: e.target.value },
                                             }))
                                           }
-                                          placeholder="TRANSMIT SECURE PROTOCOL..."
+                                          placeholder="Send private message..."
                                           className="flex-1 px-4 py-3 bg-white dark:bg-black border border-zinc-100 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest placeholder-zinc-400 focus:border-brand outline-none transition-all"
                                           onKeyDown={(e) => {
                                             if (e.key === 'Enter' && !e.shiftKey) {
@@ -1094,7 +1094,7 @@ const ClassDetail = () => {
                                             assignmentPrivate: { ...prev.assignmentPrivate, [a.id]: e.target.value },
                                           }))
                                         }
-                                        placeholder="TRANSMIT SECURE PROTOCOL TO INSTRUCTOR..."
+                                        placeholder="Send private message to teacher..."
                                         className="flex-1 px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest placeholder-zinc-400 focus:border-brand outline-none transition-all"
                                         onKeyDown={(e) => {
                                           if (e.key === 'Enter' && !e.shiftKey) {
@@ -1132,9 +1132,9 @@ const ClassDetail = () => {
           <div className="min-h-[50vh] pt-6 animate-slide-up" role="region" aria-label="People page">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-12">
               <div>
-                <span className="section-kicker mb-4">Personnel</span>
+                <span className="section-kicker mb-4">People</span>
                 <h2 className="text-3xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Institutional <br />Network.
+                  Class <br />Members.
                 </h2>
               </div>
               {isOwner && (
@@ -1153,7 +1153,7 @@ const ClassDetail = () => {
               <div className="mb-12 p-8 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900">
                 <h3 className="text-[10px] font-black text-brand uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
                   <span className="w-8 h-[1px] bg-brand"></span>
-                  OPERATIONAL RANKINGS — PROTOCOLS VERIFIED
+                  Leaderboard — Most Assignments Completed
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {leaderboard.map((entry, index) => (
@@ -1182,7 +1182,7 @@ const ClassDetail = () => {
                             {entry.firstName} {entry.lastName}
                           </span>
                           <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest">
-                            {entry.completedCount} VERIFICATIONS
+                            {entry.completedCount} Completed
                           </span>
                         </div>
                       </Link>
@@ -1197,11 +1197,11 @@ const ClassDetail = () => {
               <div>
                 <h3 className="text-[10px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
                   <span className="w-4 h-[1px] bg-zinc-200 dark:bg-zinc-800"></span>
-                  INSTRUCTORS
+                  Teachers
                 </h3>
                 {teachers.length === 0 ? (
                   <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest pl-7">
-                    Zero instructors detected.
+                    No teachers in this class.
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -1237,11 +1237,11 @@ const ClassDetail = () => {
               <div>
                 <h3 className="text-[10px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
                   <span className="w-4 h-[1px] bg-zinc-200 dark:bg-zinc-800"></span>
-                  PARTICIPANTS ({students.length})
+                  Students ({students.length})
                 </h3>
                 {students.length === 0 ? (
                   <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest pl-7">
-                    Zero participants detected.
+                    No students in this class yet.
                   </p>
                 ) : (
                   <div className="grid grid-cols-1 gap-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -1282,9 +1282,9 @@ const ClassDetail = () => {
             <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-[0_0_50px_-12px_rgba(0,0,0,0.3)] max-w-lg w-full max-h-[90vh] overflow-y-auto p-10 animate-in zoom-in-95 duration-300">
               <div className="flex items-start justify-between mb-10">
                 <div>
-                  <span className="section-kicker mb-2">Protocol Registration</span>
+                  <span className="section-kicker mb-2">Create Assignment</span>
                   <h2 className="text-2xl font-black text-black dark:text-white uppercase tracking-tighter">
-                    Define New Assignment
+                    New Assignment
                   </h2>
                 </div>
                 <button
@@ -1310,7 +1310,7 @@ const ClassDetail = () => {
                     }
                     required
                     className="block w-full px-0 py-3 bg-transparent border-b border-zinc-200 dark:border-zinc-800 text-black dark:text-white text-lg font-bold placeholder-zinc-300 focus:border-brand outline-none transition-all"
-                    placeholder="ENTER PROTOCOL TITLE..."
+                    placeholder="Enter assignment title..."
                   />
                 </div>
 
@@ -1325,7 +1325,7 @@ const ClassDetail = () => {
                     }
                     rows={4}
                     className="block w-full px-4 py-4 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-black dark:text-white text-xs font-medium placeholder-zinc-400 focus:border-brand outline-none transition-all resize-none"
-                    placeholder="SPECIFY OPERATIONAL PARAMETERS..."
+                    placeholder="Enter assignment description..."
                   />
                 </div>
 
@@ -1346,7 +1346,7 @@ const ClassDetail = () => {
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                      Linked Sequence
+                      Link to Lesson
                     </label>
                     <select
                       value={assignmentForm.lessonId}
@@ -1385,7 +1385,7 @@ const ClassDetail = () => {
                     disabled={submitting}
                     className="px-10 py-4 bg-black dark:bg-white text-white dark:text-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white disabled:opacity-30 transition-all shadow-lg order-1 sm:order-2"
                   >
-                    {submitting ? 'PROCESSING...' : 'INITIALIZE PROTOCOL'}
+                    {submitting ? 'Creating...' : 'Create Assignment'}
                   </button>
                 </div>
               </form>
@@ -1399,7 +1399,7 @@ const ClassDetail = () => {
             <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-[0_0_50px_-12px_rgba(0,0,0,0.3)] max-w-md w-full p-10 animate-in zoom-in-95 duration-300">
               <div className="flex items-start justify-between mb-8">
                 <div>
-                  <span className="section-kicker mb-2">Personnel</span>
+                  <span className="section-kicker mb-2">Add Teacher</span>
                   <h2 className="text-xl font-black text-black dark:text-white uppercase tracking-tighter">
                     Add teacher
                   </h2>

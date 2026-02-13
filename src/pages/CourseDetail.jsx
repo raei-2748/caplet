@@ -80,9 +80,9 @@ const CourseDetail = () => {
             onClick={() => navigate('/courses')}
             className="mb-6 inline-flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest hover:text-brand transition-colors"
           >
-            ← Back to Library
+            ← Back to Courses
           </button>
-          <span className="section-kicker mb-4">Course Blueprint</span>
+          <span className="section-kicker mb-4">Course Details</span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter mb-4">
             {course.title}
           </h1>
@@ -106,7 +106,7 @@ const CourseDetail = () => {
                   {progress?.courseProgress && (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                        <span>Sequence Completion</span>
+                        <span>Course Progress</span>
                         <span className="text-black dark:text-white">
                           {Math.round(progress.courseProgress.progressPercentage)}%
                         </span>
@@ -124,7 +124,7 @@ const CourseDetail = () => {
                   onClick={startCourse}
                   className="btn-primary px-10 py-4 text-[10px] tracking-[0.25em]"
                 >
-                  Initialize Course
+                  Start Course
                 </button>
               </div>
               {course.thumbnail && (
@@ -146,7 +146,7 @@ const CourseDetail = () => {
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">
                 This course is part of the institutional CapletEdu curriculum and is structured into modules and
-                lessons that can be mapped directly into classroom sequences.
+                lessons that can be used directly in the classroom.
               </p>
             </div>
           </aside>
@@ -155,7 +155,7 @@ const CourseDetail = () => {
         <div className="reveal-up" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">
-              Module Sequence ({sortedModules.length})
+              Modules ({sortedModules.length})
             </h2>
           </div>
 
@@ -190,7 +190,7 @@ const CourseDetail = () => {
                     </div>
                   </div>
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest group-hover:text-brand group-hover:translate-x-1 transition-all">
-                    Open Module →
+                    View Module →
                   </span>
                 </Link>
               );
@@ -200,7 +200,7 @@ const CourseDetail = () => {
           {sortedModules.length === 0 && (
             <div className="mt-10 p-16 text-center border border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950">
               <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.3em]">
-                Zero modules detected for this course.
+                No modules available for this course yet.
               </p>
             </div>
           )}

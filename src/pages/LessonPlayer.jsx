@@ -52,7 +52,7 @@ const Quiz = ({ questions, onComplete }) => {
       {mcqQuestions.map((q, idx) => (
         <div key={q.id} className="mb-10 p-8 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900">
           <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-4">
-            Terminal Query {idx + 1}
+            Question {idx + 1}
           </p>
           <p className="text-lg font-bold mb-8 text-black dark:text-white leading-tight">
             {q.question}
@@ -96,7 +96,7 @@ const Quiz = ({ questions, onComplete }) => {
           </div>
           {submitted && q.explanation && (
             <div className="mt-8 p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
-              <span className="font-black text-[9px] uppercase tracking-[0.2em] text-brand block mb-3">Logic Rationale</span>
+              <span className="font-black text-[9px] uppercase tracking-[0.2em] text-brand block mb-3">Explanation</span>
               <p className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed uppercase tracking-tight">{q.explanation}</p>
             </div>
           )}
@@ -109,21 +109,21 @@ const Quiz = ({ questions, onComplete }) => {
             onClick={handleSubmit}
             className="btn-primary w-full"
           >
-            Submit Terminal Assessment
+            Submit Quiz
           </button>
         ) : (
           <div className="space-y-6">
             <div className={`p-10 text-center border ${score >= 70 ? 'bg-brand/5 border-brand' : 'bg-zinc-50 dark:bg-zinc-950 border-zinc-100 dark:border-zinc-900'}`}>
               <h3 className="text-xl font-extrabold mb-3 text-black dark:text-white uppercase tracking-tight">
-                {score >= 70 ? 'Proficiency Validated' : 'Sequence Review Recommended'}
+                {score >= 70 ? 'Quiz Passed' : 'Review Recommended'}
               </h3>
               <p className="text-zinc-500 dark:text-zinc-400 font-black text-[10px] uppercase tracking-widest mb-6">
-                Institutional Score: <span className="text-brand">{score}%</span>
+                Score: <span className="text-brand">{score}%</span>
               </p>
               {score >= 70 ? (
-                <p className="text-brand font-black text-[10px] uppercase tracking-widest">Initializing next module sequence...</p>
+                <p className="text-brand font-black text-[10px] uppercase tracking-widest">Moving to next lesson...</p>
               ) : (
-                <p className="text-zinc-400 font-black text-[10px] uppercase tracking-widest">Protocol failure: Score below 70% threshold.</p>
+                <p className="text-zinc-400 font-black text-[10px] uppercase tracking-widest">Score below 70%. Please review and try again.</p>
               )}
             </div>
             {score < 70 && (
@@ -131,7 +131,7 @@ const Quiz = ({ questions, onComplete }) => {
                 onClick={handleReset}
                 className="btn-secondary w-full"
               >
-                Re-initialize Assessment
+                Retake Quiz
               </button>
             )}
           </div>
@@ -339,11 +339,11 @@ const LessonPlayer = () => {
               </svg>
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 group-hover:text-black dark:group-hover:text-white transition-colors">
-              Return to Catalog
+              Back to Course
             </span>
           </Link>
           <div className="px-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">
-            Phase Protocol {idx + 1} // {flatLessons.length}
+            Lesson {idx + 1} of {flatLessons.length}
           </div>
         </div>
 
@@ -352,7 +352,7 @@ const LessonPlayer = () => {
             <div className="bg-white dark:bg-black border border-zinc-100 dark:border-zinc-900 overflow-hidden reveal-up">
               <div className="p-10 lg:p-14">
                 <div className="mb-12">
-                  <span className="section-kicker mb-4">Module Analysis</span>
+                  <span className="section-kicker mb-4">Lesson</span>
                   <h1 className="text-3xl lg:text-4xl font-extrabold text-black dark:text-white mb-6 leading-tight tracking-tight uppercase">
                     {lesson.title}
                   </h1>
@@ -365,7 +365,7 @@ const LessonPlayer = () => {
                   <>
                     <div className="mb-10">
                       <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-4">
-                        <span>Instructional Progress</span>
+                        <span>Lesson Progress</span>
                         <span className="text-brand italic font-black">{Math.round(((currentSlideIndex + 1) / slides.length) * 100)}% Complete</span>
                       </div>
                       <div className="h-1 bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
@@ -394,7 +394,7 @@ const LessonPlayer = () => {
 
                             return (
                               <div className="p-2">
-                                <h3 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-3">Assessment Query</h3>
+                                <h3 className="text-base font-semibold text-slate-400 uppercase tracking-wide mb-3">Question</h3>
                                 <p className="font-bold text-xl text-slate-900 dark:text-white mb-6">{slide.question}</p>
                                 <div className="space-y-3">
                                   {options.map((option, optIdx) => {
@@ -430,7 +430,7 @@ const LessonPlayer = () => {
                                 </div>
                                 {showFeedback && slide.explanation && (
                                   <div className="mt-8 p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800">
-                                    <span className="font-black text-[9px] uppercase tracking-[0.2em] text-brand block mb-3">Logic Rationale</span>
+                                    <span className="font-black text-[9px] uppercase tracking-[0.2em] text-brand block mb-3">Explanation</span>
                                     <p className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed uppercase tracking-tight">{slide.explanation}</p>
                                   </div>
                                 )}
@@ -440,7 +440,7 @@ const LessonPlayer = () => {
                                     onClick={() => recordQuestionAnswer(currentSlideIndex, selected === correctIndex)}
                                     className="mt-8 btn-primary w-full"
                                   >
-                                    Verify Response
+                                    Submit Answer
                                   </button>
                                 )}
                               </div>
@@ -514,7 +514,7 @@ const LessonPlayer = () => {
                             return <a href={slide.content} target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold underline">Stream External Content</a>;
                           }
 
-                          return <p className="text-slate-400 italic">Instructional module content unavailable.</p>;
+                          return <p className="text-slate-400 italic">Content unavailable.</p>;
                         })()}
                       </div>
                     </div>
@@ -550,7 +550,7 @@ const LessonPlayer = () => {
                         disabled={currentSlideIndex >= slides.length - 1}
                         className="w-full sm:w-auto px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-bold text-[10px] uppercase tracking-widest hover:bg-brand dark:hover:bg-brand dark:hover:text-white disabled:opacity-40 transition-all active:scale-[0.98]"
                       >
-                        Next Sequence →
+                        Next Slide →
                       </button>
                     </div>
 
@@ -566,7 +566,7 @@ const LessonPlayer = () => {
                             }`}
                         >
                           <span className="relative z-10 flex items-center gap-3">
-                            {completed ? 'Sequence Certified ✓' : saving ? 'System Processing…' : 'Finalize Module'}
+                            {completed ? 'Lesson Completed ✓' : saving ? 'Saving…' : 'Complete Lesson'}
                           </span>
                         </button>
                       </div>
@@ -576,8 +576,8 @@ const LessonPlayer = () => {
                   <>
                     {!lesson.content?.trim() && !lesson.videoUrl && (
                       <div className="mb-6 p-10 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-center">
-                        <p className="text-lg font-bold text-slate-600 dark:text-slate-400">Curriculum Pending</p>
-                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2">Check back later for module updates.</p>
+                        <p className="text-lg font-bold text-slate-600 dark:text-slate-400">Content Coming Soon</p>
+                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2">Check back later for lesson updates.</p>
                       </div>
                     )}
                     {lesson.videoUrl && getYouTubeId(lesson.videoUrl) && (
@@ -605,7 +605,7 @@ const LessonPlayer = () => {
                           img: ({ src, alt, ...props }) => <img src={api.getProxiedImageSrc(src)} alt={alt || ''} className="max-w-full h-auto rounded-lg" {...props} />,
                         }}
                       >
-                        {lesson.content || 'Analytical content pending...'}
+                        {lesson.content || 'Content coming soon...'}
                       </ReactMarkdown>
                     </article>
                     {lesson.metadata?.hasQuiz && lesson.metadata?.quizQuestions && (
@@ -622,7 +622,7 @@ const LessonPlayer = () => {
                           Prev
                         </button>
                         {(!lesson.content?.trim() && !lesson.videoUrl) ? (
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">Progress Locked</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">Cannot Complete</span>
                         ) : (
                           <button
                             type="button"
@@ -630,7 +630,7 @@ const LessonPlayer = () => {
                             disabled={saving || completed}
                             className="px-12 py-4 bg-black dark:bg-white text-white dark:text-black font-black text-[10px] uppercase tracking-widest hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all disabled:opacity-40"
                           >
-                            {completed ? 'Module Certified ✓' : saving ? 'Processing…' : 'Certification Final'}
+                            {completed ? 'Lesson Completed ✓' : saving ? 'Saving…' : 'Mark Complete'}
                           </button>
                         )}
                         <button
@@ -652,7 +652,7 @@ const LessonPlayer = () => {
           <aside className="lg:col-span-4 space-y-8 reveal-up" style={{ animationDelay: '200ms' }}>
             <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 p-8">
               <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand mb-8">
-                Curriculum Structure
+                Course Structure
               </h3>
               <div className="space-y-8">
                 {sortedModules.map((mod) => (
@@ -682,16 +682,16 @@ const LessonPlayer = () => {
             </div>
 
             <div className="bg-black dark:bg-white p-8 text-white dark:text-black reveal-up">
-              <h4 className="text-[10px] font-extrabold mb-4 uppercase tracking-[0.2em] text-zinc-400">Institutional Certification</h4>
+              <h4 className="text-[10px] font-extrabold mb-4 uppercase tracking-[0.2em] text-zinc-400">Course Progress</h4>
               <p className="text-xs leading-relaxed mb-8 font-medium opacity-80">
-                Complete the specified curriculum modules to generate your verified certificate of completion.
+                Complete all lessons in this course to earn your certificate of completion.
               </p>
               <div className="h-1 bg-zinc-800 dark:bg-zinc-200 mb-4 overflow-hidden">
                 <div className="h-full bg-brand w-1/3 transition-all duration-1000" />
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">33% Validation</span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">2 / 6 Sequences</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">33% Complete</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">2 / 6 Lessons</span>
               </div>
             </div>
           </aside>

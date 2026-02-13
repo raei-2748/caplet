@@ -65,7 +65,7 @@ const Courses = () => {
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Synchronizing Academy...</p>
+          <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Loading courses...</p>
         </div>
       </div>
     );
@@ -76,13 +76,13 @@ const Courses = () => {
       <div className="container-custom">
         <div className="mb-8 animate-slide-up">
           <span className="section-kicker mb-6">
-            Institutional Library
+            Course Library
           </span>
           <h1 className="text-5xl md:text-6xl font-extrabold text-black dark:text-white mb-8 tracking-tighter uppercase">
-            Educational <br />Catalog.
+            Browse <br />Courses.
           </h1>
           <p className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl font-medium leading-relaxed">
-            Professional learning sequences designed to build meaningful financial foundations for the next generation.
+            Professional courses designed to build meaningful financial foundations for students.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ const Courses = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-end">
             <div className="space-y-3">
               <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
-                Academic Level
+                Level
               </label>
               <select
                 value={filters.level}
@@ -105,22 +105,22 @@ const Courses = () => {
                 className="input-editorial appearance-none"
               >
                 <option value="">All Levels</option>
-                <option value="beginner">Phase Alpha (Beginner)</option>
-                <option value="intermediate">Phase Beta (Intermediate)</option>
-                <option value="advanced">Phase Gamma (Advanced)</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
               </select>
             </div>
 
             <div className="space-y-3 lg:col-span-2">
               <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
-                Search Curriculum
+                Search Courses
               </label>
               <div className="relative">
                 <input
                   type="text"
                   value={filters.search}
                   onChange={(e) => handleFilterChange('search', e.target.value)}
-                  placeholder="IDENTIFY KEYWORDS..."
+                  placeholder="Search courses..."
                   className="input-editorial pl-12"
                 />
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-400">
@@ -136,7 +136,7 @@ const Courses = () => {
         {/* Error Message */}
         {error && (
           <div className="bg-white dark:bg-black border border-red-500 text-red-500 px-8 py-6 mb-12 font-bold text-[10px] uppercase tracking-[0.3em] text-center animate-fade-in">
-            System Error: {error}
+            Error: {error}
           </div>
         )}
 
@@ -182,14 +182,14 @@ const Courses = () => {
                       </span>
                       <span className="flex items-center gap-1.5">
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                        {(course.modules || []).reduce((sum, m) => sum + (m.lessons || []).length, 0)} Units
+                        {(course.modules || []).reduce((sum, m) => sum + (m.lessons || []).length, 0)} Lessons
                       </span>
                     </div>
 
                     {isAuthenticated && hasProgress && (
                       <div className="mb-6 pt-2">
                         <div className="flex items-center justify-between text-[8px] font-bold uppercase tracking-widest text-zinc-400 mb-2">
-                          <span>Sequence Logic</span>
+                          <span>Progress</span>
                           <span className="text-brand">{Math.round(progress)}%</span>
                         </div>
                         <div className="w-full bg-zinc-50 dark:bg-zinc-900 h-1 overflow-hidden">
@@ -202,7 +202,7 @@ const Courses = () => {
                     )}
 
                     <div className="flex items-center justify-between text-brand font-bold text-[9px] uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                      <span>{hasProgress ? 'Resume Module' : 'Access Unit'} →</span>
+                      <span>{hasProgress ? 'Continue Course' : 'Start Course'} →</span>
                     </div>
                   </div>
                 </div>
@@ -214,7 +214,7 @@ const Courses = () => {
         {courses.length === 0 && !loading && (
           <div className="text-center py-32 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900">
             <p className="text-zinc-500 font-extrabold text-xs uppercase tracking-[0.3em]">No results for this query</p>
-            <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mt-4">Resetting filters may restore visibility.</p>
+            <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mt-4">Try adjusting your search filters.</p>
           </div>
         )}
       </div>

@@ -52,11 +52,11 @@ const Login = () => {
 
                     <div className="max-w-xl ml-auto">
                         <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tighter leading-[0.95] mb-8">
-                            Financial logic <br />
-                            <span className="text-zinc-500">for the modern era.</span>
+                            Financial education <br />
+                            <span className="text-zinc-500">for students.</span>
                         </h1>
                         <p className="text-lg text-zinc-400 font-medium leading-relaxed max-w-md ml-auto">
-                            Access your institutional terminal to manage curriculum, track student progress, and analyze financial literacy data.
+                            Sign in to access courses, track your progress, and use our financial tools.
                         </p>
                     </div>
                 </div>
@@ -65,10 +65,10 @@ const Login = () => {
                 <div className="relative z-10 border-t border-white/10 pt-8 mt-auto">
                     <div className="flex items-center justify-end gap-10">
                         <div className="text-right">
-                            <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">System Status</p>
+                            <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Status</p>
                             <div className="flex items-center justify-end gap-2">
                                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                                <span className="text-sm font-bold text-white uppercase tracking-wider">Operational</span>
+                                <span className="text-sm font-bold text-white uppercase tracking-wider">Online</span>
                             </div>
                         </div>
                         <div className="text-right">

@@ -92,7 +92,7 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="max-w-xl animate-slide-up">
               <span className="section-kicker mb-6">
-                Institutional Financial Education
+                Financial Education
               </span>
               <h1 className="text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.9] mb-10 text-black dark:text-white tracking-tighter">
                 Financial literacy <br />
@@ -106,7 +106,7 @@ const Home = () => {
                   Get Started Free
                 </Link>
                 <Link to="/tools" className="btn-secondary flex items-center justify-center">
-                  Explore Terminals
+                  Explore Tools
                 </Link>
               </div>
             </div>
@@ -136,7 +136,7 @@ const Home = () => {
                     {[
                       { num: '•', title: 'Gross vs Net Income', sub: 'The difference between earning and taking home' },
                       { num: '•', title: 'Tax Withholding (PAYG)', sub: 'How the ATO collects tax automatically' },
-                      { num: '•', title: 'Superannuation', sub: 'Building your long-term wealth sequence' }
+                      { num: '•', title: 'Superannuation', sub: 'Building your long-term wealth' }
                     ].map((item) => (
                       <div key={item.title} className="flex items-start gap-4 group">
                         <div className="text-brand font-bold text-lg leading-none group-hover:scale-125 transition-transform">{item.num}</div>
@@ -150,7 +150,7 @@ const Home = () => {
 
                   <div className="px-8 py-6 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
                     <span className="text-[10px] uppercase font-bold text-zinc-400">Time: 12m</span>
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-brand">Proceed to checkout →</div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand">Start Lesson →</div>
                   </div>
                 </div>
               </div>
@@ -179,8 +179,8 @@ const Home = () => {
       <section className="py-32 lg:py-48">
         <div className="container-custom">
           <div className="mb-24 reveal-up">
-            <p className="section-kicker">Core Capabilities</p>
-            <h2 className="section-title">Practical logic <br />over theory.</h2>
+            <p className="section-kicker">Features</p>
+            <h2 className="section-title">Practical learning <br />over theory.</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
             {features.map((feature, index) => (
@@ -205,22 +205,22 @@ const Home = () => {
         <div className="container-custom relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
-              <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand mb-6">Our Sequence</p>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-10 tracking-tighter leading-none">The Caplet <br />Pathway.</h2>
+              <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand mb-6">Our Approach</p>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-10 tracking-tighter leading-none">The Caplet <br />Method.</h2>
               <p className="text-zinc-500 dark:text-zinc-400 text-lg font-medium leading-relaxed max-w-sm mb-12">
-                We transform complex financial data into a structured learning journey built for high-impact absorption.
+                We transform complex financial concepts into a structured learning journey designed for effective understanding.
               </p>
               <div className="flex gap-4">
                 <div className="w-12 h-[1px] bg-brand mt-3 shrink-0" />
-                <p className="text-xs uppercase font-bold tracking-widest text-zinc-500 dark:text-white/50">Institutional Standards Applied Globally</p>
+                <p className="text-xs uppercase font-bold tracking-widest text-zinc-500 dark:text-white/50">Trusted by schools worldwide</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
               <div className="p-10 border border-zinc-300 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-6">Phase Alpha: Foundations</h3>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-6">Level 1: Foundations</h3>
                 <ul className="space-y-4">
-                  {['Budgeting Systems', 'Tax Compliance', 'Superannuation'].map(item => (
+                  {['Budgeting', 'Tax Basics', 'Superannuation'].map(item => (
                     <li key={item} className="text-sm font-bold flex items-center justify-between">
                       <span>{item}</span>
                       <span className="text-[10px] text-brand">01</span>
@@ -229,9 +229,9 @@ const Home = () => {
                 </ul>
               </div>
               <div className="p-10 bg-brand text-white">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-6">Phase Beta: Applied Logic</h3>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-6">Level 2: Advanced</h3>
                 <ul className="space-y-4">
-                  {['Investment Strategy', 'Risk Management', 'Curriculum Sync'].map(item => (
+                  {['Investing', 'Managing Risk', 'Course Integration'].map(item => (
                     <li key={item} className="text-sm font-bold flex items-center justify-between">
                       <span>{item}</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
@@ -249,8 +249,8 @@ const Home = () => {
         <div className="container-custom">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-24">
             <div className="reveal-up">
-              <p className="section-kicker">Library</p>
-              <h2 className="section-title">Academic <br />catalog.</h2>
+            <p className="section-kicker">Course Library</p>
+            <h2 className="section-title">Browse our <br />courses.</h2>
             </div>
             <Link to="/courses" className="btn-secondary h-fit">
               View All Modules
@@ -284,7 +284,7 @@ const Home = () => {
                       {course.duration} Minutes
                     </div>
                     <div className="text-brand font-bold text-xs uppercase tracking-tighter group-hover:translate-x-1 transition-transform">
-                      Enter Module →
+                      View Course →
                     </div>
                   </div>
                 </Link>
@@ -306,7 +306,7 @@ const Home = () => {
               <p className="section-kicker">Our Mission</p>
               <h2 className="section-title mb-10">Institutional <br />standard.</h2>
               <p className="text-xl text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed max-w-xl mb-12">
-                CapletEdu delivers structured financial education for Australian students, integrated into school curricula and designed for high-impact absorption. Currently serving Knox Grammar School Commerce Department for Years 9–10.
+                CapletEdu delivers structured financial education for Australian students, integrated into school curricula and designed for effective learning. Currently serving Knox Grammar School Commerce Department for Years 9–10.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div className="p-8 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900">
@@ -314,7 +314,7 @@ const Home = () => {
                   <ul className="text-xs text-zinc-500 dark:text-zinc-400 space-y-3 font-medium">
                     <li className="flex items-center gap-2"><span className="w-1 h-1 bg-brand rounded-full" /> Knox Grammar School</li>
                     <li className="flex items-center gap-2"><span className="w-1 h-1 bg-brand rounded-full" /> Capital Finance Club</li>
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 bg-brand rounded-full" /> Scalable Systems</li>
+                    <li className="flex items-center gap-2"><span className="w-1 h-1 bg-brand rounded-full" /> Scalable Platform</li>
                   </ul>
                 </div>
                 <div className="p-8 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900">
@@ -333,7 +333,7 @@ const Home = () => {
                 <h3 className="text-2xl font-bold uppercase tracking-tight leading-tight mb-8 italic">
                   "Empowering students with practical financial logic through academic-grade curriculum designed for the Australian context."
                 </h3>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-50">Caplet Institutional Vision</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-50">Caplet Mission</p>
               </div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 border border-brand/20 -z-10 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform" />
             </div>
@@ -346,8 +346,8 @@ const Home = () => {
         <div className="container-custom">
           <div className="max-w-3xl">
             <div className="mb-20">
-              <p className="section-kicker">Help center</p>
-              <h2 className="section-title">Support.</h2>
+              <p className="section-kicker">Help & Support</p>
+              <h2 className="section-title">Frequently asked <br />questions.</h2>
             </div>
 
             <div className="space-y-2">

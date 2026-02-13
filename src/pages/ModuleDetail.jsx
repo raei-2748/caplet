@@ -105,12 +105,12 @@ const ModuleDetail = () => {
             onClick={() => navigate(`/courses/${courseId}`)}
             className="mb-8 inline-flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest hover:text-brand transition-colors"
           >
-            ← Back to Sequence
+            ← Back to Course
           </button>
 
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
             <div className="flex-1">
-              <span className="section-kicker mb-4">Module Analysis</span>
+              <span className="section-kicker mb-4">Module</span>
               <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter mb-6">
                 {module_.title}.
               </h1>
@@ -123,7 +123,7 @@ const ModuleDetail = () => {
 
             <div className="flex flex-col gap-4 min-w-[240px]">
               <div className="flex items-center justify-between text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                <span>Verification Progress</span>
+                <span>Progress</span>
                 <span className="text-black dark:text-white">{completedInModule} / {totalInModule}</span>
               </div>
               <div className="h-1 w-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
@@ -139,7 +139,7 @@ const ModuleDetail = () => {
         <div className="space-y-4 reveal-up" style={{ animationDelay: '100ms' }}>
           <div className="border-b border-zinc-100 dark:border-zinc-900 pb-4 mb-8">
             <h2 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">
-              Operational Sequences ({lessons.length})
+              Lessons ({lessons.length})
             </h2>
           </div>
 
@@ -160,7 +160,7 @@ const ModuleDetail = () => {
                     </h3>
                     <div className="flex items-center gap-3 mt-1">
                       <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest">
-                        {lesson.description || 'Instructional Sequence'}
+                        {lesson.description || 'Lesson'}
                       </span>
                       {isLessonComplete(lesson) && (
                         <span className="inline-flex items-center gap-1.5 text-[8px] font-black text-brand uppercase tracking-widest">
@@ -172,7 +172,7 @@ const ModuleDetail = () => {
                   </div>
                 </div>
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">
-                  Execute →
+                  Start Lesson →
                 </span>
               </Link>
             ))}
@@ -181,7 +181,7 @@ const ModuleDetail = () => {
           {lessons.length === 0 && (
             <div className="p-20 text-center border border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950">
               <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-[0.3em]">
-                Zero operational sequences detected in this module.
+                No lessons available in this module yet.
               </p>
             </div>
           )}

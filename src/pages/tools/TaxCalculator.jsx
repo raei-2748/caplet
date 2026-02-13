@@ -71,14 +71,14 @@ const TaxCalculator = () => {
                   Institutional Tools
                 </p>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Taxation <br />Terminal.
+                  Tax <br />Calculator.
                 </h1>
                 <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest leading-relaxed max-w-xl">
                   Estimate Australian income tax, Medicare levy, and take-home pay.
                 </p>
               </div>
               <Link to="/tools" className="text-[10px] font-black text-zinc-400 hover:text-brand uppercase tracking-widest transition-colors mb-auto">
-                ← Return to Base
+                ← Back to Tools
               </Link>
             </div>
           </div>

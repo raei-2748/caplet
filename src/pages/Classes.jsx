@@ -87,7 +87,7 @@ const Classes = () => {
       <div className="min-h-screen flex items-center justify-center page-section-light">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Syncing Class Vectors...</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">Loading classes...</p>
         </div>
       </div>
     );
@@ -98,12 +98,12 @@ const Classes = () => {
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-20">
           <div className="animate-slide-up">
-            <span className="section-kicker mb-4">Institutional Layer</span>
+            <span className="section-kicker mb-4">Classes</span>
             <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-              Class <br />Terminals.
+              Your <br />Classes.
             </h1>
             <p className="max-w-md text-xs font-bold text-zinc-400 uppercase tracking-widest mt-6 leading-relaxed">
-              Synchronous group learning sequences. Connect with instructors and peer networks.
+              Join classes to learn together with your teacher and classmates.
             </p>
           </div>
           <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: '100ms' }}>
@@ -112,7 +112,7 @@ const Classes = () => {
                 onClick={() => setShowCreate(true)}
                 className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all shadow-sm"
               >
-                Initialize Class
+                Create Class
               </button>
             )}
             {!isTeacher && (
@@ -140,7 +140,7 @@ const Classes = () => {
         {error && (
           <div className="mb-12 p-8 border-l-2 border-brand bg-zinc-50 dark:bg-zinc-950 text-black dark:text-white text-[10px] font-bold uppercase tracking-widest animate-fade-in flex items-center gap-4">
             <span className="text-brand">●</span>
-            System Conflict: {error}
+            Error: {error}
           </div>
         )}
 
@@ -153,12 +153,12 @@ const Classes = () => {
         {isTeacher && (
           <section className="mb-20 animate-slide-up" style={{ animationDelay: '200ms' }}>
             <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-10 border-b border-zinc-100 dark:border-zinc-900 pb-4">
-              Leader Portals
+              Classes You Teach
             </h2>
             {classes.teaching.length === 0 ? (
               <div className="p-16 border border-zinc-100 dark:border-zinc-900 text-center bg-zinc-50 dark:bg-zinc-950">
                 <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
-                  Zero active teaching sequences detected.
+                  No classes yet. Create your first class to get started.
                 </p>
               </div>
             ) : (
@@ -178,7 +178,7 @@ const Classes = () => {
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest">
-                      <span className="text-zinc-400">Class Key:</span>
+                      <span className="text-zinc-400">Class Code:</span>
                       <span className="text-black dark:text-white bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-sm font-mono group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-all">
                         {cls.code}
                       </span>
@@ -192,12 +192,12 @@ const Classes = () => {
 
         <section className="animate-slide-up" style={{ animationDelay: '300ms' }}>
           <h2 className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.3em] mb-10 border-b border-zinc-100 dark:border-zinc-900 pb-4">
-            Participant Streams
+            Classes You're In
           </h2>
           {classes.student.length === 0 ? (
             <div className="p-16 border border-zinc-100 dark:border-zinc-900 text-center bg-zinc-50 dark:bg-zinc-950">
               <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
-                Zero participant memberships found.
+                You haven't joined any classes yet. Join a class with a code to get started.
               </p>
             </div>
           ) : (
@@ -217,7 +217,7 @@ const Classes = () => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest">
-                    <span className="text-zinc-400">Access Vector:</span>
+                    <span className="text-zinc-400">Class Code:</span>
                     <span className="text-black dark:text-white bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-sm font-mono group-hover:bg-brand group-hover:text-white transition-all">
                       {cls.code}
                     </span>
@@ -234,7 +234,7 @@ const Classes = () => {
             <div className="bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 max-w-lg w-full p-12 shadow-2xl">
               <div className="flex items-center justify-between mb-10">
                 <h2 className="text-3xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  New Sequence.
+                  Create Class.
                 </h2>
                 <button
                   onClick={() => setShowCreate(false)}
@@ -258,12 +258,12 @@ const Classes = () => {
                     }
                     required
                     className="w-full px-5 py-4 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white font-bold text-xs uppercase tracking-[0.1em] focus:border-brand outline-none"
-                    placeholder="E.G. LEVEL 1 TRADING TERMINAL..."
+                    placeholder="Enter class name..."
                   />
                 </div>
                 <div className="space-y-3">
                   <label className="block text-[9px] font-bold italic uppercase tracking-widest text-zinc-500">
-                    Operational Scope (Optional)
+                    Description (Optional)
                   </label>
                   <textarea
                     value={createForm.description}
@@ -272,7 +272,7 @@ const Classes = () => {
                     }
                     rows={4}
                     className="w-full px-5 py-4 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white font-bold text-xs uppercase tracking-[0.1em] focus:border-brand outline-none resize-none"
-                    placeholder="DEFINE OBJECTIVES..."
+                    placeholder="Enter class description..."
                   />
                 </div>
                 <div className="flex gap-4 pt-6">
@@ -289,7 +289,7 @@ const Classes = () => {
                     disabled={submitting}
                     className="flex-1 px-8 py-4 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-widest hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all shadow-sm"
                   >
-                    {submitting ? 'Initializing...' : 'Execute'}
+                    {submitting ? 'Creating...' : 'Create Class'}
                   </button>
                 </div>
               </form>
@@ -303,7 +303,7 @@ const Classes = () => {
             <div className="bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 max-w-sm w-full p-12 shadow-2xl">
               <div className="flex items-center justify-between mb-10">
                 <h2 className="text-3xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
-                  Join Unit.
+                  Join Class.
                 </h2>
                 <button
                   onClick={() => setShowJoin(false)}
@@ -317,7 +317,7 @@ const Classes = () => {
               <form onSubmit={handleJoin} className="space-y-10">
                 <div className="space-y-4 text-center">
                   <label className="block text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-500">
-                    Enter Verification Key
+                    Enter Class Code
                   </label>
                   <input
                     type="text"
@@ -335,14 +335,14 @@ const Classes = () => {
                     disabled={submitting}
                     className="w-full px-8 py-5 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all"
                   >
-                    {submitting ? 'Linking...' : 'Establish Connection'}
+                    {submitting ? 'Joining...' : 'Join Class'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowJoin(false)}
                     className="w-full py-4 text-[9px] font-bold uppercase tracking-widest text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
                   >
-                    Discard Protocol
+                    Cancel
                   </button>
                 </div>
               </form>

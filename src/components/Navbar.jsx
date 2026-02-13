@@ -104,12 +104,12 @@ const Navbar = () => {
                   {showUserMenu && (
                     <div className="absolute right-0 mt-4 w-60 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-2xl py-3 z-50">
                       <div className="px-5 py-3 border-b border-zinc-50 dark:border-zinc-800">
-                        <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-400 mb-1">Authenticated</p>
+                        <p className="text-[10px] uppercase tracking-widest font-bold text-zinc-400 mb-1">Signed in as</p>
                         <p className="text-sm font-bold text-black dark:text-white truncate">
                           {user?.firstName} {user?.lastName}
                         </p>
                         <p className="text-[10px] font-bold text-brand uppercase tracking-tighter">
-                          {user?.role === 'admin' ? 'System Admin' : user?.role === 'instructor' ? 'Faculty' : 'Student'}
+                          {user?.role === 'admin' ? 'Administrator' : user?.role === 'instructor' ? 'Teacher' : 'Student'}
                         </p>
                       </div>
                       <Link
@@ -117,7 +117,7 @@ const Navbar = () => {
                         onClick={() => setShowUserMenu(false)}
                         className="block w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-black dark:hover:text-white"
                       >
-                        Profile Settings
+                        Settings
                       </Link>
                       {user?.role !== 'admin' && (
                         <button
@@ -136,7 +136,7 @@ const Navbar = () => {
                           }}
                           className="w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-black dark:hover:text-white disabled:opacity-50"
                         >
-                          Switch Role
+                          Change Role
                         </button>
                       )}
                       <button
@@ -147,7 +147,7 @@ const Navbar = () => {
                         }}
                         className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-900 border-t border-zinc-50 dark:border-zinc-800 transition-colors"
                       >
-                        Sign Out
+                        Log Out
                       </button>
                     </div>
                   )}

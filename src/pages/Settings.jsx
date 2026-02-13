@@ -19,7 +19,7 @@ const Settings = () => {
     <div className="min-h-screen py-24">
       <div className="container-custom">
         <div className="mb-16 animate-slide-up">
-          <span className="section-kicker mb-6">User Configuration</span>
+          <span className="section-kicker mb-6">Settings</span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tighter">
             Account <br />Settings.
           </h1>

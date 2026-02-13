@@ -5,12 +5,12 @@ const Contact = () => {
       <section className="border-b border-zinc-100 dark:border-zinc-900 mb-20 pb-20">
         <div className="container-custom">
           <div className="animate-slide-up">
-            <span className="section-kicker mb-6">Network Interface</span>
+            <span className="section-kicker mb-6">Contact Us</span>
             <h1 className="text-5xl md:text-6xl font-extrabold text-black dark:text-white mb-8 tracking-tighter uppercase">
-              Establish <br />Contact.
+              Get in <br />Touch.
             </h1>
             <p className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl font-medium leading-relaxed">
-              Direct access channels for strategic partnerships, institutional integration, and protocol support.
+              Have questions about integrating Caplet into your school or want to partner with us? We'd love to hear from you.
             </p>
           </div>
         </div>
@@ -29,17 +29,17 @@ const Contact = () => {
                     </svg>
                   </div>
                   <h2 className="text-2xl font-black text-black dark:text-white uppercase tracking-tighter mb-4">
-                    Communications Node
+                    Contact Information
                   </h2>
                   <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest leading-loose">
-                    Centralized management for curriculum inquiries and platform logistics. Response latency: 24–48 hours.
+                    Get in touch for curriculum inquiries, platform support, or partnership opportunities. We typically respond within 24–48 hours.
                   </p>
                 </div>
 
                 <div className="space-y-10">
                   <div>
                     <h3 className="text-[10px] font-black text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.3em] mb-4">
-                      Institutional Endpoint
+                      Email Address
                     </h3>
                     <a
                       href="mailto:contact@capletedu.org"
@@ -54,14 +54,14 @@ const Contact = () => {
               <div className="space-y-12">
                 <div>
                   <h3 className="text-[10px] font-black text-brand uppercase tracking-[0.3em] mb-8">
-                    Operational Scope
+                    What We Offer
                   </h3>
                   <div className="grid grid-cols-1 gap-6">
                     {[
-                      'Institutional curriculum integration',
-                      'Strategic educational partnerships',
-                      'Platform technical maintenance',
-                      'Legacy system migrations'
+                      'School curriculum integration',
+                      'Educational partnerships',
+                      'Platform support and maintenance',
+                      'System migrations'
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-4 text-xs font-bold text-black dark:text-white uppercase tracking-widest">
                         <div className="w-1.5 h-1.5 bg-brand" />
@@ -73,12 +73,10 @@ const Contact = () => {
 
                 <div className="p-10 bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900">
                   <h3 className="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-4">
-                    Notice: Advisory Protocol
+                    Important Notice
                   </h3>
                   <p className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 leading-relaxed uppercase tracking-tight">
-                    While the platform provides comprehensive financial literacy resources, it does not constitute
-                    personalized financial advice. All institutional deployments should be verified by certified
-                    professionals where regional regulations apply.
+                    While Caplet provides comprehensive financial literacy resources, it does not constitute personalized financial advice. Schools should consult with qualified professionals to ensure compliance with local regulations.
                   </p>
                 </div>
               </div>

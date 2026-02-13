@@ -62,7 +62,7 @@ const SettingsProfile = () => {
       <div className="pb-8 border-b border-zinc-100 dark:border-zinc-900 mb-10">
         <h2 className="text-xl font-extrabold text-black dark:text-white uppercase tracking-tighter">Profile Details.</h2>
         <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-2">
-          Update identification and sequence credentials.
+          Update your personal information and account details.
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -73,13 +73,13 @@ const SettingsProfile = () => {
                 : 'border-red-500 text-red-500'
               }`}
           >
-            {message.type === 'success' ? 'Transmission Successful:' : 'System Error:'} {message.text}
+            {message.type === 'success' ? 'Success:' : 'Error:'} {message.text}
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <div className="space-y-3">
             <label htmlFor="firstName" className="block text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-              First Identity
+              First Name
             </label>
             <input
               id="firstName"
@@ -93,7 +93,7 @@ const SettingsProfile = () => {
           </div>
           <div className="space-y-3">
             <label htmlFor="lastName" className="block text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-              Last Identity
+              Last Name
             </label>
             <input
               id="lastName"
@@ -108,7 +108,7 @@ const SettingsProfile = () => {
         </div>
         <div className="space-y-3">
           <label htmlFor="email" className="block text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-            Communication Channel (Email)
+            Email Address
           </label>
           <input
             id="email"
@@ -122,7 +122,7 @@ const SettingsProfile = () => {
         </div>
         <div className="space-y-3">
           <label htmlFor="password" className="block text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-            Secure Sequence (New Password)
+            New Password
           </label>
           <input
             id="password"
@@ -130,16 +130,16 @@ const SettingsProfile = () => {
             type="password"
             value={form.password}
             onChange={handleChange}
-            placeholder="LEAVE BLANK TO RETAIN..."
+            placeholder="Leave blank to keep current password..."
             className="w-full px-5 py-4 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white font-bold text-xs uppercase tracking-widest focus:border-brand outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700 transition-all"
           />
           <p className="mt-2 text-[8px] font-bold text-zinc-400 uppercase tracking-widest">
-            Minimum 6 characters required for mutation.
+            Minimum 6 characters required.
           </p>
         </div>
         <div className="space-y-3">
           <label htmlFor="dateOfBirth" className="block text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-            Origin Date (DOB)
+            Date of Birth
           </label>
           <input
             id="dateOfBirth"
@@ -152,7 +152,7 @@ const SettingsProfile = () => {
         </div>
         <div className="space-y-3">
           <label htmlFor="bio" className="block text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-            Identity Synopsis
+            Bio
           </label>
           <textarea
             id="bio"
@@ -161,7 +161,7 @@ const SettingsProfile = () => {
             maxLength={1000}
             value={form.bio}
             onChange={handleChange}
-            placeholder="A FEW WORDS ABOUT YOUR FINANCIAL JOURNEY..."
+            placeholder="Tell us about yourself..."
             className="w-full px-5 py-4 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 text-black dark:text-white font-bold text-xs uppercase tracking-[0.1em] focus:border-brand outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-700 transition-all resize-none"
           />
           <div className="flex justify-between items-center mt-2">
@@ -176,7 +176,7 @@ const SettingsProfile = () => {
             disabled={saving}
             className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-brand dark:hover:bg-brand dark:hover:text-white transition-all disabled:opacity-20 flex items-center justify-center min-w-[150px]"
           >
-            {saving ? 'Transmitting...' : 'Commit Changes'}
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>
