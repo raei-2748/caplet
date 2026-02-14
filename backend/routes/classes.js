@@ -977,6 +977,30 @@ router.post('/:classId/announcements/:announcementId/comments', authenticateToke
   }
 });
 
+router.delete('/:classId/announcements/:announcementId/comments/:commentId', authenticateToken, async (req, res) => {
+  try {
+    const { classId, announcementId, commentId } = req.params;
+    const classroom = await Classroom.findByPk(classId);
+    if (!classroom) return res.status(404).json({ message: 'Class not found' });
+    const membership = await ClassMembership.findOne({ where: { classroomId: classroom.id, userId: req.user.id } });
+    if (!membership) return res.status(403).json({ message: 'Not a member of this class' });
+    if (membership.role !== 'teacher' && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only teachers can delete comments' });
+    }
+    const announcement = await ClassAnnouncement.findByPk(announcementId);
+    if (!announcement || announcement.classroomId !== classroom.id) return res.status(404).json({ message: 'Announcement not found' });
+    const comment = await Comment.findOne({
+      where: { id: commentId, classroomId: classroom.id, commentableType: 'announcement', commentableId: announcementId },
+    });
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    await comment.destroy();
+    res.status(204).send();
+  } catch (error) {
+    console.error('Delete announcement comment error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // ----- Comments on assignments (public class comments + private student-teacher) -----
 router.get('/:classId/assignments/:assignmentId/comments', authenticateToken, async (req, res) => {
   try {
@@ -1067,6 +1091,30 @@ router.post('/:classId/assignments/:assignmentId/comments', authenticateToken, [
     });
   } catch (error) {
     console.error('Create assignment comment error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.delete('/:classId/assignments/:assignmentId/comments/:commentId', authenticateToken, async (req, res) => {
+  try {
+    const { classId, assignmentId, commentId } = req.params;
+    const classroom = await Classroom.findByPk(classId);
+    if (!classroom) return res.status(404).json({ message: 'Class not found' });
+    const membership = await ClassMembership.findOne({ where: { classroomId: classroom.id, userId: req.user.id } });
+    if (!membership) return res.status(403).json({ message: 'Not a member of this class' });
+    if (membership.role !== 'teacher' && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only teachers can delete comments' });
+    }
+    const assignment = await Assignment.findByPk(assignmentId);
+    if (!assignment || assignment.classroomId !== classroom.id) return res.status(404).json({ message: 'Assignment not found' });
+    const comment = await Comment.findOne({
+      where: { id: commentId, classroomId: classroom.id, commentableType: 'assignment', commentableId: assignmentId },
+    });
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    await comment.destroy();
+    res.status(204).send();
+  } catch (error) {
+    console.error('Delete assignment comment error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

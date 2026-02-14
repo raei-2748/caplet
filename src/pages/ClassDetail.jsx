@@ -33,6 +33,7 @@ const ClassDetail = () => {
   const [assignmentPrivateTarget, setAssignmentPrivateTarget] = useState({}); // teacher: assignmentId -> student userId for private reply
   const [loadingComments, setLoadingComments] = useState({ announcement: null, assignment: null });
   const [postingComment, setPostingComment] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
   const [showAddTeacher, setShowAddTeacher] = useState(false);
   const [addTeacherEmail, setAddTeacherEmail] = useState('');
   const [addingTeacher, setAddingTeacher] = useState(false);
@@ -450,6 +451,38 @@ const ClassDetail = () => {
     }
   };
 
+  const handleDeleteAnnouncementComment = async (announcementId, commentId) => {
+    setDeletingCommentId(commentId);
+    try {
+      await api.deleteAnnouncementComment(classroom.id, announcementId, commentId);
+      setAnnouncementComments((prev) => ({
+        ...prev,
+        [announcementId]: (prev[announcementId] || []).filter((c) => c.id !== commentId),
+      }));
+    } catch (e) {
+      console.error('Delete announcement comment error', e);
+      setError(e.message || 'Failed to delete comment');
+    } finally {
+      setDeletingCommentId(null);
+    }
+  };
+
+  const handleDeleteAssignmentComment = async (assignmentId, commentId) => {
+    setDeletingCommentId(commentId);
+    try {
+      await api.deleteAssignmentComment(classroom.id, assignmentId, commentId);
+      setAssignmentComments((prev) => ({
+        ...prev,
+        [assignmentId]: (prev[assignmentId] || []).filter((c) => c.id !== commentId),
+      }));
+    } catch (e) {
+      console.error('Delete assignment comment error', e);
+      setError(e.message || 'Failed to delete comment');
+    } finally {
+      setDeletingCommentId(null);
+    }
+  };
+
   const getAvatarColor = (name) => {
     if (!name) return 'bg-gradient-to-br from-gray-400 to-gray-600';
     const colors = [
@@ -748,18 +781,33 @@ const ClassDetail = () => {
                               ) : (
                                 <>
                                   {(announcementComments[a.id] || []).map((c) => (
-                                    <div key={c.id} className="flex gap-2 text-sm">
-                                      <span className="shrink-0">
-                                        {c.author?.id ? (
-                                          <Link to={`/profile/${c.author.id}`} className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
-                                            {c.author.firstName} {c.author.lastName}
-                                          </Link>
-                                        ) : (
-                                          <span className="font-medium text-gray-900 dark:text-white">Unknown</span>
-                                        )}:
-                                      </span>
-                                      <span className="text-gray-700 dark:text-gray-300">{c.content}</span>
-                                      <span className="text-xs text-gray-400 shrink-0">{formatRelativeTime(c.createdAt)}</span>
+                                    <div key={c.id} className="flex gap-2 text-sm items-start group">
+                                      <div className="flex-1 min-w-0">
+                                        <span className="shrink-0">
+                                          {c.author?.id ? (
+                                            <Link to={`/profile/${c.author.id}`} className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+                                              {c.author.firstName} {c.author.lastName}
+                                            </Link>
+                                          ) : (
+                                            <span className="font-medium text-gray-900 dark:text-white">Unknown</span>
+                                          )}:
+                                        </span>
+                                        <span className="text-gray-700 dark:text-gray-300"> {c.content}</span>
+                                        <span className="text-xs text-gray-400 shrink-0 ml-1">{formatRelativeTime(c.createdAt)}</span>
+                                      </div>
+                                      {isTeacher && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDeleteAnnouncementComment(a.id, c.id)}
+                                          disabled={deletingCommentId === c.id}
+                                          className="shrink-0 p-1 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                                          title="Delete comment"
+                                        >
+                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                          </svg>
+                                        </button>
+                                      )}
                                     </div>
                                   ))}
                                   <div className="flex gap-2 mt-2">
@@ -945,7 +993,7 @@ const ClassDetail = () => {
                                     Class Comments
                                   </h4>
                                   {classComments.map((c) => (
-                                    <div key={c.id} className="flex gap-4 text-xs mb-4">
+                                    <div key={c.id} className="flex gap-4 text-xs mb-4 group">
                                       <div className="flex flex-col flex-1 min-w-0">
                                         <div className="flex items-center gap-3 mb-1">
                                           {c.author?.id ? (
@@ -959,6 +1007,19 @@ const ClassDetail = () => {
                                         </div>
                                         <span className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{c.content}</span>
                                       </div>
+                                      {isTeacher && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDeleteAssignmentComment(a.id, c.id)}
+                                          disabled={deletingCommentId === c.id}
+                                          className="shrink-0 p-1 text-zinc-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                                          title="Delete comment"
+                                        >
+                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                          </svg>
+                                        </button>
+                                      )}
                                     </div>
                                   ))}
                                   <div className="flex gap-2 mt-4">
@@ -997,7 +1058,7 @@ const ClassDetail = () => {
                                     Private Messages
                                   </h4>
                                   {privateComments.map((c) => (
-                                    <div key={c.id} className="flex gap-4 text-xs mb-4">
+                                    <div key={c.id} className="flex gap-4 text-xs mb-4 group">
                                       <div className="flex flex-col flex-1 min-w-0">
                                         <div className="flex items-center gap-3 mb-1">
                                           {c.author?.id ? (
@@ -1021,6 +1082,19 @@ const ClassDetail = () => {
                                         </div>
                                         <span className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{c.content}</span>
                                       </div>
+                                      {isTeacher && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDeleteAssignmentComment(a.id, c.id)}
+                                          disabled={deletingCommentId === c.id}
+                                          className="shrink-0 p-1 text-zinc-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                                          title="Delete comment"
+                                        >
+                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                          </svg>
+                                        </button>
+                                      )}
                                     </div>
                                   ))}
                                   {isTeacher ? (
