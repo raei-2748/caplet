@@ -1,239 +1,236 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  AcademicCapIcon,
+  ArrowRightIcon,
+  BookOpenIcon,
+  BookmarkIcon,
+  CheckCircleIcon,
+  FireIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourses } from '../contexts/CoursesContext';
 import api from '../services/api';
 import CapletLoader from '../components/CapletLoader';
-import {
-    BookOpenIcon,
-    AcademicCapIcon,
-    FireIcon,
-    ArrowRightIcon,
-    CheckCircleIcon,
-    BookmarkIcon
-} from '@heroicons/react/24/outline';
+import { Badge, Button, Card, EmptyState, PageHeader, PageShell, ProgressBar, ResourceLink, SectionHeader, StatCard } from '../components/ui';
 
 export default function Dashboard() {
-    const { user } = useAuth();
-    const { courses, loading: coursesLoading, hasFetched, fetchCourses } = useCourses();
-    const [userProgress, setUserProgress] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [classes, setClasses] = useState([]);
-    const [savedSlides, setSavedSlides] = useState([]);
+  const { user } = useAuth();
+  const { courses, loading: coursesLoading, hasFetched, fetchCourses } = useCourses();
+  const [userProgress, setUserProgress] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [classes, setClasses] = useState([]);
+  const [savedSlides, setSavedSlides] = useState([]);
 
-    useEffect(() => {
-        if (!hasFetched && !coursesLoading) {
-            fetchCourses().catch(() => {
-                // Sidebar can render without courses when unavailable.
-            });
-        }
-    }, [coursesLoading, fetchCourses, hasFetched]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [progressData, classesData, savedSlidesData] = await Promise.all([
-                    api.getUserProgress(),
-                    api.getClasses(),
-                    api.getSavedSlides().catch(() => null),
-                ]);
-                setUserProgress(progressData?.progress || []);
-                const allClasses = [
-                    ...(classesData?.teaching || []),
-                    ...(classesData?.student || [])
-                ];
-                setClasses(allClasses);
-                setSavedSlides(savedSlidesData?.savedSlides || []);
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    if (loading || coursesLoading) {
-        return (
-            <div className="min-h-screen bg-surface-body flex items-center justify-center">
-                <CapletLoader message="Loading your dashboard…" />
-            </div>
-        );
+  useEffect(() => {
+    if (!hasFetched && !coursesLoading) {
+      fetchCourses().catch(() => {
+        // Sidebar can render without courses when unavailable.
+      });
     }
+  }, [coursesLoading, fetchCourses, hasFetched]);
 
-    const inProgressCourses = userProgress?.filter(p => p.status === 'in_progress') || [];
-    const completedCourses = userProgress?.filter(p => p.status === 'completed') || [];
-    const lastAccessed = userProgress?.sort((a, b) => new Date(b.lastAccessedAt) - new Date(a.lastAccessedAt))[0];
-    const lastAccessedCourse = lastAccessed ? courses.find(c => c.id === lastAccessed.courseId) : null;
-
-    const getGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour >= 5 && hour < 12) return 'Good morning';
-        if (hour >= 12 && hour < 18) return 'Good afternoon';
-        return 'Good evening';
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [progressData, classesData, savedSlidesData] = await Promise.all([
+          api.getUserProgress(),
+          api.getClasses(),
+          api.getSavedSlides().catch(() => null),
+        ]);
+        setUserProgress(progressData?.progress || []);
+        const allClasses = [
+          ...(classesData?.teaching || []),
+          ...(classesData?.student || []),
+        ];
+        setClasses(allClasses);
+        setSavedSlides(savedSlidesData?.savedSlides || []);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
+    fetchData();
+  }, []);
 
+  if (loading || coursesLoading) {
     return (
-        <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-white">
-            <div className="container-custom">
-                {/* Header Section */}
-                <header className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-12 reveal-text">
-                    <div>
-                        <span className="section-kicker">Welcome back</span>
-                        <h1 className="text-5xl md:text-7xl">
-                            {getGreeting()}, {user?.firstName || 'Student'}.
-                        </h1>
-                        <p className="mt-8 text-xl text-text-muted font-medium max-w-xl">
-                            Great to see you again. You have {inProgressCourses.length} active courses in progress.
-                        </p>
-                    </div>
-
-                </header>
-
-                {/* Stats Matrix */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-line-soft border border-line-soft mb-24 reveal-text stagger-1">
-                    {[
-                        { label: 'Modules Active', value: inProgressCourses.length, icon: BookOpenIcon },
-                        { label: 'Completed', value: completedCourses.length, icon: CheckCircleIcon },
-                        { label: 'Academy Classes', value: classes.length, icon: AcademicCapIcon },
-                        { label: 'Activity Index', value: 'High', icon: FireIcon }
-                    ].map((stat) => (
-                        <div key={stat.label} className="bg-surface-body p-10 group hover:bg-surface-raised transition-colors">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-text-dim mb-8 flex justify-between items-center group-hover:text-accent transition-colors">
-                                {stat.label}
-                                <stat.icon className="w-4 h-4 opacity-20" />
-                            </p>
-                            <p className="text-5xl font-serif italic text-text-primary group-hover:translate-x-2 transition-transform duration-500">
-                                {stat.value}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-                    {/* Main Feed */}
-                    <div className="lg:col-span-8 space-y-20">
-                        {/* Resume Session */}
-                        {lastAccessed && lastAccessedCourse && (
-                            <div className="reveal-text stagger-2">
-                                <span className="section-kicker">Continue Learning</span>
-                                <div className="mt-8 group relative overflow-hidden bg-surface-raised border border-line-soft p-12 transition-all hover:shadow-2xl">
-                                    <div className="flex flex-col md:flex-row gap-12 items-center">
-                                        <div className="w-40 h-40 shrink-0 bg-surface-soft p-1 border border-line-soft">
-                                            <img
-                                                src={lastAccessedCourse.thumbnail || 'https://placehold.co/400x400'}
-                                                alt=""
-                                                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <h3 className="text-4xl font-serif italic mb-6">{lastAccessedCourse.title}</h3>
-                                            <div className="w-full bg-surface-soft h-1 mb-8 overflow-hidden">
-                                                <div
-                                                    className="bg-accent h-full transition-all duration-1000 ease-out"
-                                                    style={{ width: `${lastAccessed.progressPercentage}%` }}
-                                                />
-                                            </div>
-                                            <div className="flex justify-between items-end">
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-text-dim">Progress: {lastAccessed.progressPercentage}%</span>
-                                                <Link to={`/courses/${lastAccessedCourse.id}`} className="btn-primary py-3 px-8 text-[15px]">
-                                                    Continue Module
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Recent Academy Enrollments */}
-                        <div className="reveal-text stagger-3">
-                            <div className="flex items-end justify-between mb-8">
-                                <div>
-                                    <span className="section-kicker">Academy</span>
-                                    <h2 className="text-4xl font-serif italic">My Classes.</h2>
-                                </div>
-                                <Link to="/classes" className="text-[10px] font-bold uppercase tracking-widest text-accent border-b border-accent pb-1">All Classes</Link>
-                            </div>
-                            <div className="grid grid-cols-1 gap-px bg-line-soft border border-line-soft">
-                                {classes.length > 0 ? (
-                                    classes.slice(0, 3).map(cls => (
-                                        <Link key={cls.id} to={`/classes/${cls.id}`} className="bg-surface-body p-8 flex justify-between items-center group hover:bg-surface-raised transition-colors">
-                                            <div>
-                                                <p className="text-lg font-bold uppercase tracking-tight group-hover:text-accent transition-colors">{cls.name}</p>
-                                                <p className="text-[10px] font-bold text-text-dim uppercase tracking-[0.2em] mt-1">{cls.code}</p>
-                                            </div>
-                                            <ArrowRightIcon className="w-5 h-5 text-text-dim group-hover:translate-x-2 transition-transform" />
-                                        </Link>
-                                    ))
-                                ) : (
-                                    <div className="bg-surface-body p-12 text-center text-text-dim uppercase tracking-widest text-[10px] font-bold italic">
-                                        No active enrollments detected.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className="lg:col-span-4 space-y-20">
-                        <div className="reveal-text stagger-3">
-                            <span className="section-kicker">My Courses</span>
-                            <div className="mt-8 space-y-6">
-                                {courses.slice(0, 4).map(course => (
-                                    <Link
-                                        key={course.id}
-                                        to={`/courses/${course.id}`}
-                                        className="group flex w-full items-center justify-between gap-4 border border-line-soft bg-surface-body px-5 py-4 hover:bg-surface-raised transition-colors"
-                                    >
-                                        <div className="min-w-0">
-                                            <p className="text-[11px] font-bold uppercase tracking-widest truncate group-hover:text-accent transition-colors">{course.title}</p>
-                                            <p className="text-[9px] font-bold text-text-dim uppercase tracking-[0.3em] mt-1">{course.duration}m Duration</p>
-                                        </div>
-                                        <ArrowRightIcon className="w-4 h-4 shrink-0 text-text-dim group-hover:text-accent group-hover:translate-x-1 transition-all" />
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Revision — its own section, mirrors "My Courses" */}
-                        <div className="reveal-text stagger-3">
-                            <span className="section-kicker">Revision</span>
-                            <div className="mt-8 space-y-6">
-                                <Link
-                                    to="/revision"
-                                    className="group flex w-full items-center justify-between gap-4 border border-line-soft bg-surface-body px-5 py-4 hover:bg-surface-raised transition-colors"
-                                >
-                                    <div className="min-w-0 flex items-center gap-3">
-                                        <BookmarkIcon className="w-4 h-4 shrink-0 text-accent" />
-                                        <div className="min-w-0">
-                                            <p className="text-[11px] font-bold uppercase tracking-widest truncate group-hover:text-accent transition-colors">Archived slides</p>
-                                            <p className="text-[9px] font-bold text-text-dim uppercase tracking-[0.3em] mt-1">
-                                                {savedSlides.length} {savedSlides.length === 1 ? 'Slide' : 'Slides'} Flagged
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <ArrowRightIcon className="w-4 h-4 shrink-0 text-text-dim group-hover:text-accent group-hover:translate-x-1 transition-all" />
-                                </Link>
-                            </div>
-                        </div>
-
-                        <div className="bg-surface-inverse p-12 text-surface-body relative overflow-hidden group">
-                            <div className="absolute inset-0 opacity-10 grid-technical !bg-[size:40px_40px]" />
-                            <div className="relative z-10">
-                                <FireIcon className="w-10 h-10 text-accent mb-8" />
-                                <h4 className="text-xl font-serif italic mb-6">Daily Insight</h4>
-                                <blockquote className="text-sm font-medium leading-relaxed text-text-dim mb-8 italic">
-                                    "Compound interest is the eighth wonder of the world. He who understands it, earns it... he who doesn't... pays it."
-                                </blockquote>
-                                <p className="text-[9px] font-bold uppercase tracking-widest text-accent">Source: Albert Einstein</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-surface-body">
+        <CapletLoader message="Loading your learning hub…" />
+      </div>
     );
+  }
+
+  const inProgressCourses = userProgress?.filter((progress) => progress.status === 'in_progress') || [];
+  const completedCourses = userProgress?.filter((progress) => progress.status === 'completed') || [];
+  const lastAccessed = [...(userProgress || [])].sort((a, b) => new Date(b.lastAccessedAt) - new Date(a.lastAccessedAt))[0];
+  const lastAccessedCourse = lastAccessed ? courses.find((course) => course.id === lastAccessed.courseId) : null;
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good morning';
+    if (hour >= 12 && hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const stats = [
+    { label: 'Courses in progress', value: inProgressCourses.length, icon: BookOpenIcon, footer: 'Lessons you have started and can resume.' },
+    { label: 'Courses completed', value: completedCourses.length, icon: CheckCircleIcon, footer: 'Finished learning milestones.' },
+    { label: 'Classes joined', value: classes.length, icon: AcademicCapIcon, footer: 'Teacher-led spaces connected to you.' },
+    { label: 'Saved revision', value: savedSlides.length, icon: BookmarkIcon, footer: 'Slides saved for another look.' },
+  ];
+
+  return (
+    <PageShell spacing="lg">
+      <PageHeader
+        eyebrow="Learning hub"
+        title={`${getGreeting()}, ${user?.firstName || 'Student'}.`}
+        actions={(
+          <Button as={Link} to="/courses" variant="secondary">
+            Browse courses
+          </Button>
+        )}
+      >
+        Your next lesson, classes, revision notes, and course shortcuts are gathered here in one calm place.
+      </PageHeader>
+
+      <section className="mb-16 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Learning summary">
+        {stats.map((stat) => (
+          <StatCard key={stat.label} {...stat} />
+        ))}
+      </section>
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="space-y-8 lg:col-span-8">
+          <section>
+            <SectionHeader eyebrow="Next step" title="Continue learning">
+              Pick up where you left off, or browse courses if you are ready to start something new.
+            </SectionHeader>
+
+            {lastAccessed && lastAccessedCourse ? (
+              <Card className="group overflow-hidden" padding="none">
+                <div className="grid gap-0 md:grid-cols-[240px_1fr]">
+                  <div className="border-b border-line-soft bg-surface-soft p-4 md:border-b-0 md:border-r">
+                    <img
+                      src={lastAccessedCourse.thumbnail || 'https://placehold.co/480x480'}
+                      alt=""
+                      className="h-56 w-full rounded-2xl object-cover opacity-90 ring-1 ring-line-soft transition-all duration-500 group-hover:opacity-100 md:h-full"
+                    />
+                  </div>
+                  <div className="p-8 md:p-10">
+                    <Badge variant="accent">Resume course</Badge>
+                    <h2 className="mt-5 text-3xl font-bold tracking-tight text-text-primary md:text-4xl">
+                      {lastAccessedCourse.title}
+                    </h2>
+                    <p className="mt-4 text-base leading-7 text-text-muted">
+                      Continue from your latest activity and keep building confidence one lesson at a time.
+                    </p>
+                    <ProgressBar className="mt-8" label="Course progress" value={lastAccessed.progressPercentage} />
+                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                      <Button as={Link} to={`/courses/${lastAccessedCourse.id}`}>
+                        Continue course
+                        <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                      <Button as={Link} to="/revision" variant="ghost">
+                        Review saved slides
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <EmptyState
+                icon={SparklesIcon}
+                title="Start your first course"
+                action={(
+                  <Button as={Link} to="/courses">
+                    Explore courses
+                  </Button>
+                )}
+              >
+                Your learning hub will show a resume card once you begin a course.
+              </EmptyState>
+            )}
+          </section>
+
+          <section>
+            <SectionHeader
+              eyebrow="Classes"
+              title="Teacher-led spaces"
+              actions={(
+                <Button as={Link} to="/classes" variant="soft" size="sm">
+                  View all classes
+                </Button>
+              )}
+            >
+              Classes connect lessons, assignments, and cohort activity when you are learning with a group.
+            </SectionHeader>
+
+            <div className="space-y-3">
+              {classes.length > 0 ? (
+                classes.slice(0, 3).map((cls) => (
+                  <ResourceLink
+                    key={cls.id}
+                    to={`/classes/${cls.id}`}
+                    title={cls.name}
+                    meta={cls.code}
+                    icon={AcademicCapIcon}
+                  />
+                ))
+              ) : (
+                <EmptyState icon={AcademicCapIcon} title="No active classes yet">
+                  When a teacher or cohort adds you to a class, it will appear here.
+                </EmptyState>
+              )}
+            </div>
+          </section>
+        </div>
+
+        <aside className="space-y-8 lg:col-span-4">
+          <Card variant="soft" padding="lg">
+            <SectionHeader eyebrow="Course shortcuts" title="My courses" className="mb-6">
+              Quickly open a course catalogue entry.
+            </SectionHeader>
+            <div className="space-y-3">
+              {courses.slice(0, 4).map((course) => (
+                <ResourceLink
+                  key={course.id}
+                  to={`/courses/${course.id}`}
+                  title={course.title}
+                  meta={course.duration ? `${course.duration} min` : 'Self-paced'}
+                />
+              ))}
+              {courses.length === 0 && (
+                <p className="rounded-xl border border-line-soft bg-surface-raised p-5 text-sm leading-6 text-text-muted">
+                  Courses are temporarily unavailable. Try again soon.
+                </p>
+              )}
+            </div>
+          </Card>
+
+          <ResourceLink
+            to="/revision"
+            title="Saved revision slides"
+            description="Return to examples, definitions, and slides you flagged for later."
+            meta={`${savedSlides.length} ${savedSlides.length === 1 ? 'slide' : 'slides'} saved`}
+            icon={BookmarkIcon}
+          />
+
+          <Card variant="inverse" padding="lg" className="relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10 grid-technical !bg-[size:40px_40px]" />
+            <div className="relative z-10">
+              <FireIcon className="mb-8 h-10 w-10 text-accent" aria-hidden="true" />
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-accent">Daily insight</p>
+              <blockquote className="font-serif text-xl italic leading-8 text-text-contrast">
+                Small money habits are easier to sustain when your next step is visible.
+              </blockquote>
+            </div>
+          </Card>
+        </aside>
+      </div>
+    </PageShell>
+  );
 }

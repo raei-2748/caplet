@@ -7,3 +7,6 @@ export { default as PageHeader } from './PageHeader';
 export { default as PageShell } from './PageShell';
 export { default as SectionHeader } from './SectionHeader';
 export { default as StatCard } from './StatCard';
+
+export { default as ProgressBar } from './ProgressBar';
+export { default as ResourceLink } from './ResourceLink';

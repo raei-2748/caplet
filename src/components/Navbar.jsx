@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { MoonIcon, SunIcon, XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { Button } from './ui';
+import { cn } from './ui/utils';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +13,6 @@ const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { isDark, toggleTheme } = useTheme();
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsOpen(false);
     setShowUserMenu(false);
@@ -18,10 +20,10 @@ const Navbar = () => {
 
   const allNavItems = [
     { path: '/', label: 'Home', publicOnly: true },
-    { path: '/dashboard', label: 'My Dashboard', privateOnly: true },
-    { path: '/courses', label: 'Curriculum' },
-    { path: '/classes', label: 'Academy' },
-    { path: '/tools', label: 'Instruments' },
+    { path: '/dashboard', label: 'Learning hub', privateOnly: true },
+    { path: '/courses', label: 'Courses' },
+    { path: '/classes', label: 'Classes' },
+    { path: '/tools', label: 'Calculators' },
   ];
 
   const navItems = allNavItems.filter((item) => {
@@ -35,148 +37,138 @@ const Navbar = () => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
 
-  // Hide navbar on auth pages only.
-  const hidePaths = ['/login', '/register'];
-  if (hidePaths.includes(location.pathname)) {
+  if (['/login', '/register'].includes(location.pathname)) {
     return null;
   }
 
   return (
-      <header className="fixed top-0 inset-x-0 z-50 bg-surface-body/90 dark:bg-surface-body/85 backdrop-blur-xl border-b border-line-soft text-text-primary">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12">
-          <div className="h-14 md:h-16 flex items-center justify-between gap-4">
-            {/* Logo */}
-            <Link to={homePath} className="flex items-center gap-2 group relative z-10 shrink-0">
-              <img
-                src="/logo.png"
-                alt="Caplet Logo"
-                className="w-9 h-9 md:w-10 md:h-10 object-contain transition-transform group-hover:scale-110 rounded-full overflow-hidden"
-              />
-              <span className="text-xl md:text-2xl font-serif italic font-bold tracking-tight">Caplet.</span>
-            </Link>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line-soft bg-surface-body/90 text-text-primary shadow-minimal backdrop-blur-xl dark:bg-surface-body/88">
+      <div className="mx-auto max-w-[1400px] px-4 md:px-8 lg:px-12">
+        <div className="flex h-16 items-center justify-between gap-4 md:h-[72px]">
+          <Link
+            to={homePath}
+            className="group relative z-10 flex shrink-0 items-center gap-3 rounded-full pr-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-body"
+            aria-label="Caplet home"
+          >
+            <img
+              src="/logo.png"
+              alt=""
+              className="h-10 w-10 rounded-full object-contain ring-1 ring-line-soft transition-transform duration-300 group-hover:scale-105"
+            />
+            <span className="font-serif text-2xl font-bold italic tracking-tight">Caplet.</span>
+          </Link>
 
-            {/* Desktop links */}
-            <nav className="hidden md:flex items-center gap-7 lg:gap-9">
-              {navItems.map((item) => (
+          <nav className="hidden items-center rounded-full border border-line-soft bg-surface-raised/80 p-1 shadow-minimal md:flex">
+            {navItems.map((item) => {
+              const active = isActive(item.path);
+              return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`relative text-sm font-display font-medium tracking-tight transition-colors ${
-                    isActive(item.path)
-                      ? 'text-text-primary'
-                      : 'text-text-muted hover:text-text-primary'
-                  }`}
+                  className={cn(
+                    'rounded-full px-4 py-2 text-sm font-semibold tracking-tight transition-all duration-200',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-body',
+                    active
+                      ? 'bg-accent-soft text-accent'
+                      : 'text-text-muted hover:bg-surface-soft hover:text-text-primary',
+                  )}
+                  aria-current={active ? 'page' : undefined}
                 >
                   {item.label}
-                  {isActive(item.path) && (
-                    <span className="absolute -bottom-[18px] left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent" />
-                  )}
                 </Link>
-              ))}
-            </nav>
+              );
+            })}
+          </nav>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2 md:gap-3 relative z-10 shrink-0">
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="p-2 text-text-muted hover:text-text-primary transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                {isDark ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
+          <div className="relative z-10 flex shrink-0 items-center gap-2 md:gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line-soft bg-surface-raised text-text-muted shadow-minimal transition-all duration-200 hover:-translate-y-0.5 hover:text-text-primary hover:shadow-minimal-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-body"
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+            </button>
+
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowUserMenu((open) => !open)}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-accent/20 bg-accent-soft px-4 text-sm font-semibold text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-body"
+                  aria-expanded={showUserMenu}
+                  aria-haspopup="menu"
+                >
+                  {user?.firstName || 'My account'}
+                </button>
+                {showUserMenu && (
+                  <div className="absolute right-0 top-full mt-3 w-56 overflow-hidden rounded-2xl border border-line-soft bg-surface-raised py-2 shadow-minimal-lg" role="menu">
+                    <Link
+                      to="/settings"
+                      onClick={() => setShowUserMenu(false)}
+                      className="block px-4 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-surface-soft"
+                      role="menuitem"
+                    >
+                      Account settings
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={logout}
+                      className="block w-full px-4 py-3 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"
+                      role="menuitem"
+                    >
+                      Sign out
+                    </button>
+                  </div>
                 )}
-              </button>
+              </div>
+            ) : (
+              <Button as={Link} to="/login" className="hidden rounded-full md:inline-flex" size="sm">
+                Start learning
+              </Button>
+            )}
 
-              {isAuthenticated ? (
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] bg-accent text-white px-3.5 md:px-4 py-2 rounded-full hover:bg-accent-strong transition-colors"
-                  >
-                    {user?.firstName || 'User'}
-                  </button>
-                  {showUserMenu && (
-                    <div className="absolute top-full right-0 mt-2 w-48 bg-surface-raised border border-line-soft rounded-2xl shadow-xl overflow-hidden py-2">
-                      <Link
-                        to="/settings"
-                        onClick={() => setShowUserMenu(false)}
-                        className="block px-4 py-2 text-sm text-text-primary hover:bg-surface-soft"
-                      >
-                        Settings
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={logout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                      >
-                        Sign Out
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  to="/login"
-                  className="hidden md:inline-flex items-center justify-center bg-accent hover:bg-accent-strong text-white font-display font-semibold text-sm px-5 py-2 rounded-full transition-colors"
-                >
-                  Get Started
-                </Link>
-              )}
-
-              {/* Mobile toggle */}
-              <button
-                type="button"
-                className="md:hidden p-2 text-text-muted hover:text-text-primary"
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                  )}
-                </svg>
-              </button>
-            </div>
+            <button
+              type="button"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line-soft bg-surface-raised text-text-muted shadow-minimal transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-body md:hidden"
+              onClick={() => setIsOpen((open) => !open)}
+              aria-expanded={isOpen}
+              aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            >
+              {isOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
+            </button>
           </div>
-
-          {/* Mobile menu */}
-          {isOpen && (
-            <div className="md:hidden border-t border-line-soft py-4 flex flex-col gap-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`px-2 py-2.5 text-base font-display font-medium rounded-lg ${
-                    isActive(item.path) ? 'text-accent' : 'text-text-primary'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              {!isAuthenticated && (
-                <Link
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="mt-2 inline-flex items-center justify-center bg-accent text-white font-display font-semibold px-6 py-3 rounded-xl text-center"
-                >
-                  Get Started
-                </Link>
-              )}
-            </div>
-          )}
         </div>
-      </header>
+
+        {isOpen && (
+          <div className="border-t border-line-soft py-4 md:hidden">
+            <nav className="flex flex-col gap-2 rounded-2xl bg-surface-raised p-2 shadow-minimal">
+              {navItems.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      'rounded-xl px-4 py-3 text-base font-semibold transition-colors',
+                      active ? 'bg-accent-soft text-accent' : 'text-text-primary hover:bg-surface-soft',
+                    )}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+              {!isAuthenticated && (
+                <Button as={Link} to="/login" className="mt-2 rounded-xl" fullWidth>
+                  Start learning
+                </Button>
+              )}
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
   );
 };
 

@@ -50,7 +50,7 @@ const Home = () => {
       setJargonIndex(prev => (prev + 1) % jargons.length);
     }, 4000);
     return () => clearInterval(jargonInterval);
-  }, []);
+  }, [jargons.length]);
 
   // Card 1 Logic: Courses Shuffler
   const [courses, setCourses] = useState([
@@ -452,7 +452,7 @@ const Home = () => {
               anim: "curve",
               desc: "From theory to reality. Learn how compound interest, risk profiles, and long-term planning translate into actual wealth creation."
             }
-          ].map((item, index) => (
+          ].map((item) => (
             <div key={item.kicker} className="learning-card sticky top-24 md:top-32 w-full max-w-6xl mx-auto h-[65vh] min-h-[500px] mb-24 rounded-[3rem] bg-white border border-black/5 shadow-2xl p-8 md:p-16 flex flex-col md:flex-row gap-12 items-center overflow-hidden transform-gpu">
               
               <div className="w-full md:w-1/2 relative z-10">

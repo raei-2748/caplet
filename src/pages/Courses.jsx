@@ -6,7 +6,7 @@ import api from '../services/api';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import CapletLoader from '../components/CapletLoader';
 
-const CourseCover = ({ title, id }) => {
+const CourseCover = ({ title }) => {
   // Generate a semi-stable pseudo-random gradient based on title
   const hash = title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const hue1 = hash % 360;

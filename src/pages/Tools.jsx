@@ -1,137 +1,211 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  ArrowRightIcon,
+  BanknotesIcon,
+  CalculatorIcon,
+  ChartPieIcon,
+  HomeIcon,
+  MagnifyingGlassIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
+import { Badge, Button, Card, EmptyState, Input, PageHeader, PageShell, SectionHeader } from '../components/ui';
 
 const tools = [
   {
     title: 'Income Tax Calculator',
     description: 'Estimate your annual Australian income tax, Medicare levy, and net pay.',
     path: '/tools/tax-calculator',
+    category: 'Tax',
+    level: 'Start here',
   },
   {
     title: 'Budget Planner',
     description: 'Plan your monthly budget and track spending across different categories.',
     path: '/tools/budget-planner',
+    category: 'Budgeting',
+    level: 'Beginner',
   },
   {
     title: 'Savings Goal Calculator',
     description: 'Calculate how long it will take to reach your savings goal with contributions and interest.',
     path: '/tools/savings-goal',
+    category: 'Saving',
+    level: 'Beginner',
   },
   {
     title: 'Loan Repayment Calculator',
     description: 'Calculate monthly loan repayments, total interest, and total amount payable.',
     path: '/tools/loan-repayment',
+    category: 'Borrowing',
+    level: 'Guided',
   },
   {
     title: 'Compound Interest Calculator',
     description: 'See how your money grows with compound interest and regular contributions.',
     path: '/tools/compound-interest',
+    category: 'Investing basics',
+    level: 'Guided',
   },
   {
     title: 'Mortgage Calculator',
     description: 'Calculate home loan repayments, total interest, and explore different payment frequencies.',
     path: '/tools/mortgage',
+    category: 'Home loans',
+    level: 'Guided',
   },
   {
     title: 'Super Contribution Calculator',
     description: 'Project your superannuation balance with employer and personal contributions.',
     path: '/tools/super-contribution',
+    category: 'Super',
+    level: 'Planning',
   },
   {
     title: 'GST Calculator',
     description: 'Add or remove GST (10%) from amounts for Australian Goods and Services Tax calculations.',
     path: '/tools/gst',
+    category: 'Tax',
+    level: 'Quick check',
   },
   {
     title: 'Salary Calculator',
     description: 'Calculate your take-home pay from gross salary, including tax, Medicare, and superannuation.',
     path: '/tools/salary',
+    category: 'Income',
+    level: 'Start here',
   },
   {
     title: 'Emergency Fund Calculator',
     description: 'Calculate how much you should have in your emergency fund to cover unexpected expenses.',
     path: '/tools/emergency-fund',
-  }
+    category: 'Safety net',
+    level: 'Beginner',
+  },
 ];
+
+const highlights = [
+  { label: 'Australian context', icon: BanknotesIcon },
+  { label: 'Plain-language steps', icon: SparklesIcon },
+  { label: 'Free to explore', icon: ShieldCheckIcon },
+];
+
+const categoryIcons = {
+  Budgeting: ChartPieIcon,
+  Borrowing: BanknotesIcon,
+  'Home loans': HomeIcon,
+  default: CalculatorIcon,
+};
 
 const Tools = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredTools = tools.filter(tool => {
-    const query = searchQuery.toLowerCase();
-    return tool.title.toLowerCase().includes(query) ||
-      tool.description.toLowerCase().includes(query);
-  });
+  const filteredTools = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return tools;
+
+    return tools.filter((tool) => (
+      tool.title.toLowerCase().includes(query) ||
+      tool.description.toLowerCase().includes(query) ||
+      tool.category.toLowerCase().includes(query)
+    ));
+  }, [searchQuery]);
 
   return (
-    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-white">
-      <section className="mb-24">
-        <div className="container-custom">
-          <div className="reveal-text">
-            <span className="section-kicker mb-8">Tools</span>
-            <h1 className="text-6xl lg:text-8xl mb-10">
-              Financial <br />calculators.
-            </h1>
-            <p className="text-xl text-text-muted max-w-2xl font-serif italic leading-relaxed">
-              Free calculators for tax, budgeting, loans, super, and more — built for Australian rules and rates.
-            </p>
-          </div>
-        </div>
+    <PageShell className="overflow-hidden" spacing="lg">
+      <PageHeader
+        eyebrow="Financial calculators"
+        title="Choose a money tool, then learn by doing."
+        actions={(
+          <Button as={Link} to="/courses" variant="secondary">
+            Browse lessons
+          </Button>
+        )}
+      >
+        Beginner-friendly calculators for tax, budgeting, loans, super, saving goals, and everyday Australian money decisions.
+      </PageHeader>
+
+      <section className="mb-14 grid gap-4 md:grid-cols-3">
+        {highlights.map((item) => (
+          <Card key={item.label} className="flex items-center gap-4" padding="md" variant="soft">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+              <item.icon className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="text-sm font-bold tracking-tight text-text-primary">{item.label}</span>
+          </Card>
+        ))}
       </section>
 
-      <section className="pb-32">
-        <div className="container-custom">
-          <div className="mb-16 reveal-text stagger-1">
-            <div className="relative max-w-xl">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search calculators…"
-                className="w-full px-6 py-4 bg-surface-raised border border-line-soft text-text-primary text-sm focus:border-accent outline-none transition-all placeholder:text-text-dim"
-              />
-              {searchQuery && (
+      <section className="mb-10 rounded-3xl border border-line-soft bg-surface-raised p-5 shadow-minimal md:p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-xl">
+            <SectionHeader eyebrow="Find a calculator" title="What are you working out today?" className="mb-0">
+              Search by topic, category, or the decision you are trying to make.
+            </SectionHeader>
+          </div>
+          <div className="w-full md:max-w-md">
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search tax, budget, mortgage…"
+              label="Search calculators"
+              leading={<MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />}
+              trailing={searchQuery ? (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-text-dim hover:text-accent transition-colors"
+                  className="text-xs font-semibold text-text-dim transition-colors hover:text-accent"
                 >
                   Clear
                 </button>
-              )}
-            </div>
+              ) : null}
+            />
           </div>
-
-          {filteredTools.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 bg-line-soft border border-line-soft reveal-text stagger-2">
-              {filteredTools.map((tool) => (
-                <Link
-                  key={tool.path}
-                  to={tool.path}
-                  className="group bg-surface-body p-12 lg:p-14 relative overflow-hidden flex flex-col min-h-[320px] transition-all hover:bg-surface-soft"
-                >
-                  <h3 className="text-2xl font-serif italic text-text-primary mb-4 group-hover:text-accent transition-colors">
-                    {tool.title}
-                  </h3>
-                  <p className="text-sm text-text-muted leading-relaxed line-clamp-3 mb-8 flex-1">
-                    {tool.description}
-                  </p>
-                  <span className="text-xs font-bold uppercase tracking-widest text-accent">
-                    Open calculator →
-                  </span>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-24 bg-surface-raised border border-line-soft reveal-text">
-              <p className="text-text-muted font-serif italic">
-                No calculators match your search. Try a different term.
-              </p>
-            </div>
-          )}
         </div>
       </section>
-    </div>
+
+      {filteredTools.length > 0 ? (
+        <section aria-label="Calculator catalogue" className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filteredTools.map((tool) => {
+            const Icon = categoryIcons[tool.category] || categoryIcons.default;
+            return (
+              <Card
+                key={tool.path}
+                as={Link}
+                to={tool.path}
+                interactive
+                className="group flex min-h-[300px] flex-col overflow-hidden"
+                padding="lg"
+              >
+                <div className="mb-8 flex items-start justify-between gap-4">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <Badge variant="accent">{tool.level}</Badge>
+                </div>
+                <div className="flex-1">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-text-dim">{tool.category}</p>
+                  <h3 className="text-2xl font-bold tracking-tight text-text-primary transition-colors group-hover:text-accent">
+                    {tool.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-6 text-text-muted">{tool.description}</p>
+                </div>
+                <span className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-accent">
+                  Open calculator
+                  <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </span>
+              </Card>
+            );
+          })}
+        </section>
+      ) : (
+        <EmptyState icon={CalculatorIcon} title="No calculators found" className="reveal-text">
+          Try a broader term such as “tax”, “saving”, “loan”, or “budget”.
+        </EmptyState>
+      )}
+    </PageShell>
   );
 };
 
