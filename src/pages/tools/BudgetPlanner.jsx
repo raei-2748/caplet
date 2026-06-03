@@ -40,7 +40,7 @@ const BudgetPlanner = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-white">
+    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-text-contrast">
       <div className="container-custom">
         {/* Header */}
         <header className="mb-24 reveal-text">

@@ -99,7 +99,7 @@ const Navbar = () => {
                   <button
                     type="button"
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] bg-accent text-white px-3.5 md:px-4 py-2 rounded-full hover:bg-accent-strong transition-colors"
+                    className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] bg-accent text-text-contrast px-3.5 md:px-4 py-2 rounded-full hover:bg-accent-strong transition-colors"
                   >
                     {user?.firstName || 'User'}
                   </button>
@@ -115,7 +115,7 @@ const Navbar = () => {
                       <button
                         type="button"
                         onClick={logout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        className="w-full text-left px-4 py-2 text-sm text-accent hover:bg-surface-soft"
                       >
                         Sign Out
                       </button>
@@ -125,7 +125,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="hidden md:inline-flex items-center justify-center bg-accent hover:bg-accent-strong text-white font-display font-semibold text-sm px-5 py-2 rounded-full transition-colors"
+                  className="hidden md:inline-flex items-center justify-center bg-accent hover:bg-accent-strong text-text-contrast font-display font-semibold text-sm px-5 py-2 rounded-full transition-colors"
                 >
                   Get Started
                 </Link>
@@ -168,7 +168,7 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="mt-2 inline-flex items-center justify-center bg-accent text-white font-display font-semibold px-6 py-3 rounded-xl text-center"
+                  className="mt-2 inline-flex items-center justify-center bg-accent text-text-contrast font-display font-semibold px-6 py-3 rounded-xl text-center"
                 >
                   Get Started
                 </Link>

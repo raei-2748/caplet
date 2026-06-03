@@ -43,7 +43,7 @@ const SalaryCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-white">
+    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-text-contrast">
       <div className="container-custom">
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
@@ -111,7 +111,7 @@ const SalaryCalculator = () => {
                     onClick={() => setIncludeMedicare(!includeMedicare)}
                     className={`w-12 h-6 border transition-all relative ${includeMedicare ? 'border-accent bg-accent' : 'border-line-soft bg-surface-soft'}`}
                   >
-                    <div className={`absolute top-1 bottom-1 w-4 transition-all ${includeMedicare ? 'right-1 bg-white' : 'left-1 bg-text-dim'}`} />
+                    <div className={`absolute top-1 bottom-1 w-4 transition-all ${includeMedicare ? 'right-1 bg-surface-raised' : 'left-1 bg-text-dim'}`} />
                   </button>
                   <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Medicare Levy (2%)</span>
                 </div>

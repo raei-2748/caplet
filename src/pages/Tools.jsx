@@ -64,7 +64,7 @@ const Tools = () => {
   });
 
   return (
-    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-white">
+    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-text-contrast">
       <section className="mb-24">
         <div className="container-custom">
           <div className="reveal-text">

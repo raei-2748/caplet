@@ -42,7 +42,7 @@ const GSTCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-white">
+    <div className="min-h-screen bg-surface-body py-32 selection:bg-accent selection:text-text-contrast">
       <div className="container-custom">
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
@@ -95,7 +95,7 @@ const GSTCalculator = () => {
                   ].map((type) => (
                     <label key={type.id} className="flex items-center gap-4 cursor-pointer group">
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${calculationType === type.id ? 'border-accent bg-accent' : 'border-line-soft group-hover:border-text-dim'}`}>
-                        {calculationType === type.id && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                        {calculationType === type.id && <div className="w-1.5 h-1.5 bg-surface-raised rounded-full" />}
                       </div>
                       <input
                         type="radio"

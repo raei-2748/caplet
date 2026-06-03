@@ -5,16 +5,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const JARGONS = [
+  { complex: "Amortization", plain: "Paying off a loan in regular chunks until it’s gone." },
+  { complex: "Capital Gains", plain: "The profit you make when you sell something for more than you bought it." },
+  { complex: "Compound Interest", plain: "Interest you earn on your original money, plus interest on the interest you've already earned." },
+  { complex: "Franking Credits", plain: "A tax discount for shareholders to prevent the same money being taxed twice." },
+  { complex: "Asset Allocation", plain: "Spreading your money across different things (like savings, property, or shares) to stay safe." },
+  { complex: "Securities", plain: "A fancy word for tradable financial assets like stocks, bonds, or shares." }
+];
+
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border-b border-black/5 last:border-0">
+    <div className="border-b border-line-soft last:border-0">
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-8 flex justify-between items-center text-left group transition-all"
       >
         <span className="text-xl md:text-2xl font-serif italic text-text-primary group-hover:text-accent-strong transition-colors">{question}</span>
-        <span className={`w-8 h-8 rounded-full border border-black/10 flex items-center justify-center transition-transform duration-300 ${isOpen ? 'rotate-180 bg-accent text-white' : ''}`}>
+        <span className={`w-8 h-8 rounded-full border border-line-soft flex items-center justify-center transition-transform duration-300 ${isOpen ? 'rotate-180 bg-accent text-text-contrast' : ''}`}>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
         </span>
       </button>
@@ -36,21 +45,14 @@ const Home = () => {
 
   // Jargon Transformation Logic
   const [jargonIndex, setJargonIndex] = useState(0);
-  const jargons = [
-    { complex: "Amortization", plain: "Paying off a loan in regular chunks until it’s gone." },
-    { complex: "Capital Gains", plain: "The profit you make when you sell something for more than you bought it." },
-    { complex: "Compound Interest", plain: "Interest you earn on your original money, plus interest on the interest you've already earned." },
-    { complex: "Franking Credits", plain: "A tax discount for shareholders to prevent the same money being taxed twice." },
-    { complex: "Asset Allocation", plain: "Spreading your money across different things (like savings, property, or shares) to stay safe." },
-    { complex: "Securities", plain: "A fancy word for tradable financial assets like stocks, bonds, or shares." }
-  ];
+  const jargons = JARGONS;
 
   useEffect(() => {
     const jargonInterval = setInterval(() => {
       setJargonIndex(prev => (prev + 1) % jargons.length);
     }, 4000);
     return () => clearInterval(jargonInterval);
-  }, []);
+  }, [jargons.length]);
 
   // Card 1 Logic: Courses Shuffler
   const [courses, setCourses] = useState([
@@ -237,7 +239,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-surface-body text-text-primary relative selection:bg-accent selection:text-white">
+    <div className="bg-surface-body text-text-primary relative selection:bg-accent selection:text-text-contrast">
       {/* ================= SIMPLIFIED HERO ================= */}
       <section ref={heroRef} className="relative pt-32 pb-24 md:pt-40 md:pb-40">
         <div className="container-custom relative z-10 w-full text-center" ref={heroTextRef}>
@@ -251,7 +253,7 @@ const Home = () => {
               No products. No catch. Just clarity.
             </p>
             <div className="hero-text-elem flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link to="/register" className="bg-accent hover:bg-accent-strong text-white font-display font-semibold px-10 py-5 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl w-full sm:w-auto text-center">
+              <Link to="/register" className="bg-accent hover:bg-accent-strong text-text-contrast font-display font-semibold px-10 py-5 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl w-full sm:w-auto text-center">
                 Get Started Free
               </Link>
               <Link to="/courses" className="text-text-muted hover:text-text-primary font-display font-bold text-sm uppercase tracking-widest transition-all duration-300 group py-4 px-6 md:px-0">
@@ -268,7 +270,7 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* Card 1: Knowledge Shuffler */}
-            <div className="feature-card h-80 md:h-96 bg-white rounded-[2rem] p-8 shadow-sm border border-black/5 flex flex-col items-center justify-center relative overflow-hidden group">
+            <div className="feature-card h-80 md:h-96 bg-surface-raised rounded-[2rem] p-8 shadow-sm border border-line-soft flex flex-col items-center justify-center relative overflow-hidden group">
               <div className="w-full flex justify-between absolute top-8 px-8">
                 <span className="text-xs font-mono tracking-widest text-accent-strong/50 uppercase">Knowledge Base</span>
                 <span className="w-2 h-2 rounded-full bg-accent-strong/20" />
@@ -277,7 +279,7 @@ const Home = () => {
                 {courses.map((course, i) => (
                   <div 
                     key={course}
-                    className="absolute w-full max-w-[280px] bg-surface-body border border-black/5 rounded-2xl p-6 shadow-sm flex items-center justify-center text-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                    className="absolute w-full max-w-[280px] bg-surface-body border border-line-soft rounded-2xl p-6 shadow-sm flex items-center justify-center text-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
                     style={{
                       transform: `translateY(${i === 0 ? '0' : i === 1 ? '-16px' : '-32px'}) scale(${i === 0 ? 1 : i === 1 ? 0.95 : 0.9})`,
                       zIndex: courses.length - i,
@@ -309,7 +311,7 @@ const Home = () => {
             </div>
 
             {/* Card 3: Live Calculator Preview */}
-            <div className="h-80 md:h-96 bg-white rounded-[2rem] p-8 shadow-sm border border-black/5 flex flex-col relative group">
+            <div className="h-80 md:h-96 bg-surface-raised rounded-[2rem] p-8 shadow-sm border border-line-soft flex flex-col relative group">
               <div className="flex justify-between items-center mb-8">
                 <span className="text-[10px] font-mono tracking-widest text-accent-strong/50 uppercase">Live Telemetry</span>
               </div>
@@ -317,7 +319,7 @@ const Home = () => {
               <div className="space-y-6">
                 <div>
                   <label className="text-xs font-display font-medium text-text-dim uppercase tracking-widest mb-2 block">Income Input</label>
-                  <div className="w-full bg-surface-body rounded-xl px-4 py-3 font-mono text-text-primary border border-black/5">
+                  <div className="w-full bg-surface-body rounded-xl px-4 py-3 font-mono text-text-primary border border-line-soft">
                     {calcInput || " "}
                   </div>
                 </div>
@@ -342,8 +344,8 @@ const Home = () => {
                      opacity: 0.8 
                    }}>
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 4L11.9616 22.396A1 1 0 0013.793 22.4542L16.2753 15.6558C16.3986 15.3178 16.6661 15.0503 17.0041 14.927L23.8024 12.4447A1 1 0 0023.7443 10.613L5.34825 2.65158" fill="#0036CC" />
-                  <path d="M4 4L11.9616 22.396A1 1 0 0013.793 22.4542L16.2753 15.6558C16.3986 15.3178 16.6661 15.0503 17.0041 14.927L23.8024 12.4447A1 1 0 0023.7443 10.613L5.34825 2.65158L4 4Z" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+                  <path d="M4 4L11.9616 22.396A1 1 0 0013.793 22.4542L16.2753 15.6558C16.3986 15.3178 16.6661 15.0503 17.0041 14.927L23.8024 12.4447A1 1 0 0023.7443 10.613L5.34825 2.65158" className="fill-accent-strong" />
+                  <path d="M4 4L11.9616 22.396A1 1 0 0013.793 22.4542L16.2753 15.6558C16.3986 15.3178 16.6661 15.0503 17.0041 14.927L23.8024 12.4447A1 1 0 0023.7443 10.613L5.34825 2.65158L4 4Z" className="stroke-surface-raised" strokeWidth="2" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>
@@ -353,7 +355,7 @@ const Home = () => {
       </section>
 
       {/* ================= JARGON TRANSFORMATION ================= */}
-      <section ref={jargonRef} className="py-24 md:py-40 bg-white relative overflow-hidden">
+      <section ref={jargonRef} className="py-24 md:py-40 bg-surface-raised relative overflow-hidden">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row items-center gap-16 md:gap-24">
             
@@ -369,7 +371,7 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="w-full lg:w-1/2 relative bg-surface-body rounded-[3rem] p-8 md:p-16 jargon-box shadow-2xl border border-black/5 min-h-[400px] flex flex-col justify-center transition-all duration-500 overflow-hidden">
+            <div className="w-full lg:w-1/2 relative bg-surface-body rounded-[3rem] p-8 md:p-16 jargon-box shadow-2xl border border-line-soft min-h-[400px] flex flex-col justify-center transition-all duration-500 overflow-hidden">
               <div className="absolute top-0 right-0 p-8">
                 <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
                   <span className="text-accent font-mono font-bold">{jargonIndex + 1}/{jargons.length}</span>
@@ -388,7 +390,7 @@ const Home = () => {
                 {/* Arrow animation divider */}
                 <div className="w-full h-px bg-accent/20 mb-12 relative">
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-accent rounded-full animate-ping" />
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white shadow-lg">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-8 h-8 rounded-full bg-accent flex items-center justify-center text-text-contrast shadow-lg">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
                   </div>
                 </div>
@@ -452,8 +454,8 @@ const Home = () => {
               anim: "curve",
               desc: "From theory to reality. Learn how compound interest, risk profiles, and long-term planning translate into actual wealth creation."
             }
-          ].map((item, index) => (
-            <div key={item.kicker} className="learning-card sticky top-24 md:top-32 w-full max-w-6xl mx-auto h-[65vh] min-h-[500px] mb-24 rounded-[3rem] bg-white border border-black/5 shadow-2xl p-8 md:p-16 flex flex-col md:flex-row gap-12 items-center overflow-hidden transform-gpu">
+          ].map((item) => (
+            <div key={item.kicker} className="learning-card sticky top-24 md:top-32 w-full max-w-6xl mx-auto h-[65vh] min-h-[500px] mb-24 rounded-[3rem] bg-surface-raised border border-line-soft shadow-2xl p-8 md:p-16 flex flex-col md:flex-row gap-12 items-center overflow-hidden transform-gpu">
               
               <div className="w-full md:w-1/2 relative z-10">
                 <span className="text-xs font-mono font-bold tracking-widest text-accent-strong/60 uppercase block mb-4">
@@ -467,16 +469,16 @@ const Home = () => {
                 </p>
               </div>
               
-              <div className="w-full md:w-1/2 h-full flex items-center justify-center bg-surface-body rounded-[2rem] border border-black/5 relative overflow-hidden group">
+              <div className="w-full md:w-1/2 h-full flex items-center justify-center bg-surface-body rounded-[2rem] border border-line-soft relative overflow-hidden group">
                 {/* Abstract Visuals depending on anim type */}
                 {item.anim === 'pie' && (
                   <div className="relative w-64 h-64 rounded-full border-[16px] border-accent/20 border-t-accent border-r-accent-strong animate-spin transition-all duration-[10s]" />
                 )}
                 {item.anim === 'timeline' && (
                   <div className="w-3/4 h-2 bg-accent/20 rounded-full relative">
-                    <div className="absolute top-1/2 -translate-y-1/2 left-0 w-4 h-4 rounded-full bg-accent shadow-[0_0_15px_rgba(0,80,255,0.5)]" />
-                    <div className="absolute top-1/2 -translate-y-1/2 left-1/2 w-4 h-4 rounded-full bg-accent shadow-[0_0_15px_rgba(0,80,255,0.5)]" />
-                    <div className="absolute top-1/2 -translate-y-1/2 right-0 w-4 h-4 rounded-full bg-accent-strong shadow-[0_0_15px_rgba(0,54,204,0.5)]" />
+                    <div className="absolute top-1/2 -translate-y-1/2 left-0 w-4 h-4 rounded-full bg-accent shadow-[0_0_15px] shadow-accent/50" />
+                    <div className="absolute top-1/2 -translate-y-1/2 left-1/2 w-4 h-4 rounded-full bg-accent shadow-[0_0_15px] shadow-accent/50" />
+                    <div className="absolute top-1/2 -translate-y-1/2 right-0 w-4 h-4 rounded-full bg-accent-strong shadow-[0_0_15px] shadow-accent-strong/50" />
                   </div>
                 )}
                 {item.anim === 'curve' && (
@@ -494,7 +496,7 @@ const Home = () => {
       </section>
 
       {/* ================= FAQ ================= */}
-      <section className="py-24 md:py-40 bg-surface-body border-t border-black/5 relative z-20">
+      <section className="py-24 md:py-40 bg-surface-body border-t border-line-soft relative z-20">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
@@ -502,7 +504,7 @@ const Home = () => {
               <h2 className="text-4xl md:text-5xl font-display font-bold text-text-primary">Still curious?</h2>
             </div>
 
-            <div className="bg-white rounded-[3rem] px-8 md:px-12 py-4 shadow-sm border border-black/5">
+            <div className="bg-surface-raised rounded-[3rem] px-8 md:px-12 py-4 shadow-sm border border-line-soft">
               {[
                 { 
                   q: "Is Caplet really free?", 
@@ -541,15 +543,15 @@ const Home = () => {
       </section>
 
       {/* ================= FOOTER CTA ================= */}
-      <section className="bg-accent text-white py-32 rounded-t-[3rem] -mt-10 relative z-30">
+      <section className="bg-accent text-text-contrast py-32 rounded-t-[3rem] -mt-10 relative z-30">
         <div className="container-custom text-center max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-6xl font-serif italic mb-8">
             Ready to actually understand your money?
           </h2>
-          <p className="text-xl md:text-2xl font-display font-medium text-white/80 mb-12">
+          <p className="text-xl md:text-2xl font-display font-medium text-text-contrast/80 mb-12">
             Start with any course! it's free.
           </p>
-          <Link to="/courses" className="inline-block bg-white text-accent font-display font-bold px-10 py-5 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-xl">
+          <Link to="/courses" className="inline-block bg-surface-raised text-accent font-display font-bold px-10 py-5 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-xl">
             View Curriculum
           </Link>
         </div>
