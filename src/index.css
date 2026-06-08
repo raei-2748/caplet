@@ -450,3 +450,52 @@
     padding-left: var(--sidebar-width, 0px);
   }
 }
+
+/* ── Engagement panel (dashboard streak instrument) ───────────────────────────── */
+
+/* Ambient ember glow behind an active flame — slow, organic breathing. */
+@keyframes eng-ember {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.95; transform: scale(1.08); }
+}
+.eng-ember {
+  animation: eng-ember 3.4s ease-in-out infinite;
+}
+
+/* The flame body itself flickers with a faint, irregular shimmer. */
+@keyframes eng-flicker {
+  0%, 100% { transform: scale(1) translateY(0); }
+  35%      { transform: scale(1.04, 0.97) translateY(-0.5px); }
+  65%      { transform: scale(0.98, 1.03) translateY(0.3px); }
+}
+.eng-flicker {
+  transform-origin: 50% 80%;
+  animation: eng-flicker 2.1s ease-in-out infinite;
+}
+
+/* Heatmap cells pop in with a staggered ripple from oldest → newest. */
+@keyframes eng-cell-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.eng-cell {
+  animation: eng-cell-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Celebratory ring pulse when the weekly goal is met. */
+@keyframes eng-goal-pulse {
+  0%   { transform: scale(0.6); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.eng-goal-pulse {
+  animation: eng-goal-pulse 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eng-ember,
+  .eng-flicker,
+  .eng-cell,
+  .eng-goal-pulse {
+    animation: none;
+  }
+}

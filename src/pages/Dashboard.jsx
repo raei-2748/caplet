@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourses } from '../contexts/CoursesContext';
@@ -28,6 +28,89 @@ function formatMemberSince(dateStr) {
 
 function getInitials(user) {
   return `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase() || '?';
+}
+
+/* ── Engagement helpers ───────────────────────────────────────────────────────── */
+
+const DAY_MS = 86400000;
+const WEEKLY_GOAL = 3;
+const HEATMAP_WEEKS = 13;
+
+function dayKey(date) {
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// Monday 00:00 of the week containing `date`.
+function startOfWeek(date = new Date()) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const offset = (d.getDay() + 6) % 7; // 0 = Monday … 6 = Sunday
+  d.setTime(d.getTime() - offset * DAY_MS);
+  return d;
+}
+
+// Map<dayKey, count> of learning activity. completedAt is a permanent per-lesson
+// signal; lastAccessedAt adds recent study that hasn't reached completion.
+function buildActivityMap(progress) {
+  const map = new Map();
+  for (const p of progress) {
+    const days = new Set();
+    if (p.completedAt) days.add(dayKey(p.completedAt));
+    if (p.lastAccessedAt) days.add(dayKey(p.lastAccessedAt));
+    for (const k of days) map.set(k, (map.get(k) || 0) + 1);
+  }
+  return map;
+}
+
+// Consecutive active days ending today (or yesterday, so today being still idle
+// doesn't prematurely break the streak).
+function computeStreak(activityMap) {
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+  if (!activityMap.has(dayKey(cursor))) cursor.setTime(cursor.getTime() - DAY_MS);
+  let streak = 0;
+  while (activityMap.has(dayKey(cursor))) {
+    streak += 1;
+    cursor.setTime(cursor.getTime() - DAY_MS);
+  }
+  return streak;
+}
+
+function lessonsThisWeek(progress) {
+  const start = startOfWeek();
+  return progress.filter(
+    (p) => p.lessonId && p.status === 'completed' && p.completedAt && new Date(p.completedAt) >= start,
+  ).length;
+}
+
+// `HEATMAP_WEEKS` columns (oldest→newest) of 7 day-cells (Mon→Sun).
+function buildHeatmap(activityMap) {
+  const firstMonday = startOfWeek();
+  firstMonday.setTime(firstMonday.getTime() - (HEATMAP_WEEKS - 1) * 7 * DAY_MS);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const cols = [];
+  for (let w = 0; w < HEATMAP_WEEKS; w++) {
+    const col = [];
+    for (let d = 0; d < 7; d++) {
+      const date = new Date(firstMonday.getTime() + (w * 7 + d) * DAY_MS);
+      const key = dayKey(date);
+      col.push({ key, count: activityMap.get(key) || 0, future: date > today });
+    }
+    cols.push(col);
+  }
+  return cols;
+}
+
+// Inline styles, not Tailwind `/opacity` modifiers: the design tokens are plain
+// CSS vars (var(--accent)) without alpha channels, so `bg-accent/45` renders
+// transparent. Real `opacity` on a solid fill gives a reliable intensity ramp.
+function heatStyle(count, future) {
+  if (future) return { backgroundColor: 'transparent' };
+  if (count <= 0) return { backgroundColor: 'var(--line-soft)', opacity: 0.6 };
+  const level = Math.min(count, 4); // 1..4
+  return { backgroundColor: 'var(--accent)', opacity: 0.3 + level * 0.175 };
 }
 
 /* ── User avatar ──────────────────────────────────────────────────────────────── */
@@ -253,6 +336,216 @@ function SectionHeader({ label, to, toLabel = 'View all' }) {
   );
 }
 
+/* ── Engagement: streak + weekly goal + activity heatmap ──────────────────────── */
+
+const FLAME_PATH =
+  'M12 2.5c.4 3-1.6 4.3-2.8 5.6C8 9.4 7 10.8 7 13a5 5 0 0 0 10 0c0-1.9-.7-3.4-1.7-4.6-.3 1-.9 1.7-1.7 2.1.5-2.3-.4-5.3-1.6-8z';
+
+function FlameIcon({ active, size = 30 }) {
+  if (!active) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="shrink-0">
+        <path d={FLAME_PATH} fill="var(--line-soft)" stroke="var(--line-soft)" strokeWidth="1.2" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="shrink-0 eng-flicker">
+      <defs>
+        <linearGradient id="eng-flame-grad" x1="12" y1="2" x2="12" y2="18" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="var(--accent)" stopOpacity="0.82" />
+          <stop offset="1" stopColor="var(--accent)" stopOpacity="1" />
+        </linearGradient>
+      </defs>
+      <path d={FLAME_PATH} fill="url(#eng-flame-grad)" stroke="var(--accent)" strokeWidth="1.1" strokeLinejoin="round" />
+      {/* Inner light core — a bright sliver that reads as the hottest part of the flame. */}
+      <path d="M12 13.5c.2 1.5-1 2-1 3a1.6 1.6 0 0 0 3.2 0c0-1-.6-1.6-1.2-2.2" fill="var(--surface-raised)" opacity="0.9" />
+    </svg>
+  );
+}
+
+function ProgressRing({ value, max, size = 52 }) {
+  const r = (size - 6) / 2;
+  const circ = 2 * Math.PI * r;
+  const pct = max > 0 ? Math.min(value / max, 1) : 0;
+  const met = pct >= 1;
+  // Draw the arc from empty on mount so the ring visibly "fills".
+  const [drawn, setDrawn] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setDrawn(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return (
+    <svg width={size} height={size} className="shrink-0 -rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line-soft)" strokeWidth="3.5" />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke={met ? 'var(--accent-strong)' : 'var(--accent)'}
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={drawn ? circ * (1 - pct) : circ}
+        className="transition-[stroke-dashoffset] duration-[1100ms] ease-out"
+      />
+    </svg>
+  );
+}
+
+// A short, contextual line that responds to the current streak length.
+function streakLine(streak) {
+  if (streak <= 0) return 'Learn today to begin';
+  if (streak === 1) return 'Nice start — keep it going';
+  if (streak < 4) return 'Building momentum';
+  if (streak < 8) return 'You’re on a roll';
+  if (streak < 21) return 'Seriously consistent';
+  return 'Unstoppable';
+}
+
+// Refined vertical hairline that fades at both ends — replaces the `/opacity`
+// border tokens, which render transparent against these var()-based colours.
+function PanelDivider() {
+  return (
+    <div
+      aria-hidden
+      className="hidden md:block w-px shrink-0 my-5"
+      style={{ background: 'linear-gradient(to bottom, transparent, var(--line-soft) 16%, var(--line-soft) 84%, transparent)' }}
+    />
+  );
+}
+
+function EngagementStrip({ progress }) {
+  const activityMap = useMemo(() => buildActivityMap(progress), [progress]);
+  const streak = useMemo(() => computeStreak(activityMap), [activityMap]);
+  const heatmap = useMemo(() => buildHeatmap(activityMap), [activityMap]);
+  const doneThisWeek = useMemo(() => lessonsThisWeek(progress), [progress]);
+
+  const goalMet = doneThisWeek >= WEEKLY_GOAL;
+  const remaining = Math.max(WEEKLY_GOAL - doneThisWeek, 0);
+  const active = streak > 0;
+  const todayKey = dayKey(new Date());
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-line-soft bg-surface-raised shadow-minimal">
+      {/* Ambient ember wash — a warm glow that only breathes when the streak is alive. */}
+      {active && (
+        <div
+          aria-hidden
+          className="eng-ember pointer-events-none absolute -left-14 -top-24 h-60 w-60 rounded-full"
+          style={{ background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 20%, transparent), transparent 68%)' }}
+        />
+      )}
+      {/* Hairline of accent across the top edge. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: 'linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 45%, transparent) 35%, color-mix(in srgb, var(--accent) 20%, transparent) 70%, transparent)' }}
+      />
+
+      <div className="relative flex flex-col md:flex-row md:items-stretch">
+
+        {/* Streak */}
+        <div className="flex items-center gap-4 px-5 md:px-6 py-5">
+          <div className="relative grid place-items-center">
+            {active && (
+              <span
+                aria-hidden
+                className="eng-ember absolute h-11 w-11 rounded-full"
+                style={{ background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 28%, transparent), transparent 70%)' }}
+              />
+            )}
+            <FlameIcon active={active} size={32} />
+          </div>
+          <div>
+            <p className="text-[2.15rem] font-display font-bold text-text-primary leading-none tabular-nums">{streak}</p>
+            <p className="font-mono text-[9px] text-text-dim uppercase tracking-[0.16em] mt-1.5">
+              day{streak === 1 ? '' : 's'} streak
+            </p>
+            <p className="text-[11px] text-text-muted mt-1 leading-snug">{streakLine(streak)}</p>
+          </div>
+        </div>
+
+        <PanelDivider />
+
+        {/* Weekly goal */}
+        <div className="flex items-center gap-4 px-5 md:px-6 py-5 border-t md:border-t-0 border-line-soft">
+          <div className="relative grid place-items-center">
+            {goalMet && (
+              <span
+                aria-hidden
+                className="eng-goal-pulse absolute h-[52px] w-[52px] rounded-full border-2"
+                style={{ borderColor: 'var(--accent-strong)' }}
+              />
+            )}
+            <ProgressRing value={doneThisWeek} max={WEEKLY_GOAL} />
+            <span className="absolute inset-0 flex items-center justify-center">
+              {goalMet ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12.5l4.5 4.5L19 7.5" stroke="var(--accent-strong)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : (
+                <span className="text-[11.5px] font-display font-bold text-text-primary tabular-nums">
+                  {doneThisWeek}/{WEEKLY_GOAL}
+                </span>
+              )}
+            </span>
+          </div>
+          <div>
+            <p className="text-[13px] font-semibold text-text-primary leading-tight">
+              {goalMet ? 'Goal reached' : 'Weekly goal'}
+            </p>
+            <p className="text-[11px] text-text-dim mt-0.5 leading-snug">
+              {goalMet ? 'Nice work this week' : `${remaining} lesson${remaining === 1 ? '' : 's'} to go`}
+            </p>
+          </div>
+        </div>
+
+        <PanelDivider />
+
+        {/* Activity heatmap */}
+        <div className="flex-1 min-w-0 px-5 md:px-6 py-5 border-t md:border-t-0 border-line-soft">
+          <div className="flex items-center justify-between mb-2.5">
+            <p className="font-mono text-[9px] text-text-dim uppercase tracking-[0.16em]">Last 13 weeks</p>
+            <div className="flex items-center gap-[3px] text-[8.5px] text-text-dim">
+              <span className="mr-0.5">Less</span>
+              {[0, 1, 2, 3, 4].map((n) => (
+                <span key={n} className="h-2 w-2 rounded-[3px]" style={heatStyle(n, false)} />
+              ))}
+              <span className="ml-0.5">More</span>
+            </div>
+          </div>
+          <div className="flex gap-[3px]">
+            {heatmap.map((col, ci) => (
+              <div key={ci} className="flex flex-col gap-[3px]">
+                {col.map((cell, ri) => {
+                  const isToday = cell.key === todayKey;
+                  return (
+                    <div
+                      key={cell.key}
+                      title={`${cell.key}: ${cell.count} active`}
+                      className={`eng-cell h-2.5 w-2.5 rounded-[3px] transition-transform duration-150 hover:scale-[1.4] ${isToday ? 'ring-1 ring-offset-1' : ''}`}
+                      style={{
+                        ...heatStyle(cell.count, cell.future),
+                        // Ripple in from oldest column → newest, top → bottom.
+                        animationDelay: `${(ci * 7 + ri) * 5}ms`,
+                        ...(isToday
+                          ? { '--tw-ring-color': 'var(--accent)', '--tw-ring-offset-color': 'var(--surface-raised)' }
+                          : null),
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Empty / onboarding state ─────────────────────────────────────────────────── */
 
 function EmptyState() {
@@ -432,7 +725,13 @@ export default function Dashboard() {
         {isNewUser ? (
           <EmptyState />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+          <>
+            {/* Engagement: streak, weekly goal, activity heatmap */}
+            <div className="mb-7 animate-fade-slide-up">
+              <EngagementStrip progress={userProgress} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
 
             {/* ── Left column ─────────────────────────────────────────────────── */}
             <div className="lg:col-span-7 space-y-7">
@@ -546,7 +845,8 @@ export default function Dashboard() {
                 </section>
               )}
             </div>
-          </div>
+            </div>
+          </>
         )}
       </div>
     </div>
