@@ -168,15 +168,12 @@ async function callAI(message) {
     try {
       console.log(`[AI Service] Attempting to call ${model}...`);
 
-      const response = await client.messages.create({
+      const response = await client.chat.completions.create({
         model: model,
         max_completion_tokens: 2048,
-        system: SYSTEM_PROMPT,
         messages: [
-          {
-            role: 'user',
-            content: message
-          }
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: message }
         ]
       });
 
@@ -184,7 +181,7 @@ async function callAI(message) {
         console.log(`[AI Service] Using fallback model: ${model}`);
       }
 
-      return response.content[0].text;
+      return response.choices[0].message.content;
     } catch (error) {
       lastError = error;
       console.error(`[AI Service] Error calling ${model}:`, error.message);

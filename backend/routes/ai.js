@@ -43,9 +43,10 @@ function throttle(req, res, next) {
   next();
 }
 
+const ALLOWED_MODELS   = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4', 'gpt-5.5'];
+const FORMATTER_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini'];
+
 router.post('/generate-lesson', requireEditor, throttle, async (req, res) => {
-  const ALLOWED_MODELS    = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4', 'gpt-5.5'];
-  const FORMATTER_MODELS  = ['gpt-5.4-nano', 'gpt-5.4-mini'];
 
   const notes             = (req.body?.notes ?? '').toString();
   const title             = (req.body?.title ?? '').toString().slice(0, 200);
@@ -89,10 +90,8 @@ router.post('/generate-lesson', requireEditor, throttle, async (req, res) => {
 // Conversational chat: interprets a natural-language message and either
 // generates slides (action="generate") or answers the question (action="message").
 router.post('/lesson-chat', requireEditor, throttle, async (req, res) => {
-  const ALLOWED_MODELS   = ['gpt-5.4-nano', 'gpt-5.4-mini', 'gpt-5.4', 'gpt-5.5'];
-  const FORMATTER_MODELS = ['gpt-5.4-nano', 'gpt-5.4-mini'];
   const message          = (req.body?.message ?? '').toString().trim().slice(0, 2000);
-  const notes            = (req.body?.notes ?? '').toString().slice(0, 30000); // attachment / pasted content
+  const notes            = (req.body?.notes ?? '').toString(); // attachment / pasted content
   const lessonTitle      = (req.body?.lessonTitle ?? '').toString().slice(0, 200);
   const existingCount    = parseInt(req.body?.existingSlideCount, 10) || 0;
   const model            = ALLOWED_MODELS.includes(req.body?.model) ? req.body.model : 'gpt-5.4-mini';

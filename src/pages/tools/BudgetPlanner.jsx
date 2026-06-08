@@ -46,12 +46,12 @@ const BudgetPlanner = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Utility</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Budget<br />Planner.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Budget Planner
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Synthesize your monthly cash flow and track allocation across your primary cost centers.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                Track your monthly income and expenses to see where your money goes.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -64,12 +64,12 @@ const BudgetPlanner = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           {/* Input Panel */}
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Your budget</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your budget</h2>
 
             <form onSubmit={handleSubmit} className="space-y-16">
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block">
-                  Net Monthly Income (AUD)
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Net monthly income (AUD)
                 </label>
                 <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                   <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -88,8 +88,8 @@ const BudgetPlanner = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 {Object.keys(expenses).map((key) => (
                   <div key={key}>
-                    <label className="text-sm font-semibold text-text-dim mb-4 block">
-                      {key} Account
+                    <label className="text-base font-semibold text-text-dim mb-4 block">
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
                     </label>
                     <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                       <span className="absolute left-0 bottom-2 text-text-dim font-bold text-sm">$</span>
@@ -107,8 +107,8 @@ const BudgetPlanner = () => {
                 ))}
               </div>
 
-              <button type="submit" className="btn-primary w-full py-6 text-xs mt-12">
-                Execute Calculation
+              <button type="submit" className="btn-primary w-full py-6 text-sm mt-12">
+                Calculate
               </button>
             </form>
           </div>
@@ -117,36 +117,36 @@ const BudgetPlanner = () => {
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
 
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Economic Summary</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Summary</h2>
 
             {result ? (
               <div className="space-y-12 relative z-10">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-2">Total Income</p>
+                    <p className="text-sm font-medium text-text-dim mb-2">Total income</p>
                     <p className="text-3xl font-bold tracking-tight">{formatCurrency(result.income)}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-2">Total Outflow</p>
+                    <p className="text-sm font-medium text-text-dim mb-2">Total expenses</p>
                     <p className="text-3xl font-bold tracking-tight">{formatCurrency(result.totalExpenses)}</p>
                   </div>
                 </div>
 
                 <div className="bg-surface-body p-10 border border-line-soft">
-                  <p className="text-xs font-bold text-accent mb-4">
-                    {result.remaining >= 0 ? 'Surplus Logic' : 'Deficit Warning'}
+                  <p className="text-sm font-bold text-accent mb-4">
+                    {result.remaining >= 0 ? 'Surplus' : 'Deficit'}
                   </p>
                   <p className={`text-5xl font-black tracking-tighter ${result.remaining >= 0 ? 'text-text-primary' : 'text-accent'}`}>
                     {formatCurrency(Math.abs(result.remaining))}
                   </p>
                   <div className="mt-8 flex justify-between items-center text-xs font-bold">
-                    <span className="text-text-muted">Economic Retention</span>
+                    <span className="text-text-muted">Left over</span>
                     <span className="text-accent">{((result.remaining / result.income) * 100 || 0).toFixed(1)}%</span>
                   </div>
                 </div>
 
                 <div className="space-y-6 pt-12 border-t border-line-soft">
-                  <p className="text-xs font-black text-text-dim mb-8">Allocation Breakdown</p>
+                  <p className="text-sm font-black text-text-dim mb-8">Breakdown</p>
                   {result.breakdown.map((item) => (
                     item.amount > 0 && (
                       <div key={item.category}>

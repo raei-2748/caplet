@@ -416,6 +416,7 @@ router.get('/:id', requireAuth, async (req, res) => {
       lastName: m.user.lastName,
       email: m.user.email,
       role: m.role,
+      createdAt: m.createdAt,
     }));
 
     const currentMemberIds = new Set(members.map((m) => m.id));
@@ -444,6 +445,7 @@ router.get('/:id', requireAuth, async (req, res) => {
           title: a.title,
           description: a.description,
           dueDate: a.dueDate,
+          createdAt: a.createdAt,
           course: a.course ? { id: a.course.id, title: a.course.title } : null,
           lesson: a.lesson ? { id: a.lesson.id, title: a.lesson.title } : null,
           submissions,
@@ -456,6 +458,7 @@ router.get('/:id', requireAuth, async (req, res) => {
         title: a.title,
         description: a.description,
         dueDate: a.dueDate,
+        createdAt: a.createdAt,
         course: a.course ? { id: a.course.id, title: a.course.title } : null,
         lesson: a.lesson ? { id: a.lesson.id, title: a.lesson.title } : null,
         statusForCurrentUser: submission ? submission.status : 'assigned',

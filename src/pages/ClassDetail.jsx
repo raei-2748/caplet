@@ -497,6 +497,59 @@ const ClassDetail = () => {
     return colors[hash % colors.length];
   };
 
+  const getDueState = (dueDate) => {
+    if (!dueDate) return 'none';
+    // Parse as local date to avoid UTC midnight shifting the day in negative-offset timezones
+    const [y, mo, d] = dueDate.split('T')[0].split('-').map(Number);
+    const dueDay = new Date(y, mo - 1, d);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (dueDay < today) return 'overdue';
+    if (dueDay.getTime() === today.getTime()) return 'today';
+    return 'upcoming';
+  };
+
+  const buildActivityFeed = () => {
+    const events = [];
+
+    (announcements || []).forEach((a) => {
+      if (a?.id && a.createdAt) {
+        events.push({ type: 'announcement', date: new Date(a.createdAt), id: `ann-${a.id}`, data: a });
+      }
+    });
+
+    (assignments || []).forEach((a) => {
+      if (a?.id && a.createdAt) {
+        events.push({ type: 'assignment_created', date: new Date(a.createdAt), id: `asgn-${a.id}`, data: a });
+      }
+      if (isTeacher) {
+        (a.submissions || []).forEach((s) => {
+          if (s.status === 'completed' && s.submittedAt && s.student) {
+            events.push({
+              type: 'completion',
+              date: new Date(s.submittedAt),
+              id: `comp-${a.id}-${s.studentId}`,
+              data: { assignment: a, student: s.student },
+            });
+          }
+        });
+      } else if (a.statusForCurrentUser === 'completed' && a.submittedAt) {
+        events.push({
+          type: 'completion',
+          date: new Date(a.submittedAt),
+          id: `comp-${a.id}`,
+          data: { assignment: a },
+        });
+      }
+    });
+
+    (members || []).filter((m) => m.role === 'student' && m.createdAt).forEach((m) => {
+      events.push({ type: 'join', date: new Date(m.createdAt), id: `join-${m.id}`, data: m });
+    });
+
+    return events.sort((a, b) => b.date - a.date);
+  };
+
   return (
     <div className="min-h-screen bg-surface-body py-32 px-6 selection:bg-accent selection:text-white">
       <div className="container-custom space-y-12">
@@ -598,6 +651,16 @@ const ClassDetail = () => {
               }`}
           >
             People
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('activity')}
+            className={`px-8 py-3 text-sm font-medium transition-all duration-200 ${activeTab === 'activity'
+              ? 'bg-text-primary dark:bg-surface-raised text-surface-body'
+              : 'text-text-dim hover:text-text-primary hover:bg-surface-raised dark:hover:bg-surface-soft'
+              }`}
+          >
+            Activity
           </button>
         </nav>
         {/* Page content: only the active tab is rendered — screen changes, no route change */}
@@ -877,97 +940,138 @@ const ClassDetail = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6">
-                {assignments.map((a) => {
-                  const isCompleted = a.statusForCurrentUser === 'completed';
-                  const totalStudents = students.length;
-                  const completedCount = Array.isArray(a.submissions)
-                    ? a.submissions.filter((s) => s.status === 'completed').length
-                    : undefined;
-                  const commentsList = assignmentComments[a.id] || [];
-                  const classComments = commentsList.filter((c) => !c.isPrivate);
-                  const privateComments = commentsList.filter((c) => c.isPrivate);
-                  const totalComments = commentsList.length;
+              <>
+                {/* Student progress banner */}
+                {!isTeacher && (() => {
+                  const doneCount = assignments.filter((a) => a.statusForCurrentUser === 'completed').length;
+                  const pct = assignments.length > 0 ? Math.round((doneCount / assignments.length) * 100) : 0;
                   return (
-                    <div
-                      key={a.id}
-                      className="bg-surface-body border border-line-soft dark:border-line-soft p-8 hover:border-accent transition-all animate-slide-up group"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-xl font-semibold text-text-primary mb-4">
-                            {a.title}
-                          </h3>
-                          {a.description && (
-                            <p className="text-sm font-medium text-text-muted leading-relaxed mb-6 max-w-2xl">
-                              {a.description}
-                            </p>
-                          )}
-                          <div className="flex flex-wrap gap-4 items-center">
-                            {a.dueDate && (
-                              <span className="inline-flex items-center gap-2 px-3 py-1 bg-surface-soft border border-line-soft text-xs font-medium text-text-dim">
-                                📅 DEADLINE: {new Date(a.dueDate).toLocaleDateString(undefined, {
-                                  month: 'short',
-                                  day: 'numeric',
-                                })}
-                              </span>
+                    <div className="mb-10 p-6 bg-surface-soft border border-line-soft">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm font-semibold text-text-primary">
+                          {doneCount} of {assignments.length} assignments completed
+                        </span>
+                        <span className="text-xs font-bold text-accent">{pct}%</span>
+                      </div>
+                      <div className="h-2 w-full bg-surface-raised rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-accent rounded-full transition-all duration-500 ease-out"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Grouped assignment list (students) or flat list (teachers) */}
+                {(() => {
+                  const renderAssignment = (a) => {
+                    const isCompleted = a.statusForCurrentUser === 'completed';
+                    const totalStudents = students.length;
+                    const completedCount = Array.isArray(a.submissions)
+                      ? a.submissions.filter((s) => s.status === 'completed').length
+                      : undefined;
+                    const commentsList = assignmentComments[a.id] || [];
+                    const classComments = commentsList.filter((c) => !c.isPrivate);
+                    const privateComments = commentsList.filter((c) => c.isPrivate);
+                    const totalComments = commentsList.length;
+                    const dueState = getDueState(a.dueDate);
+                    const dueBadgeClass = dueState === 'overdue'
+                      ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400'
+                      : dueState === 'today'
+                        ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-400'
+                        : 'bg-surface-soft border-line-soft text-text-dim';
+                    return (
+                      <div
+                        key={a.id}
+                        className="bg-surface-body border border-line-soft dark:border-line-soft p-8 hover:border-accent transition-all animate-slide-up group"
+                      >
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-xl font-semibold text-text-primary mb-4">
+                              {a.title}
+                            </h3>
+                            {a.description && (
+                              <p className="text-sm font-medium text-text-muted leading-relaxed mb-6 max-w-2xl">
+                                {a.description}
+                              </p>
                             )}
-                            {a.lesson && (
-                              <Link
-                                to={`/courses/${a.course?.id || ''}/lessons/${a.lesson.id}`}
-                                className="inline-flex items-center gap-2 px-3 py-1 bg-accent text-white text-xs font-medium hover:bg-accent-strong transition-colors"
+                            <div className="flex flex-wrap gap-4 items-center">
+                              {a.dueDate && (
+                                <span className={`inline-flex items-center gap-2 px-3 py-1 border text-xs font-medium ${dueBadgeClass}`}>
+                                  {dueState === 'overdue' ? '⚠️' : dueState === 'today' ? '🔔' : '📅'}{' '}
+                                  {dueState === 'overdue' ? 'OVERDUE:' : dueState === 'today' ? 'DUE TODAY:' : 'DEADLINE:'}{' '}
+                                  {new Date(a.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                </span>
+                              )}
+                              {a.lesson && (
+                                <Link
+                                  to={`/courses/${a.course?.id || ''}/lessons/${a.lesson.id}`}
+                                  className="inline-flex items-center gap-2 px-3 py-1 bg-accent text-white text-xs font-medium hover:bg-accent-strong transition-colors"
+                                >
+                                  📖 Linked Lesson: {a.lesson.title}
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-start md:items-end gap-4 min-w-[140px]">
+                            {isTeacher ? (
+                              <>
+                                {typeof completedCount === 'number' && (
+                                  <div className="px-4 py-2 bg-surface-soft border border-line-soft">
+                                    <span className="text-xs font-semibold text-text-dim">
+                                      Completed: {completedCount}/{totalStudents}
+                                    </span>
+                                  </div>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteAssignment(a.id)}
+                                  className="w-full px-6 py-2 border border-line-soft text-sm font-medium hover:text-red-500 hover:border-red-500 transition-all"
+                                >
+                                  Delete
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <span
+                                  className={`inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 border ${isCompleted
+                                    ? 'border-emerald-400 dark:border-emerald-600 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
+                                    : 'border-line-soft text-text-dim'
+                                    }`}
+                                >
+                                  {isCompleted && (
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                  )}
+                                  {isCompleted ? 'Completed' : 'Not Started'}
+                                </span>
+                                {isCompleted && a.submittedAt && (
+                                  <span className="text-xs font-medium text-text-dim">
+                                    {new Date(a.submittedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                  </span>
+                                )}
+                              </>
+                            )}
+                            {!isTeacher && !isCompleted && (
+                              <button
+                                onClick={() => handleCompleteAssignment(a.id)}
+                                className="w-full px-6 py-3 bg-text-primary dark:bg-surface-raised text-surface-body text-sm font-medium hover:bg-accent dark:hover:text-text-primary transition-all shadow-sm"
                               >
-                                📖 Linked Lesson: {a.lesson.title}
-                              </Link>
+                                Mark Complete
+                              </button>
+                            )}
+                            {!isTeacher && isCompleted && !a.lesson && (
+                              <button
+                                onClick={() => handleUncompleteAssignment(a.id)}
+                                className="w-full px-6 py-2 border border-line-soft text-sm font-medium hover:bg-surface-soft dark:hover:bg-surface-raised transition-all"
+                              >
+                                Mark Incomplete
+                              </button>
                             )}
                           </div>
                         </div>
-                        <div className="flex flex-col items-start md:items-end gap-4 min-w-[120px]">
-                          {isTeacher ? (
-                            <>
-                              {typeof completedCount === 'number' && (
-                                <div className="px-4 py-2 bg-surface-soft border border-line-soft">
-                                  <span className="text-xs font-semibold text-text-dim">
-                                    Completed: {completedCount}/{totalStudents}
-                                  </span>
-                                </div>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteAssignment(a.id)}
-                                className="w-full px-6 py-2 border border-line-soft text-sm font-medium hover:text-red-500 hover:border-red-500 transition-all"
-                              >
-                                Delete
-                              </button>
-                            </>
-                          ) : (
-                            <span
-                              className={`text-xs font-semibold px-4 py-2 border ${isCompleted
-                                ? 'border-accent text-accent'
-                                : 'border-line-soft text-text-dim'
-                                }`}
-                            >
-                              {isCompleted ? 'Completed' : 'Not Started'}
-                            </span>
-                          )}
-                          {!isTeacher && !isCompleted && (
-                            <button
-                              onClick={() => handleCompleteAssignment(a.id)}
-                              className="w-full px-6 py-3 bg-text-primary dark:bg-surface-raised text-surface-body text-sm font-medium hover:bg-accent dark:hover:text-text-primary transition-all shadow-sm"
-                            >
-                              Mark Complete
-                            </button>
-                          )}
-                          {!isTeacher && isCompleted && !a.lesson && (
-                            <button
-                              onClick={() => handleUncompleteAssignment(a.id)}
-                              className="w-full px-6 py-2 border border-line-soft text-sm font-medium hover:bg-surface-soft dark:hover:bg-surface-raised transition-all"
-                            >
-                              Mark Incomplete
-                            </button>
-                          )}
-                        </div>
-                      </div>
 
                       {/* Comments on assignment (class + private) */}
                       <div className="mt-8 pt-6 border-t border-line-soft">
@@ -1193,9 +1297,45 @@ const ClassDetail = () => {
                       </div>
                     </div>
                   );
-                })}
-              </div>
-            )}
+                };
+
+                const todoAssignments = isTeacher
+                  ? assignments
+                  : assignments.filter((a) => a.statusForCurrentUser !== 'completed');
+                const doneAssignments = !isTeacher
+                  ? assignments.filter((a) => a.statusForCurrentUser === 'completed')
+                  : [];
+                const urgencyOrder = { overdue: 0, today: 1, upcoming: 2, none: 3 };
+                const sortedTodo = [...todoAssignments].sort((a, b) => {
+                  const sa = urgencyOrder[getDueState(a.dueDate)] ?? 3;
+                  const sb = urgencyOrder[getDueState(b.dueDate)] ?? 3;
+                  if (sa !== sb) return sa - sb;
+                  if (!a.dueDate && !b.dueDate) return 0;
+                  if (!a.dueDate) return 1;
+                  if (!b.dueDate) return -1;
+                  return new Date(a.dueDate) - new Date(b.dueDate);
+                });
+
+                return (
+                  <div className="grid grid-cols-1 gap-6">
+                    {isTeacher && assignments.map(renderAssignment)}
+                    {!isTeacher && sortedTodo.length > 0 && (
+                      <>
+                        <p className="text-xs font-bold text-text-dim tracking-widest uppercase pt-2">To Do</p>
+                        {sortedTodo.map(renderAssignment)}
+                      </>
+                    )}
+                    {!isTeacher && doneAssignments.length > 0 && (
+                      <>
+                        <p className="text-xs font-bold text-text-dim tracking-widest uppercase pt-6">Completed</p>
+                        {doneAssignments.map(renderAssignment)}
+                      </>
+                    )}
+                  </div>
+                );
+              })()}
+            </>
+          )}
           </div>
         )}
 
@@ -1345,6 +1485,103 @@ const ClassDetail = () => {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Activity tab — chronological event feed */}
+        {activeTab === 'activity' && (
+          <div className="min-h-[50vh] pt-6 animate-slide-up" role="region" aria-label="Activity feed">
+            <div className="mb-12">
+              <span className="section-kicker mb-4">Activity</span>
+              <h2 className="text-3xl font-semibold text-text-primary">
+                Class <br />Activity.
+              </h2>
+            </div>
+            {(() => {
+              const feed = buildActivityFeed();
+              if (feed.length === 0) {
+                return (
+                  <div className="p-20 border border-line-soft text-center bg-surface-soft">
+                    <p className="text-sm font-medium text-text-muted">No activity yet.</p>
+                  </div>
+                );
+              }
+              return (
+                <div className="relative pl-8 border-l border-line-soft space-y-0">
+                  {feed.map((event) => {
+                    let icon, label, meta;
+
+                    if (event.type === 'announcement') {
+                      const a = event.data;
+                      const authorName = a.author ? `${a.author.firstName} ${a.author.lastName}` : 'Teacher';
+                      icon = (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                        </svg>
+                      );
+                      label = <><span className="font-semibold text-text-primary">{authorName}</span> posted an announcement</>;
+                      meta = a.content?.length > 80 ? `"${a.content.slice(0, 80)}…"` : a.content ? `"${a.content}"` : null;
+                    } else if (event.type === 'assignment_created') {
+                      const a = event.data;
+                      icon = (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      );
+                      label = <>New assignment: <span className="font-semibold text-text-primary">{a.title}</span></>;
+                      meta = a.dueDate
+                        ? `Due ${new Date(a.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
+                        : null;
+                    } else if (event.type === 'completion') {
+                      const { assignment, student } = event.data;
+                      icon = (
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      );
+                      if (isTeacher && student) {
+                        label = <><span className="font-semibold text-text-primary">{student.firstName} {student.lastName}</span> completed <span className="font-semibold text-text-primary">{assignment.title}</span></>;
+                      } else {
+                        label = <>You completed <span className="font-semibold text-text-primary">{assignment.title}</span></>;
+                      }
+                      meta = null;
+                    } else if (event.type === 'join') {
+                      const m = event.data;
+                      icon = (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                      );
+                      label = <><span className="font-semibold text-text-primary">{m.firstName} {m.lastName}</span> joined the class</>;
+                      meta = null;
+                    }
+
+                    return (
+                      <div key={event.id} className="relative pb-8 group">
+                        {/* Timeline dot */}
+                        <span className={`absolute -left-[21px] top-[5px] w-2.5 h-2.5 rounded-full border-2 border-surface-body ring-1 ${event.type === 'completion' ? 'bg-emerald-500 ring-emerald-400/40' : 'bg-accent ring-accent/20'}`} />
+                        <div className="flex items-start gap-3">
+                          <span className={`mt-0.5 flex-shrink-0 ${event.type === 'completion' ? 'text-emerald-500' : 'text-text-dim'}`}>
+                            {icon}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-text-muted leading-snug">
+                              {label}
+                            </p>
+                            {meta && (
+                              <p className="text-xs font-medium text-text-dim mt-1 italic">{meta}</p>
+                            )}
+                            <span className="text-xs font-medium text-text-dim mt-1 block">
+                              {formatRelativeTime(event.date)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         )}
 

@@ -39,6 +39,7 @@ const Navbar = () => {
     { path: '/courses', label: 'Curriculum' },
     { path: '/classes', label: 'Academy' },
     { path: '/tools', label: 'Instruments' },
+    { path: '/editor', label: 'Editor', privateOnly: true },
   ];
 
   const navItems = allNavItems.filter((item) => {
@@ -126,6 +127,24 @@ const Navbar = () => {
                 </svg>
               )}
             </button>
+
+            {/* Revision queue shortcut */}
+            {isAuthenticated && (
+              <Link
+                to="/revision"
+                className={`hidden md:flex w-8 h-8 items-center justify-center rounded-lg transition-all duration-200 ${
+                  isActive('/revision')
+                    ? 'text-accent bg-accent-soft'
+                    : 'text-text-muted hover:text-text-primary hover:bg-surface-soft'
+                }`}
+                aria-label="Revision queue"
+                title="Revision queue"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+              </Link>
+            )}
 
             {/* Divider */}
             <div className="hidden md:block w-px h-4 bg-line-soft mx-0.5" />
@@ -233,6 +252,20 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            {isAuthenticated && (
+              <Link
+                to="/revision"
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  isActive('/revision') ? 'text-accent bg-accent-soft' : 'text-text-primary hover:bg-surface-soft'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                Revision
+              </Link>
+            )}
             {!isAuthenticated && (
               <Link
                 to="/register"

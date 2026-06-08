@@ -71,35 +71,47 @@ function isSafeToPrerender(slide) {
    ────────────────────────────────────────────────────────────────────────── */
 
 function SlideTicker({ slides, currentIndex, quizScores, visited, onJump }) {
+  const pct = Math.round(((currentIndex + 1) / slides.length) * 100);
   return (
-    <div className="flex items-center gap-1.5 w-full">
-      {slides.map((s, i) => {
-        const normalized = normalizeSlide(s);
-        const isInteractive = normalized && INTERACTIVE_TYPES.has(normalized.type);
-        const answered = quizScores[String(i)];
-        const isCurrent = i === currentIndex;
-        const wasVisited = i < currentIndex || visited.has(i);
-        let bar = 'bg-line-soft';
-        if (wasVisited) bar = 'bg-accent';
-        if (isCurrent) bar = 'bg-accent';
-        if (isInteractive && answered === true) bar = 'bg-emerald-500';
-        if (isInteractive && answered === false) bar = 'bg-rose-400';
-        return (
-          <button
-            key={i}
-            type="button"
-            aria-label={`Go to slide ${i + 1}`}
-            onClick={() => onJump(i)}
-            className="group relative flex-1 py-2"
-          >
-            <span
-              className={`block rounded-full transition-all duration-300 ${bar} ${
-                isCurrent ? 'h-[5px]' : 'h-[3px] group-hover:h-[4px]'
-              }`}
-            />
-          </button>
-        );
-      })}
+    <div className="space-y-2">
+      {/* Continuous fill bar */}
+      <div className="h-[2px] w-full overflow-hidden rounded-full bg-line-soft">
+        <div
+          className="h-full rounded-full bg-accent transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {/* Tick segments */}
+      <div className="flex items-center gap-1.5 w-full">
+        {slides.map((s, i) => {
+          const normalized = normalizeSlide(s);
+          const isInteractive = normalized && INTERACTIVE_TYPES.has(normalized.type);
+          const answered = quizScores[String(i)];
+          const isCurrent = i === currentIndex;
+          const wasVisited = i < currentIndex || visited.has(i);
+          let bar = 'bg-line-soft';
+          if (wasVisited) bar = 'bg-accent';
+          if (isCurrent) bar = 'bg-accent';
+          if (isInteractive && answered === true) bar = 'bg-emerald-500';
+          if (isInteractive && answered === false) bar = 'bg-rose-400';
+          return (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Go to slide ${i + 1}${normalized ? `: ${slideKindLabel(normalized)}` : ''}`}
+              title={normalized ? slideKindLabel(normalized) : undefined}
+              onClick={() => onJump(i)}
+              className="group relative flex-1 py-2"
+            >
+              <span
+                className={`block rounded-full transition-all duration-200 ${bar} ${
+                  isCurrent ? 'h-[5px] shadow-ticker-active' : 'h-[3px] group-hover:h-[4px]'
+                }`}
+              />
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -209,7 +221,9 @@ const LessonPlayer = () => {
   // savedSlides: Map of slideIndex -> savedSlideId for the current lesson
   const [savedSlides, setSavedSlides] = useState(new Map());
   const [savingSlide, setSavingSlide] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const autoCategorizeTimer = useRef(null);
+  const justSavedTimer = useRef(null);
 
 
   /* ---------- Data loading ---------- */
@@ -362,6 +376,9 @@ const LessonPlayer = () => {
         const res = await api.saveSlide(lesson.id, course.id, idx);
         if (res?.savedSlide) {
           setSavedSlides((prev) => new Map(prev).set(idx, res.savedSlide.id));
+          if (justSavedTimer.current) clearTimeout(justSavedTimer.current);
+          setJustSaved(true);
+          justSavedTimer.current = setTimeout(() => setJustSaved(false), 1400);
           // Auto-organize into revision categories (debounced, best-effort).
           if (autoCategorizeTimer.current) clearTimeout(autoCategorizeTimer.current);
           autoCategorizeTimer.current = setTimeout(() => {
@@ -415,6 +432,12 @@ const LessonPlayer = () => {
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
   }, [hasSlides, currentSlideIndex, goToSlide, outlineOpen]);
+
+  /* ---------- Timer cleanup on unmount ---------- */
+  useEffect(() => () => {
+    if (justSavedTimer.current) clearTimeout(justSavedTimer.current);
+    if (autoCategorizeTimer.current) clearTimeout(autoCategorizeTimer.current);
+  }, []);
 
   /* ---------- Lock body scroll when outline open ---------- */
   useEffect(() => {
@@ -593,22 +616,32 @@ const LessonPlayer = () => {
                 </span>
               </div>
               {isAuthenticated && (
-                <button
-                  type="button"
-                  onClick={toggleSaveSlide}
-                  disabled={savingSlide}
-                  aria-label={savedSlides.has(currentSlideIndex) ? 'Remove saved slide' : 'Save slide'}
-                  className={`shrink-0 flex items-center gap-1.5 h-7 px-3 rounded-full border transition-colors text-xs font-medium ${
-                    savedSlides.has(currentSlideIndex)
-                      ? 'border-accent text-accent bg-accent/10 hover:bg-accent/20'
-                      : 'border-line-soft text-text-muted hover:border-text-dim hover:text-text-primary'
-                  } disabled:opacity-50`}
-                >
-                  <svg className="w-3 h-3" fill={savedSlides.has(currentSlideIndex) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                  </svg>
-                  <span className="hidden sm:inline">{savedSlides.has(currentSlideIndex) ? 'Saved' : 'Save'}</span>
-                </button>
+                <div className="relative shrink-0">
+                  {justSaved && (
+                    <span className="pointer-events-none absolute right-0 -top-8 flex items-center gap-1 whitespace-nowrap rounded-full border border-accent/20 bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent animate-save-confirm">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>
+                      Saved to Revision
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={toggleSaveSlide}
+                    disabled={savingSlide}
+                    aria-label={savedSlides.has(currentSlideIndex) ? 'Remove saved slide' : 'Save slide'}
+                    className={`flex items-center gap-1.5 h-7 px-3 rounded-full border transition-colors text-xs font-medium ${
+                      savedSlides.has(currentSlideIndex)
+                        ? 'border-accent text-accent bg-accent/10 hover:bg-accent/20'
+                        : 'border-line-soft text-text-muted hover:border-text-dim hover:text-text-primary'
+                    } disabled:opacity-50 ${justSaved ? 'animate-save-bounce' : ''}`}
+                  >
+                    <svg className="w-3 h-3" fill={savedSlides.has(currentSlideIndex) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                    <span className="hidden sm:inline">{savedSlides.has(currentSlideIndex) ? 'Saved' : 'Save'}</span>
+                  </button>
+                </div>
               )}
             </div>
 
@@ -624,10 +657,14 @@ const LessonPlayer = () => {
               </div>
 
               {/* Pre-render window: offsets -1, 0, +1 relative to current.
-                  The outer div uses a stable key={i} so lightweight slides stay
-                  mounted while hidden; heavy slides are intentionally mounted only
-                  when active. The slide-in animation is driven by toggling the
-                  class on the inner wrapper. */}
+                  Slides slide left/right using CSS transitions — no JS needed for
+                  direction. offset<0 lives at translateX(-100%), offset>0 at
+                  translateX(+100%). When currentSlideIndex changes, all three
+                  positions update and the transition animates them simultaneously,
+                  producing a directional slide effect.
+                  Heavy slides (Desmos, embed, diagram) only mount when active since
+                  multiple instances crash or interfere; they get the lift-fade
+                  entrance via animate-lesson-slide-in as fallback. */}
               {[-1, 0, 1].map((offset) => {
                 const i = currentSlideIndex + offset;
                 if (i < 0 || i >= slides.length) return null;
@@ -637,16 +674,18 @@ const LessonPlayer = () => {
                 return (
                   <div
                     key={i}
-                    className={`absolute inset-0 overflow-hidden${!isActive ? ' pointer-events-none' : ''}`}
-                    style={isActive ? {} : { transform: 'translateX(100vw)', opacity: 0 }}
+                    className="absolute inset-0 overflow-hidden transition-[transform] duration-[380ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform"
+                    style={{
+                      transform: isActive ? 'translateX(0)' : offset < 0 ? 'translateX(-100%)' : 'translateX(100%)',
+                      pointerEvents: isActive ? 'auto' : 'none',
+                    }}
                     aria-hidden={!isActive}
                   >
-                    {/* No key change here — SlideRenderer stays mounted.
-                        Animation class is toggled to re-fire CSS animation.
-                        Padding and scroll are managed inside SlideRenderer
-                        via variant="player" so full-bleed slides can fill
-                        the canvas without padding. */}
-                    <div className={`${isActive ? 'animate-lesson-slide-in' : ''} h-full flex flex-col`}>
+                    {/* animate-lesson-slide-in only fires for heavy slides that mount
+                        directly into the active slot with no pre-render (Desmos, embed,
+                        diagram). Pre-rendered slides enter via the outer translateX
+                        transition, so the lift-fade would conflict and is skipped. */}
+                    <div className={`${isActive && !prerenderable ? 'animate-lesson-slide-in' : ''} h-full flex flex-col`}>
                       <SlideErrorBoundary key={i}>
                         <SlideRenderer
                           slide={slides[i]}

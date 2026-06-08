@@ -56,12 +56,12 @@ const SuperContribution = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Retirement</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Legacy <br />Architecture.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Super Calculator
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Project your superannuation maturity and optimize contribution discipline for long-term equity.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                See how your superannuation balance grows over time.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -73,12 +73,12 @@ const SuperContribution = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Contribution Inputs</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your super details</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Opening Balance (AUD)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Current balance (AUD)
                   </label>
                   <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                     <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -95,8 +95,8 @@ const SuperContribution = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Annual Salary
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Annual salary
                   </label>
                   <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                     <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -115,8 +115,8 @@ const SuperContribution = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Employer Rate (%)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Employer rate (%)
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -133,8 +133,8 @@ const SuperContribution = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Temporal Window
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Years until retirement
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -152,8 +152,8 @@ const SuperContribution = () => {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                  Annual Personal Top-up (Optional)
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Extra annual contributions (optional)
                 </label>
                 <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                   <span className="absolute left-0 bottom-2 text-text-dim font-bold text-sm">$</span>
@@ -170,14 +170,14 @@ const SuperContribution = () => {
               </div>
 
               <button type="submit" className="btn-primary w-full py-6 text-sm mt-8">
-                Confirm Legacy Logic
+                Calculate
               </button>
             </form>
           </div>
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Maturity Projection</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               result.error ? (
@@ -185,11 +185,11 @@ const SuperContribution = () => {
               ) : (
                 <div className="space-y-12 relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-4 italic">Projected Portfolio Value</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Projected balance</p>
                     <p className="text-5xl font-black tracking-tighter text-text-primary">
                       {formatCurrency(result.futureBalance)}
                     </p>
-                    <p className="text-xs font-medium text-text-muted mt-4">Horizon: {result.years} annual cycles</p>
+                    <p className="text-sm font-medium text-text-muted mt-4">Over {result.years} years</p>
                   </div>
 
                   <div className="pt-10 border-t border-line-soft space-y-8">
@@ -214,9 +214,8 @@ const SuperContribution = () => {
                       <p className="text-2xl font-black">{formatCurrency(result.growth)}</p>
                     </div>
 
-                    <div className="pt-8 border-t border-line-soft text-xs text-text-dim space-y-2 opacity-60 font-medium">
-                      <p>• Projected 7% Annual Yield</p>
-                      <p>• Temporal Asset Allocation Logic</p>
+                    <div className="pt-8 border-t border-line-soft text-sm text-text-dim space-y-2 opacity-60 font-medium">
+                      <p>• Assumes 7% annual return</p>
                     </div>
                   </div>
                 </div>

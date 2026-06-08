@@ -49,12 +49,12 @@ const CompoundInterest = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Growth</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Compound <br />Architecture.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Compound Interest
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Visualize the exponential mechanics of your capital over defined temporal windows.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                See how your savings grow over time with compound interest.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -66,12 +66,12 @@ const CompoundInterest = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Growth Parameters</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your details</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Opening Principal (AUD)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Starting amount (AUD)
                   </label>
                   <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                     <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -88,8 +88,8 @@ const CompoundInterest = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Monthly Injection
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Monthly contribution
                   </label>
                   <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                     <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -108,8 +108,8 @@ const CompoundInterest = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Annual Yield (%)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Annual return (%)
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -127,8 +127,8 @@ const CompoundInterest = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Time Horizon
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Years
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -146,14 +146,14 @@ const CompoundInterest = () => {
               </div>
 
               <button type="submit" className="btn-primary w-full py-6 text-sm mt-8">
-                Confirm Growth Logic
+                Calculate
               </button>
             </form>
           </div>
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Economic Projection</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               result.error ? (
@@ -161,7 +161,7 @@ const CompoundInterest = () => {
               ) : (
                 <div className="space-y-12 relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-4 italic">Maturity Balance</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Final balance</p>
                     <p className="text-5xl font-black tracking-tighter text-text-primary">
                       {formatCurrency(result.finalBalance)}
                     </p>
@@ -170,30 +170,24 @@ const CompoundInterest = () => {
                   <div className="pt-10 border-t border-line-soft space-y-8">
                     <div className="flex justify-between items-end">
                       <div>
-                        <p className="text-xs font-medium text-text-dim mb-1">Total Injected</p>
+                        <p className="text-sm font-medium text-text-dim mb-1">Total contributed</p>
                         <p className="text-xl font-bold">{formatCurrency(result.totalContributions)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-medium text-text-dim mb-1">Accrued Interest</p>
+                        <p className="text-sm font-medium text-text-dim mb-1">Interest earned</p>
                         <p className="text-xl font-bold text-accent">{formatCurrency(result.interestEarned)}</p>
                       </div>
                     </div>
 
                     <div className="pt-8 border-t border-line-soft">
-                      <p className="text-xs font-medium text-text-dim mb-4 font-serif italic">Compounded Statistics</p>
                       <div className="flex items-center gap-4 text-sm font-semibold">
-                        <span className="text-text-primary">{result.years} Year Horizon</span>
+                        <span className="text-text-primary">{result.years} years</span>
                         <div className="w-px h-3 bg-line-soft" />
-                        <span className="text-text-muted">{((result.interestEarned / result.finalBalance) * 100 || 0).toFixed(1)}% Interest</span>
+                        <span className="text-text-muted">{((result.interestEarned / result.finalBalance) * 100 || 0).toFixed(1)}% interest</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-8 border-t border-line-soft">
-                    <p className="text-xs font-serif italic text-text-dim leading-relaxed">
-                      "Compound interest is the eighth wonder of the world. He who understands it, earns it... he who doesn't... pays it."
-                    </p>
-                  </div>
                 </div>
               )
             ) : (

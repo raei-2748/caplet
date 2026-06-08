@@ -6,40 +6,6 @@ import api from '../services/api';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import CapletLoader from '../components/CapletLoader';
 
-const CourseCover = ({ title }) => {
-  // Generate a semi-stable pseudo-random gradient based on title
-  const hash = title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const hue1 = hash % 360;
-  const hue2 = (hue1 + 40) % 360;
-  const hue3 = (hue1 + 180) % 360;
-  
-  return (
-    <div className="relative w-full h-full overflow-hidden group-hover:scale-105 transition-transform duration-700">
-      <div 
-        className="absolute inset-0 opacity-80"
-        style={{
-          background: `linear-gradient(${hue1}deg, hsl(${hue1}, 70%, 85%) 0%, hsl(${hue2}, 70%, 90%) 50%, hsl(${hue3}, 70%, 95%) 100%)`
-        }}
-      />
-      
-      {/* Abstract shapes */}
-      <div 
-        className="absolute top-[-20%] left-[-20%] w-[100%] h-[100%] rounded-full blur-[80px] mix-blend-multiply opacity-60"
-        style={{ background: `hsl(${hue2}, 80%, 75%)` }}
-      />
-      <div 
-        className="absolute bottom-[-30%] right-[-10%] w-[120%] h-[120%] rounded-full blur-[100px] mix-blend-screen opacity-40 animate-float"
-        style={{ background: `hsl(${hue3}, 60%, 85%)` }}
-      />
-      
-      {/* Decorative center element */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-10">
-        <span className="text-[12rem] font-serif italic select-none">{title.charAt(0)}</span>
-      </div>
-      
-    </div>
-  );
-};
 
 const Courses = () => {
   const { courses, loading, error, fetchCourses } = useCourses();
@@ -169,10 +135,6 @@ const Courses = () => {
                       In Progress
                     </span>
                   )}
-                </div>
-
-                <div className="aspect-[16/9] w-full mb-12 overflow-hidden bg-surface-soft border border-line-soft rounded-[2rem]">
-                  <CourseCover title={course.title} id={course.id} />
                 </div>
 
                 <h3 className="text-2xl font-bold mb-8 group-hover:text-accent transition-colors duration-500">

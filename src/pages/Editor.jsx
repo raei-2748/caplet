@@ -5,6 +5,7 @@ import { normalizeSlide, warnSlide, SLIDE_DEFAULTS, slideKindLabel, SLIDE_PALETT
 import SlideForm from '../components/editor/SlideForms';
 import LessonPreviewModal from '../components/editor/LessonPreviewModal';
 import AIChatPanel from '../components/editor/AIChatPanel';
+import AIGeneratePanel from '../components/editor/AIGeneratePanel';
 
 let _lid = 0;
 const localId = () => `s_${Date.now()}_${++_lid}`;
@@ -63,37 +64,48 @@ function CodeEntry({ onEnter }) {
 
   return (
     <div className="min-h-[100dvh] pt-14 md:pt-16 bg-surface-body flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute inset-0 grid-technical opacity-[0.14] pointer-events-none" />
-      <div className="relative w-full max-w-sm">
-        <p className="font-mono text-[10px] font-medium text-accent/60 uppercase tracking-[0.22em] mb-6">
+      <div className="absolute inset-0 grid-technical opacity-[0.10] pointer-events-none" />
+      {/* Atmospheric glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,80,255,0.04) 0%, transparent 70%)' }} />
+      <div className="relative w-full max-w-sm animate-fade-up">
+        <p className="font-mono text-[10px] font-medium text-accent/50 uppercase tracking-[0.24em] mb-6 flex items-center gap-2">
+          <span className="w-3 h-px bg-accent/40" />
           Lesson workspace
         </p>
-        <h1 className="text-[2.6rem] font-display font-bold text-text-primary tracking-tight leading-none mb-3">
+        <h1 className="text-[2.75rem] font-display font-bold text-text-primary tracking-tight leading-none mb-3">
           Access code
         </h1>
-        <p className="text-[14px] text-text-dim leading-relaxed mb-10">
+        <p className="text-[14px] text-text-dim leading-relaxed mb-10 font-serif italic">
           Enter the code your admin shared with you.
         </p>
         <form onSubmit={submit} className="space-y-5">
-          <input
-            type="password"
-            autoComplete="off"
-            placeholder="Paste your code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="w-full border-b-2 border-line-soft bg-transparent pb-3 text-text-primary text-[15px] focus:border-accent focus:outline-none transition-colors duration-200 placeholder:text-text-dim/40"
-          />
-          {error && <p className="text-[13px] text-rose-500">{error}</p>}
+          <div className="relative">
+            <input
+              type="password"
+              autoComplete="off"
+              placeholder="Paste your code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="w-full border-b-2 border-line-soft bg-transparent pb-3 text-text-primary text-[15px] focus:border-accent focus:outline-none transition-colors duration-200 placeholder:text-text-dim/35 pr-8"
+            />
+          </div>
+          {error && (
+            <p className="text-[12.5px] text-rose-500 flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.25" stroke="currentColor" strokeWidth="1.3"/><path d="M6 4v3M6 8.5v.2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+              {error}
+            </p>
+          )}
           <button
             type="submit"
             disabled={loading || !code.trim()}
-            className="btn-primary w-full py-3"
+            className="btn-primary w-full py-3 mt-2"
           >
             {loading ? 'Checking…' : 'Continue'}
           </button>
         </form>
-        <Link to="/" className="inline-block mt-8 text-[13px] text-text-dim hover:text-accent transition-colors duration-150">
-          ← Back to home
+        <Link to="/" className="inline-flex items-center gap-1.5 mt-8 text-[13px] text-text-dim hover:text-accent transition-colors duration-150">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Back to home
         </Link>
       </div>
     </div>
@@ -156,10 +168,11 @@ function WorkspaceOverview({
 
       {/* Page header */}
       <div className="relative border-b border-line-soft overflow-hidden">
-        <div className="absolute inset-0 grid-technical opacity-[0.12] pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-surface-body to-transparent pointer-events-none" />
+        <div className="absolute inset-0 grid-technical opacity-[0.10] pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-surface-body to-transparent pointer-events-none" />
         <div className="relative max-w-3xl mx-auto px-6 md:px-10 pt-14 pb-12">
-          <p className="font-mono text-[10px] font-medium text-accent/60 uppercase tracking-[0.22em] mb-5">
+          <p className="font-mono text-[10px] font-medium text-accent/50 uppercase tracking-[0.24em] mb-5 flex items-center gap-2">
+            <span className="w-3 h-px bg-accent/40 shrink-0" />
             Lesson workspace
           </p>
           <div className="flex items-end justify-between gap-8">
@@ -184,15 +197,15 @@ function WorkspaceOverview({
 
           {/* Inline stats */}
           {!loading && courses.length > 0 && (
-            <div className="flex items-center gap-8 mt-8 pt-6 border-t border-line-soft/50">
+            <div className="flex items-center gap-0 mt-8 pt-6 border-t border-line-soft/50">
               {[
                 { label: 'courses', value: courses.length },
                 { label: 'modules', value: totalModules },
                 { label: 'lessons', value: totalLessons },
-              ].map((stat) => (
-                <div key={stat.label} className="flex items-baseline gap-1.5">
-                  <span className="text-xl font-display font-bold text-text-primary tabular-nums">{stat.value}</span>
-                  <span className="text-[11px] text-text-dim tracking-wide">{stat.label}</span>
+              ].map((stat, i) => (
+                <div key={stat.label} className={`flex items-baseline gap-1.5 ${i > 0 ? 'ml-8 pl-8 border-l border-line-soft/50' : ''}`}>
+                  <span className="text-[1.35rem] font-display font-bold text-text-primary tabular-nums leading-none">{stat.value}</span>
+                  <span className="text-[10.5px] font-mono text-text-dim tracking-wide">{stat.label}</span>
                 </div>
               ))}
             </div>
@@ -329,8 +342,9 @@ function WorkspaceOverview({
                                 <button
                                   type="button"
                                   onClick={() => onEdit({ lesson: l, courseId: c.id, moduleId: m.id })}
-                                  className="group w-full flex items-center gap-4 px-6 py-4 hover:bg-surface-soft/60 active:bg-surface-soft transition-colors duration-150 text-left"
+                                  className="group w-full flex items-center gap-4 px-6 py-4 hover:bg-surface-soft/60 active:bg-surface-soft transition-colors duration-150 text-left relative overflow-hidden"
                                 >
+                                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-accent origin-center scale-y-0 group-hover:scale-y-100 transition-transform duration-200" />
                                   <span className="font-mono text-xs text-text-dim w-5 shrink-0 select-none">
                                     {String(li + 1).padStart(2, '0')}
                                   </span>
@@ -389,13 +403,17 @@ function SlideCard({
 
   return (
     <div
-      className={`group rounded-xl border bg-surface-raised transition-colors duration-150 ${
+      className={`group rounded-xl border bg-surface-raised transition-all duration-200 ${
         expanded
-          ? 'border-accent/40'
+          ? 'border-accent/40 shadow-minimal'
           : hasWarning
           ? 'border-amber-400/60'
-          : 'border-line-soft hover:border-text-dim/25'
+          : 'border-line-soft hover:border-text-dim/25 hover:shadow-minimal hover:-translate-y-px'
       }`}
+      style={{
+        animation: 'slide-card-enter 0.38s cubic-bezier(0.16,1,0.3,1) both',
+        animationDelay: `${Math.min(index * 38, 340)}ms`,
+      }}
     >
       <div className="flex items-center gap-3 px-5 py-4">
         <span className="font-mono text-[11px] text-text-dim/60 w-6 shrink-0 select-none tabular-nums">
@@ -407,12 +425,13 @@ function SlideCard({
           className="flex-1 min-w-0 text-left"
         >
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="inline-flex items-center px-2 py-[3px] rounded-md bg-accent/[0.08] text-accent text-[10px] font-bold tracking-wide uppercase">
+            <span className="inline-flex items-center px-2 py-[3px] rounded-md bg-accent/[0.07] text-accent text-[9.5px] font-bold tracking-[0.06em] uppercase">
               {slideKindLabel(slide)}
             </span>
             {hasWarning && !expanded && (
-              <span className="inline-flex items-center gap-1 px-2 py-[3px] rounded-md bg-amber-400/10 text-amber-600 text-[10px] font-bold tracking-wide uppercase">
-                ⚠ {warnings.length}
+              <span className="inline-flex items-center gap-1 px-2 py-[3px] rounded-md bg-amber-400/10 text-amber-600 text-[9.5px] font-bold tracking-[0.06em] uppercase">
+                <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M5 1.5L9 8.5H1L5 1.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/><path d="M5 4.5v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                {warnings.length}
               </span>
             )}
           </div>
@@ -518,44 +537,82 @@ function SlideCard({
 
 /* ── Add-slide palette ─────────────────────────────────────────────────────── */
 
+const PALETTE_CATEGORIES = [
+  { label: 'Content',   types: ['text', 'media', 'divider'] },
+  { label: 'Practice',  types: ['choice', 'choice-tf', 'fillblank', 'match', 'order', 'timeline', 'hotspot'] },
+  { label: 'Study',     types: ['cards'] },
+  { label: 'Visual',    types: ['chart', 'diagram', 'desmos', 'embed', 'table'] },
+];
+
 function AddSlideBar({ onAddSlide }) {
   const [open, setOpen] = useState(false);
+
   return (
-    <div className="mt-6 mb-14">
+    <div className="mt-8 mb-16">
       {open ? (
-        <div className="rounded-xl border border-line-soft bg-surface-raised p-4 animate-slide-card-enter">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] font-bold text-text-dim uppercase tracking-[0.07em]">Insert slide</p>
+        <div
+          className="rounded-2xl border border-line-soft bg-surface-raised overflow-hidden animate-slide-card-enter"
+          style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)' }}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 pt-4 pb-3.5 border-b border-line-soft/60 bg-surface-soft/40">
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                style={{ background: 'var(--accent)' }}
+              >
+                <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                  <path d="M4.5 1v7M1 4.5h7" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </div>
+              <p className="text-[11.5px] font-bold text-text-primary tracking-wide">Add slide</p>
+            </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="w-5 h-5 flex items-center justify-center rounded-full text-text-dim hover:text-text-primary hover:bg-surface-soft transition-colors duration-100 text-xs"
+              className="w-6 h-6 flex items-center justify-center rounded-full border border-line-soft text-text-dim hover:text-text-primary hover:border-text-dim/40 transition-colors duration-150"
             >
-              ✕
+              <svg width="8" height="8" viewBox="0 0 9 9" fill="none">
+                <path d="M1.5 1.5L7.5 7.5M7.5 1.5L1.5 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
             </button>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
-            {SLIDE_PALETTE.map((p) => (
-              <button
-                key={p.type}
-                type="button"
-                onClick={() => { onAddSlide(p.type); setOpen(false); }}
-                className="flex flex-col items-start gap-0.5 px-3 py-2.5 rounded-lg border border-transparent hover:border-line-soft hover:bg-surface-soft text-left transition-all duration-100"
-              >
-                <span className="text-xs font-semibold text-text-primary leading-tight">{p.label}</span>
-                <span className="text-[10px] text-text-dim leading-snug">{p.desc}</span>
-              </button>
-            ))}
+
+          {/* Categorised grid */}
+          <div className="divide-y divide-line-soft/40">
+            {PALETTE_CATEGORIES.map((cat) => {
+              const items = SLIDE_PALETTE.filter((p) => cat.types.includes(p.type));
+              return (
+                <div key={cat.label} className="px-4 py-3">
+                  <p className="font-mono text-[9px] font-semibold text-text-dim/50 uppercase tracking-[0.14em] mb-2 px-1">{cat.label}</p>
+                  <div className="grid grid-cols-3 gap-1">
+                    {items.map((p) => (
+                      <button
+                        key={p.type}
+                        type="button"
+                        onClick={() => { onAddSlide(p.type); setOpen(false); }}
+                        className="group flex flex-col items-start gap-0.5 px-3 py-2.5 rounded-xl border border-transparent hover:border-accent/20 hover:bg-accent/[0.04] text-left transition-all duration-100"
+                      >
+                        <span className="text-[11.5px] font-semibold text-text-muted group-hover:text-accent leading-tight transition-colors duration-100">{p.label}</span>
+                        <span className="text-[9.5px] text-text-dim leading-snug">{p.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm text-text-dim/60 hover:text-accent hover:bg-accent/[0.04] transition-colors duration-150"
+          className="group w-full flex items-center justify-center gap-2.5 py-4 rounded-xl border border-dashed border-line-soft text-text-dim/50 hover:text-accent hover:border-accent/40 hover:bg-accent/[0.03] transition-all duration-200"
         >
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M1.5 6.5h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-          Add slide
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+          <span className="text-[13px] font-medium">Add slide</span>
         </button>
       )}
     </div>
@@ -611,19 +668,22 @@ function LessonBuilder({ lessonId, draft, setDraft, saveMsg, onNewSlide, onAddSl
         <input
           value={draft.title}
           onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
-          className="w-full bg-transparent text-[2.5rem] md:text-5xl font-display font-bold text-text-primary tracking-tight focus:outline-none leading-none pb-3 border-b border-transparent focus:border-line-soft/50 transition-colors duration-200"
+          className="w-full bg-transparent text-[2.5rem] md:text-5xl font-display font-bold text-text-primary tracking-tight focus:outline-none leading-none pb-3 border-b border-transparent focus:border-accent/25 transition-colors duration-200"
           placeholder="Untitled lesson"
         />
 
-        {/* Slide count */}
+        {/* Slide count badge */}
         {draft.slides.length > 0 && (
-          <p className="font-mono text-[11px] text-text-dim/50 mt-3 tracking-wide">
-            {draft.slides.length} slide{draft.slides.length !== 1 ? 's' : ''}
-          </p>
+          <div className="mt-3 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-medium text-text-dim/60 tracking-wide">
+              <span className="w-1 h-1 rounded-full bg-text-dim/40 shrink-0" />
+              {draft.slides.length} slide{draft.slides.length !== 1 ? 's' : ''}
+            </span>
+          </div>
         )}
 
         {/* Divider */}
-        <div className="mt-8 mb-8 h-px bg-line-soft/50" />
+        <div className="mt-7 mb-7 h-px bg-gradient-to-r from-line-soft via-line-soft/50 to-transparent" />
 
         {saveMsg && (
           <div className={`mb-6 flex items-start gap-2.5 px-4 py-3 rounded-xl border text-sm animate-slide-card-enter ${
@@ -645,11 +705,23 @@ function LessonBuilder({ lessonId, draft, setDraft, saveMsg, onNewSlide, onAddSl
         {/* Slide list */}
         <div className="space-y-3">
           {draft.slides.length === 0 && (
-            <div className="flex flex-col items-center py-14">
-              <div className="rounded-xl bg-surface-raised border border-line-soft px-8 py-6 text-center inline-flex flex-col items-center">
-                <p className="font-mono text-[10px] font-medium text-text-dim/50 uppercase tracking-[0.2em] mb-2.5 select-none">no slides yet</p>
-                <p className="text-[13px] text-text-dim leading-relaxed">Use the button below to add your first slide.</p>
+            <div className="flex flex-col items-center py-20 animate-fade-up">
+              {/* Slide stack illustration */}
+              <div className="relative mb-10 w-28 h-20">
+                <div className="absolute inset-0 rounded-xl border border-line-soft/70 bg-surface-raised/70 rotate-[7deg] translate-x-2.5 translate-y-1 shadow-minimal" />
+                <div className="absolute inset-0 rounded-xl border border-line-soft/80 bg-surface-raised/85 rotate-[3.5deg] translate-x-1.5 shadow-minimal" />
+                <div className="absolute inset-0 rounded-xl border-2 border-dashed border-line-soft bg-surface-body flex items-center justify-center shadow-minimal">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M11 4v14M4 11h14" stroke="var(--text-dim)" strokeOpacity="0.5" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </div>
               </div>
+              <h3 className="text-[1.35rem] font-display font-bold text-text-primary tracking-tight leading-none mb-2.5">
+                Ready for your first slide?
+              </h3>
+              <p className="text-[13px] text-text-dim leading-relaxed text-center max-w-[220px]">
+                Use AI to generate a full lesson instantly, or build slide by slide below.
+              </p>
             </div>
           )}
           {draft.slides.map((s, i) => (
@@ -693,6 +765,7 @@ export default function Editor() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [lastAddedId, setLastAddedId] = useState(null);
   const [showAI, setShowAI] = useState(false);
+  const [showGeneratePanel, setShowGeneratePanel] = useState(false);
   const [aiMessages, setAiMessages] = useState([]);
   const [aiLoading, setAiLoading] = useState(false);
   const [panelWidth, setPanelWidth] = useState(420);
@@ -809,6 +882,15 @@ export default function Editor() {
   const handleAIAddSlide = useCallback((cmd) => {
     addSlideFromType(cmd.paletteType);
   }, [addSlideFromType]);
+
+  const handleGenerateApply = useCallback((slides, mode) => {
+    const decorated = slides.map(decorate);
+    setDraft((d) => ({
+      ...d,
+      slides: mode === 'replace' ? decorated : [...d.slides, ...decorated],
+    }));
+    if (decorated.length) setLastAddedId(decorated[decorated.length - 1]._id);
+  }, []);
 
   const handleBack = () => {
     if (dirty && !window.confirm('You have unsaved changes. Go back to the workspace without saving?')) return;
@@ -969,7 +1051,7 @@ export default function Editor() {
     <div className="h-[100dvh] pt-14 md:pt-16 bg-surface-body text-text-primary flex flex-col overflow-hidden">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <header className="shrink-0 border-b border-line-soft bg-surface-body/95 backdrop-blur-md">
+      <header className="shrink-0 border-b border-line-soft bg-surface-raised/80 backdrop-blur-md">
         <div className="px-4 md:px-6 h-12 flex items-center gap-2 md:gap-3 min-w-0">
 
           {inLessonMode ? (
@@ -1014,6 +1096,17 @@ export default function Editor() {
                     <path d="M5.5 0.75 L6.4 3.6 L9.25 5.5 L6.4 7.4 L5.5 10.25 L4.6 7.4 L1.75 5.5 L4.6 3.6 Z" fill="currentColor" />
                   </svg>
                   AI
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowGeneratePanel(true)}
+                  title="Generate slides"
+                  className="h-8 px-3 rounded-full border border-line-soft text-text-muted hover:text-text-primary hover:border-text-dim text-sm font-medium transition-colors duration-150 flex items-center gap-1.5"
+                >
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 0.75 L6.4 3.6 L9.25 5.5 L6.4 7.4 L5.5 10.25 L4.6 7.4 L1.75 5.5 L4.6 3.6 Z" fill="currentColor" />
+                  </svg>
+                  Generate
                 </button>
                 <button
                   type="button"
@@ -1083,7 +1176,7 @@ export default function Editor() {
             />
             {showAI && (
               <div
-                className="shrink-0 border-l border-line-soft flex flex-col relative"
+                className="shrink-0 border-l border-line-soft flex flex-col relative animate-panel-enter"
                 style={{ width: panelWidth }}
               >
                 {/* Drag handle */}
@@ -1123,6 +1216,12 @@ export default function Editor() {
         onClose={() => setPreviewOpen(false)}
         title={draft?.title}
         slides={draft?.slides || []}
+      />
+      <AIGeneratePanel
+        open={showGeneratePanel}
+        onClose={() => setShowGeneratePanel(false)}
+        lessonTitle={draft?.title || ''}
+        onApply={handleGenerateApply}
       />
     </div>
   );

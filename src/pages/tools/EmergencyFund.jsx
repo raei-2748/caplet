@@ -41,12 +41,12 @@ const EmergencyFund = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Risk Management</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Emergency <br />Fund.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Emergency Fund
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Analyze your capital resilience and define the necessary liquidity buffer for unexpected transitions.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                Find out how much you need saved for unexpected expenses or job loss.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -58,11 +58,11 @@ const EmergencyFund = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Reserve Parameters</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your details</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                  Critical Monthly Burn Rate (AUD)
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Monthly expenses (AUD)
                 </label>
                 <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                   <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -76,14 +76,14 @@ const EmergencyFund = () => {
                     className="w-full bg-transparent pl-8 pr-4 py-4 text-2xl font-bold text-text-primary outline-none placeholder:text-text-dim/20"
                   />
                 </div>
-                <p className="text-xs font-medium text-text-dim mt-4">
-                  Includes: Shelter, sustenance, and mandatory liabilities.
+                <p className="text-sm font-medium text-text-dim mt-4">
+                  Include rent, food, bills, and other essentials.
                 </p>
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                  Sustainability Window
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Months of coverage
                 </label>
                 <select
                   value={monthsCoverage}
@@ -98,7 +98,7 @@ const EmergencyFund = () => {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
+                <label className="text-base font-semibold text-text-dim mb-4 block">
                   Current savings
                 </label>
                 <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
@@ -116,14 +116,14 @@ const EmergencyFund = () => {
               </div>
 
               <button type="submit" className="btn-primary w-full py-6 text-sm mt-8">
-                Analyze Resilience
+                Calculate
               </button>
             </form>
           </div>
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Resilience Analysis</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               result.error ? (
@@ -131,7 +131,7 @@ const EmergencyFund = () => {
               ) : (
                 <div className="space-y-12 relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-4 italic">Target Liquid Reserve</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Target amount</p>
                     <p className="text-5xl font-black tracking-tighter text-text-primary">
                       {formatCurrency(result.recommended)}
                     </p>
@@ -143,7 +143,7 @@ const EmergencyFund = () => {
                   {result.current > 0 && (
                     <div className="pt-10 border-t border-line-soft space-y-10">
                       <div>
-                        <p className="text-xs font-medium text-text-dim mb-4">Saturation Level</p>
+                        <p className="text-sm font-medium text-text-dim mb-4">Current savings</p>
                         <div className="flex items-end justify-between mb-3">
                           <p className="text-2xl font-bold">{formatCurrency(result.current)}</p>
                           <p className="text-xs font-bold text-accent">{result.percentage.toFixed(1)}%</p>
@@ -158,13 +158,13 @@ const EmergencyFund = () => {
 
                       {result.shortfall > 0 ? (
                         <div>
-                          <p className="text-xs font-medium text-text-dim mb-2 font-serif italic">Capital Shortfall</p>
+                          <p className="text-sm font-medium text-text-dim mb-2">Amount still needed</p>
                           <p className="text-xl font-bold text-text-primary">{formatCurrency(result.shortfall)}</p>
                         </div>
                       ) : (
                         <div className="p-8 bg-accent/5 border border-accent/20">
-                          <p className="text-xs font-black text-accent">
-                            ✓ Target Saturation Achieved
+                          <p className="text-sm font-black text-accent">
+                            ✓ Target reached
                           </p>
                         </div>
                       )}
@@ -173,9 +173,9 @@ const EmergencyFund = () => {
 
                   <div className="pt-12 border-t border-line-soft space-y-6">
                     {[
-                      'Prioritize immediate liquidity',
-                      'Exclude non-essential consumption',
-                      'Recalibrate per life stage shift'
+                      'Keep it in a high-interest savings account',
+                      'Only count essential expenses',
+                      'Review when your expenses change'
                     ].map((step, idx) => (
                       <div key={idx} className="flex items-center gap-4 text-xs font-medium text-text-dim">
                         <div className="w-1 h-1 bg-accent" />
@@ -188,7 +188,7 @@ const EmergencyFund = () => {
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center opacity-30 relative z-10">
                 <div className="w-12 h-12 border border-line-soft flex items-center justify-center text-4xl font-serif italic mb-8">!</div>
-                <p className="text-sm font-medium">Economic Data Missing</p>
+                <p className="text-sm font-medium">Enter your details to see results</p>
               </div>
             )}
           </div>

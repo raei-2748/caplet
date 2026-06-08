@@ -48,12 +48,12 @@ const SalaryCalculator = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Compensation</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Salary <br />Genesis.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Salary Calculator
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Synthesize your net liquidity and map the distribution of your total compensation package.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                Calculate your take-home pay after tax, Medicare, and super.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -65,11 +65,11 @@ const SalaryCalculator = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Compensation Inputs</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your salary</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                  Gross Annual Revenue (AUD)
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Gross annual salary (AUD)
                 </label>
                 <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                   <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -87,8 +87,8 @@ const SalaryCalculator = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Superannuation Rate (%)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Superannuation rate (%)
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -102,7 +102,7 @@ const SalaryCalculator = () => {
                     />
                     <span className="absolute right-0 bottom-2 text-text-dim font-bold text-sm">%</span>
                   </div>
-                  <p className="text-xs font-bold text-text-dim mt-4">STATUTORY DEFAULT: 11% (23/24)</p>
+                  <p className="text-sm font-medium text-text-dim mt-4">Current statutory rate: 11%</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -118,14 +118,14 @@ const SalaryCalculator = () => {
               </div>
 
               <button type="submit" className="btn-primary w-full py-6 text-sm mt-8">
-                Confirm Breakdown
+                Calculate
               </button>
             </form>
           </div>
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Net Projection</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               result.error ? (
@@ -133,7 +133,7 @@ const SalaryCalculator = () => {
               ) : (
                 <div className="space-y-12 relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-4 italic">Annual Net Liquidity</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Annual take-home pay</p>
                     <p className="text-5xl font-black tracking-tighter text-text-primary">
                       {formatCurrency(result.netPay)}
                     </p>
@@ -141,7 +141,7 @@ const SalaryCalculator = () => {
 
                   <div className="space-y-8 pt-10 border-t border-line-soft">
                     <div className="flex justify-between items-end">
-                      <p className="text-xs font-medium text-text-dim">Gross Annual</p>
+                      <p className="text-sm font-medium text-text-dim">Gross annual</p>
                       <p className="text-xl font-bold">{formatCurrency(result.gross)}</p>
                     </div>
 

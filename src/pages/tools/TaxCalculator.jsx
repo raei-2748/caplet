@@ -66,12 +66,12 @@ const TaxCalculator = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Compliance</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Tax <br />Architecture.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Tax Calculator
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Synthesize your fiscal obligation and optimize net outcome based on residency brackets.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                Estimate your income tax and Medicare levy for the current year.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -83,11 +83,11 @@ const TaxCalculator = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Assessment Parameters</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your income</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                  Annual Taxable Income (AUD)
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Annual taxable income (AUD)
                 </label>
                 <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                   <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -111,8 +111,8 @@ const TaxCalculator = () => {
                   onChange={(e) => setIncludeMedicare(e.target.checked)}
                   className="w-5 h-5 accent-accent bg-transparent border-line-soft"
                 />
-                <label htmlFor="medicare" className="text-sm font-semibold text-text-primary">
-                  Integrate Medicare Levy (2.0%)
+                <label htmlFor="medicare" className="text-base font-semibold text-text-primary">
+                  Include Medicare levy (2%)
                 </label>
               </div>
 
@@ -123,19 +123,19 @@ const TaxCalculator = () => {
               )}
 
               <button type="submit" className="btn-primary w-full py-6 text-sm mt-8">
-                Execute Assessment
+                Calculate
               </button>
             </form>
           </div>
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Fiscal Summary</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               <div className="space-y-12 relative z-10">
                 <div>
-                  <p className="text-xs font-medium text-text-dim mb-4 italic">Estimated Liability</p>
+                  <p className="text-sm font-medium text-text-dim mb-4">Estimated tax</p>
                   <p className="text-5xl font-black tracking-tighter text-text-primary">
                     {formatCurrency(result.totalTax)}
                   </p>
@@ -155,14 +155,14 @@ const TaxCalculator = () => {
                   </div>
 
                   <div className="bg-surface-body p-8 border border-line-soft">
-                    <p className="text-xs font-medium text-text-dim mb-4">Net Liquidity (Annual)</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Take-home pay (annual)</p>
                     <p className="text-3xl font-black text-accent">{formatCurrency(result.netIncome)}</p>
                   </div>
 
                   <div className="pt-8 border-t border-line-soft text-xs text-text-dim space-y-2 opacity-60 font-bold">
                     <p>• AU Resident Rates (2023-24)</p>
                     <p>• Excludes HECS/HELP Adjustments</p>
-                    <p>• Schematic Educational Purpose Only</p>
+                    <p>• For estimates only</p>
                   </div>
                 </div>
               </div>

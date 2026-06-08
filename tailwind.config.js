@@ -49,6 +49,7 @@ export default {
         minimal: '0 1px 3px rgba(0, 0, 0, 0.05)',
         'minimal-lg': '0 4px 12px rgba(0, 0, 0, 0.08)',
         glow: '0 0 20px var(--accent-soft)',
+        'ticker-active': '0 0 8px 1px var(--accent)',
       },
       borderRadius: {
         none: '0',
@@ -66,7 +67,8 @@ export default {
         'dot-bounce': 'dot-bounce 1.1s ease-in-out infinite',
         'dot-wave': 'dot-wave 1.3s ease-in-out infinite',
         'status-pulse': 'status-pulse 2.4s ease-in-out infinite',
-        'slide-card-enter': 'slide-card-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'slide-card-enter': 'slide-card-enter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-up': 'fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
       },
       keyframes: {
         'progress-indefinite': {
@@ -101,7 +103,11 @@ export default {
           '50%': { opacity: '0.5', transform: 'scale(0.85)' },
         },
         'slide-card-enter': {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(14px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },

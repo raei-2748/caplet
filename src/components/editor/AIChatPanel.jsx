@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { SLASH_COMMANDS } from '../../lib/slideCommands';
 import { extractPdfText } from '../../lib/pdfExtract';
 
@@ -105,6 +105,29 @@ const LOADING_STAGES = [
   'Finishing up…',
 ];
 
+const EXAMPLE_PROMPTS = [
+  {
+    title: 'Full lesson',
+    desc: 'Intro, concepts, examples & practice',
+    text: 'Create a complete lesson covering the topic end to end — a hero introduction, key concept explanations, worked examples, and varied practice questions.',
+  },
+  {
+    title: 'Quiz set',
+    desc: '8 mixed-format practice questions',
+    text: 'Generate 8 quiz slides — a mix of multiple choice, fill in the blank, and matching pairs. Include correct answers and brief explanations.',
+  },
+  {
+    title: 'Flashcards',
+    desc: 'Key terms & definitions for recall',
+    text: 'Create 10 flashcard slides for active recall of the key terms, definitions, and formulas from this lesson.',
+  },
+  {
+    title: 'Summary',
+    desc: 'Condensed revision reference',
+    text: 'Make a concise revision summary — divider sections for each topic, key takeaway callouts, a comparison table if relevant, and a flashcard set at the end.',
+  },
+];
+
 export function LoadingBubble() {
   const [stage, setStage] = useState(0);
 
@@ -209,7 +232,6 @@ function SlashMenu({ filter, onSelect, activeIndex }) {
 function ModelPicker({ model, onChange, formatterModel, onFormatterChange }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-  const current = MODEL_OPTIONS.find((m) => m.id === model) || MODEL_OPTIONS[1];
 
   useEffect(() => {
     if (!open) return;
@@ -354,7 +376,7 @@ function SlideCountPicker({ slideCount, onChange }) {
 
 /* ── Chat input ──────────────────────────────────────────────────────────────── */
 
-export function ChatInput({ onSubmit, onAddSlide, onClear, loading, model, onModelChange, formatterModel, onFormatterModelChange, placeholder, className = '' }) {
+export const ChatInput = forwardRef(function ChatInput({ onSubmit, onAddSlide, onClear, loading, model, onModelChange, formatterModel, onFormatterModelChange, placeholder, className = '' }, ref) {
   const [input, setInput] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const [menuFilter, setMenuFilter] = useState('');
@@ -389,6 +411,7 @@ export function ChatInput({ onSubmit, onAddSlide, onClear, loading, model, onMod
     setInput('');
     setShowMenu(false);
     setMenuFilter('');
+    setPdfError('');
     setTimeout(() => { inputRef.current?.focus(); }, 0);
   };
 
@@ -448,8 +471,8 @@ export function ChatInput({ onSubmit, onAddSlide, onClear, loading, model, onMod
     setPdfError('');
   };
 
-  const handleSend = () => {
-    const text = input.trim();
+  const sendText = (rawText) => {
+    const text = (rawText || '').trim();
     if (!text || loading || isPdfLoading || overLimit) return;
     if (text.startsWith('/')) {
       const slug = text.slice(1).toLowerCase();
@@ -466,6 +489,12 @@ export function ChatInput({ onSubmit, onAddSlide, onClear, loading, model, onMod
     setShowMenu(false);
     if (inputRef.current) inputRef.current.style.height = 'auto';
   };
+
+  const handleSend = () => sendText(input);
+
+  // Let the panel's example-prompt cards submit through the real send path,
+  // so any attachment and the chosen slide count are included.
+  useImperativeHandle(ref, () => ({ submitPrompt: sendText }));
 
   const handleKeyDown = (e) => {
     if (showMenu && filteredCmds.length > 0) {
@@ -647,7 +676,7 @@ export function ChatInput({ onSubmit, onAddSlide, onClear, loading, model, onMod
       </div>
     </div>
   );
-}
+});
 
 /* ── Full panel ───────────────────────────────────────────────────────────────── */
 
@@ -655,12 +684,18 @@ export default function AIChatPanel({ messages, loading, onSubmit, onAddSlide, o
   const [model, setModel] = useState('gpt-5.4-mini');
   const [formatterModel, setFormatterModel] = useState('gpt-5.4-mini');
   const bottomRef = useRef(null);
+  const chatInputRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
   const isEmpty = messages.length === 0 && !loading;
+
+  // Route through ChatInput so any attachment and the chosen slide count are sent.
+  const handleExamplePrompt = (text) => {
+    chatInputRef.current?.submitPrompt(text);
+  };
 
   return (
     <div className="flex flex-col h-full bg-surface-body">
@@ -671,15 +706,39 @@ export default function AIChatPanel({ messages, loading, onSubmit, onAddSlide, o
 
         <div className="px-4 pt-3 pb-5 space-y-4">
           {isEmpty ? (
-            <div className="flex flex-col items-center justify-center min-h-[200px] py-12 text-center px-5">
-              <AIAvatar size="lg" className="mb-3.5" />
-              <p className="text-[14px] font-semibold text-text-muted mb-1.5">Caplet AI</p>
-              <p className="text-[13px] text-text-dim leading-relaxed max-w-[200px]">
-                Describe what to generate, or type{' '}
-                <span className="inline font-mono font-bold text-accent text-[10px] rounded-md border border-accent/40 bg-accent/[0.08] px-1.5 py-[2px]">
+            <div className="flex flex-col items-center pt-8 pb-4 px-2">
+              <AIAvatar size="lg" className="mb-3" />
+              <p className="text-[13.5px] font-semibold text-text-muted mb-1">Caplet AI</p>
+              <p className="text-[12px] text-text-dim text-center leading-relaxed mb-6 max-w-[210px]">
+                Describe what to generate, or pick a starting point below.
+              </p>
+
+              {/* Example prompt cards */}
+              <div className="w-full grid grid-cols-2 gap-2">
+                {EXAMPLE_PROMPTS.map((p) => (
+                  <button
+                    key={p.title}
+                    type="button"
+                    onClick={() => handleExamplePrompt(p.text)}
+                    className="group flex flex-col items-start gap-1 px-3 py-2.5 rounded-xl border border-line-soft bg-surface-raised text-left transition-all duration-150 hover:border-accent/40 hover:bg-accent/[0.03] active:scale-[0.98]"
+                    style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}
+                  >
+                    <span className="text-[12px] font-semibold text-text-primary leading-tight group-hover:text-accent transition-colors duration-150">
+                      {p.title}
+                    </span>
+                    <span className="text-[10.5px] text-text-dim leading-snug">
+                      {p.desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <p className="mt-5 text-[11px] text-text-dim/50 text-center">
+                or type{' '}
+                <span className="font-mono font-bold text-accent text-[10px] rounded border border-accent/30 bg-accent/[0.07] px-1.5 py-[2px]">
                   /
                 </span>
-                {' '}to pick a slide type.
+                {' '}to insert a specific slide type
               </p>
             </div>
           ) : (
@@ -696,6 +755,7 @@ export default function AIChatPanel({ messages, loading, onSubmit, onAddSlide, o
       <div className="shrink-0 px-4 pb-4 pt-2.5 border-t border-line-soft relative">
         <div className="absolute -top-6 inset-x-0 h-6 bg-gradient-to-b from-transparent to-surface-body pointer-events-none" />
         <ChatInput
+          ref={chatInputRef}
           onSubmit={onSubmit}
           onAddSlide={onAddSlide}
           onClear={onClear}

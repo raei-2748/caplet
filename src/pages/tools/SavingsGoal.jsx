@@ -63,12 +63,12 @@ const SavingsGoal = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Objectives</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Target <br />Architecture.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Savings Goal
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Define your capital objectives and calculate the temporal distance to maturity.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                Find out how long it will take to reach your savings goal.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -80,12 +80,12 @@ const SavingsGoal = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Objective Parameters</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your goal</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Target Capital (AUD)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Goal amount (AUD)
                   </label>
                   <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                     <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -102,8 +102,8 @@ const SavingsGoal = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Existing Liquidity
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Current savings (AUD)
                   </label>
                   <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                     <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -122,8 +122,8 @@ const SavingsGoal = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Monthly Injection
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Monthly contribution
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -139,8 +139,8 @@ const SavingsGoal = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Expected Yield (%)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Annual interest rate (%)
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -166,7 +166,7 @@ const SavingsGoal = () => {
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Temporal Projection</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               result.error ? (
@@ -174,21 +174,21 @@ const SavingsGoal = () => {
               ) : (
                 <div className="space-y-12 relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-4 italic">Time to Maturity</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Time to reach goal</p>
                     <p className="text-5xl font-black tracking-tighter text-text-primary">
                       {result.months} <span className="text-xl text-text-dim font-bold">Months</span>
                     </p>
-                    <p className="text-xs font-bold text-text-muted mt-4">Equivalent to {result.years.toFixed(1)} annual cycles</p>
+                    <p className="text-sm font-medium text-text-muted mt-4">{result.years.toFixed(1)} years</p>
                   </div>
 
                   <div className="pt-10 border-t border-line-soft space-y-8">
                     <div className="flex justify-between items-end">
                       <div>
-                        <p className="text-xs font-medium text-text-dim mb-1">Total Injected</p>
+                        <p className="text-sm font-medium text-text-dim mb-1">Total contributed</p>
                         <p className="text-xl font-bold">{formatCurrency(result.totalContributed)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-medium text-text-dim mb-1">Accrued Yield</p>
+                        <p className="text-sm font-medium text-text-dim mb-1">Interest earned</p>
                         <p className="text-xl font-bold text-accent">{formatCurrency(result.interestEarned)}</p>
                       </div>
                     </div>
@@ -201,11 +201,6 @@ const SavingsGoal = () => {
                       </div>
                     </div>
 
-                    <div className="pt-8 border-t border-line-soft">
-                      <p className="text-xs font-serif italic text-text-dim leading-relaxed">
-                        Definiton of a goal is the primary catalyst for economic discipline. Visualization is the first step toward acquisition.
-                      </p>
-                    </div>
                   </div>
                 </div>
               )

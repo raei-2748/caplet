@@ -48,12 +48,12 @@ const MortgageCalculator = () => {
         <header className="mb-24 reveal-text">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
-              <span className="section-kicker">Tools &rarr; Mortgage</span>
-              <h1 className="text-6xl md:text-8xl mb-8">
-                Equity <br />Strategist.
+              <span className="section-kicker">Tools</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Mortgage Calculator
               </h1>
-              <p className="text-xl text-text-muted leading-relaxed font-serif italic max-w-xl">
-                Simulate property acquisition debt and optimize your long-term capital allocation strategies.
+              <p className="text-base text-text-muted leading-relaxed max-w-xl">
+                Calculate your mortgage repayments and total interest.
               </p>
             </div>
             <Link to="/tools" className="btn-secondary text-sm px-8">
@@ -65,11 +65,11 @@ const MortgageCalculator = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-line-soft border border-line-soft reveal-text stagger-1">
           <div className="lg:col-span-7 bg-surface-body p-12 lg:p-20">
-            <h2 className="text-sm font-semibold text-text-muted mb-16">Acquisition Parameters</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16">Your mortgage details</h2>
             <form onSubmit={handleSubmit} className="space-y-16">
               <div>
-                <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                  Property Loan Amount (AUD)
+                <label className="text-base font-semibold text-text-dim mb-4 block">
+                  Loan amount (AUD)
                 </label>
                 <div className="relative border-b-2 border-line-soft focus-within:border-accent transition-colors">
                   <span className="absolute left-0 bottom-4 text-text-dim font-bold">$</span>
@@ -87,8 +87,8 @@ const MortgageCalculator = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Annual Rate (%)
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Annual rate (%)
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -106,8 +106,8 @@ const MortgageCalculator = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-text-dim mb-4 block italic">
-                    Loan Term
+                  <label className="text-base font-semibold text-text-dim mb-4 block">
+                    Loan term (years)
                   </label>
                   <div className="relative border-b border-line-soft focus-within:border-accent transition-colors">
                     <input
@@ -125,14 +125,14 @@ const MortgageCalculator = () => {
               </div>
 
               <button type="submit" className="btn-primary w-full py-6 text-sm mt-8">
-                Generate Amortization Logic
+                Calculate
               </button>
             </form>
           </div>
 
           <div className="lg:col-span-5 bg-surface-raised p-12 lg:p-20 flex flex-col min-h-full relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] grid-technical !bg-[size:30px_30px] pointer-events-none" />
-            <h2 className="text-sm font-semibold text-text-muted mb-16 relative z-10">Economic Projection</h2>
+            <h2 className="text-base font-semibold text-text-muted mb-16 relative z-10">Results</h2>
 
             {result ? (
               result.error ? (
@@ -140,7 +140,7 @@ const MortgageCalculator = () => {
               ) : (
                 <div className="space-y-12 relative z-10">
                   <div>
-                    <p className="text-xs font-medium text-text-dim mb-4 italic">Standard Monthly Installment</p>
+                    <p className="text-sm font-medium text-text-dim mb-4">Monthly repayment</p>
                     <p className="text-5xl font-black tracking-tighter text-text-primary">
                       {formatCurrency(result.monthlyPayment)}
                     </p>
@@ -160,20 +160,15 @@ const MortgageCalculator = () => {
                   <div className="pt-10 border-t border-line-soft space-y-8">
                     <div className="flex justify-between items-end">
                       <div>
-                        <p className="text-xs font-medium text-text-dim mb-1">Aggregate Obligation</p>
+                        <p className="text-sm font-medium text-text-dim mb-1">Total repaid</p>
                         <p className="text-xl font-bold">{formatCurrency(result.totalPayments)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-medium text-text-dim mb-1">Interest Layer</p>
+                        <p className="text-sm font-medium text-text-dim mb-1">Total interest</p>
                         <p className="text-xl font-bold text-accent">{formatCurrency(result.totalInterest)}</p>
                       </div>
                     </div>
 
-                    <div className="pt-8 border-t border-line-soft">
-                      <p className="text-xs font-serif italic text-text-dim leading-relaxed">
-                        Property acquisition remains the primary mechanism for domestic capital accumulation. Repayment discipline is paramount.
-                      </p>
-                    </div>
                   </div>
                 </div>
               )
