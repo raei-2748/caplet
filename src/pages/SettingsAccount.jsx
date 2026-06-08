@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const SettingsAccount = () => {
   const { user, updateProfile } = useAuth();
+  const { isSidebar, toggleNavLayout } = useTheme();
   const [updating, setUpdating] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -34,12 +36,54 @@ const SettingsAccount = () => {
           <div
             className={`px-6 py-4 border font-medium text-sm ${message.type === 'success'
               ? 'border-accent text-accent'
-              : 'border-red-500 text-red-500'
+              : 'border-line-error text-text-error'
               }`}
           >
             {message.type === 'success' ? 'Success:' : 'Error:'} {message.text}
           </div>
         )}
+
+        {/* Navigation Layout */}
+        <div>
+          <h3 className="text-sm font-semibold text-text-dim mb-6">Navigation Layout</h3>
+          <div className="p-10 bg-surface-soft border border-line-soft">
+            <p className="text-sm font-medium text-text-dim leading-relaxed mb-8 max-w-sm">
+              Choose between a top navigation bar or a collapsible vertical sidebar. The sidebar is only available on larger screens.
+            </p>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => isSidebar && toggleNavLayout()}
+                className={`flex flex-col items-center gap-3 px-6 py-5 border rounded-lg transition-all duration-200 ${
+                  !isSidebar
+                    ? 'border-accent bg-accent-soft text-accent'
+                    : 'border-line-soft text-text-dim hover:border-text-dim hover:text-text-primary'
+                }`}
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+                <span className="text-xs font-semibold">Top bar</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => !isSidebar && toggleNavLayout()}
+                className={`flex flex-col items-center gap-3 px-6 py-5 border rounded-lg transition-all duration-200 ${
+                  isSidebar
+                    ? 'border-accent bg-accent-soft text-accent'
+                    : 'border-line-soft text-text-dim hover:border-text-dim hover:text-text-primary'
+                }`}
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h3v12H4zm6-0h10M10 12h10M10 18h10" />
+                </svg>
+                <span className="text-xs font-semibold">Sidebar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Access Level */}
         <div>
           <h3 className="text-sm font-semibold text-text-dim mb-6">Access Level</h3>
           <div className="p-10 bg-surface-soft border border-line-soft">

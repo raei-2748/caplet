@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { NAV_ITEMS, NAV_HIDE_PATHS, filterNavItems, isNavActive } from '../config/navItems';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,28 +34,16 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const allNavItems = [
-    { path: '/', label: 'Home', publicOnly: true },
-    { path: '/dashboard', label: 'Dashboard', privateOnly: true },
-    { path: '/courses', label: 'Curriculum' },
-    { path: '/classes', label: 'Academy' },
-    { path: '/tools', label: 'Instruments' },
-    { path: '/editor', label: 'Editor', privateOnly: true },
-  ];
-
-  const navItems = allNavItems.filter((item) => {
-    if (isAuthenticated) return !item.publicOnly;
-    return !item.privateOnly;
-  });
+  // Revision is handled as a standalone icon button in the actions bar, so exclude it from the main link list.
+  const mainNavItems = filterNavItems(
+    NAV_ITEMS.filter(item => item.path !== '/revision'),
+    isAuthenticated
+  );
 
   const homePath = isAuthenticated ? '/dashboard' : '/';
-  const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname === path || location.pathname.startsWith(`${path}/`);
-  };
+  const isActive = (path) => isNavActive(path, location.pathname);
 
-  const hidePaths = ['/login', '/register'];
-  if (hidePaths.includes(location.pathname)) return null;
+  if (NAV_HIDE_PATHS.includes(location.pathname)) return null;
 
   const initials = user
     ? `${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`.toUpperCase() || user.firstName?.[0]?.toUpperCase() || 'U'
@@ -87,7 +76,7 @@ const Navbar = () => {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => {
+            {mainNavItems.map((item) => {
               const active = isActive(item.path);
               return (
                 <Link
@@ -101,7 +90,7 @@ const Navbar = () => {
                 >
                   {item.label}
                   {active && (
-                    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-[2px] bg-accent rounded-full" />
+                    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-[2px] bg-text-primary rounded-full" />
                   )}
                 </Link>
               );
@@ -235,7 +224,7 @@ const Navbar = () => {
         {/* Mobile menu */}
         {isOpen && (
           <div className="md:hidden border-t border-line-soft py-3 flex flex-col gap-0.5">
-            {navItems.map((item) => {
+            {mainNavItems.map((item) => {
               const active = isActive(item.path);
               return (
                 <Link
@@ -244,7 +233,7 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className={`px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                     active
-                      ? 'text-accent bg-accent-soft'
+                      ? 'text-surface-body bg-surface-inverse'
                       : 'text-text-primary hover:bg-surface-soft'
                   }`}
                 >
@@ -257,7 +246,7 @@ const Navbar = () => {
                 to="/revision"
                 onClick={() => setIsOpen(false)}
                 className={`flex items-center gap-2 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/revision') ? 'text-accent bg-accent-soft' : 'text-text-primary hover:bg-surface-soft'
+                  isActive('/revision') ? 'text-surface-body bg-surface-inverse' : 'text-text-primary hover:bg-surface-soft'
                 }`}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -443,3 +443,10 @@
   background-size: 400% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
 }
+
+/* Sidebar layout offset — only applies on md+ where the sidebar is visible */
+@media (min-width: 768px) {
+  .sidebar-content-offset {
+    padding-left: var(--sidebar-width, 0px);
+  }
+}
