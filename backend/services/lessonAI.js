@@ -15,7 +15,7 @@
  */
 
 const OpenAI = require('openai');
-const { validateSlides } = require('../utils/slideSchema');
+const { validateSlides, normalizeSlide } = require('../utils/slideSchema');
 
 let _client = null;
 function getClient() {
@@ -206,13 +206,7 @@ aspect: 16:9
 
 /* ─── Stage 2: JSON Formatter system prompt ──────────────────────────────── */
 
-function buildFormatterSystem() {
-  return `You are a JSON formatter. Convert the lesson plan below EXACTLY to the slide JSON schema.
-Do NOT add slides, remove slides, rephrase content, or invent material.
-Preserve every question, answer, explanation, and expression precisely as written in the plan.
-Your only job is to apply the correct JSON structure and field names.
-
-## Slide JSON schemas — use ONLY these
+const SLIDE_SCHEMA_REFERENCE = `## Slide JSON schemas — use ONLY these
 
 ### divider
 {"type":"divider","title":"Section Title","subtitle":"Optional subtitle"}
@@ -288,6 +282,29 @@ app: graphing | geometry | 3d | scientific | classic
 - match needs ≥2 pairs; order needs ≥2 items; timeline needs ≥2 events.
 - fillblank: {{N}} must NOT appear inside LaTeX delimiters $...$ or $$...$$.
 - embed: ONLY use the approved URL patterns above. Never fabricate or guess URLs.`;
+
+function buildFormatterSystem() {
+  return `You are a JSON formatter. Convert the lesson plan below EXACTLY to the slide JSON schema.
+Do NOT add slides, remove slides, rephrase content, or invent material.
+Preserve every question, answer, explanation, and expression precisely as written in the plan.
+Your only job is to apply the correct JSON structure and field names.
+
+${SLIDE_SCHEMA_REFERENCE}`;
+}
+
+/* ─── Single-slide editor system prompt ──────────────────────────────────── */
+
+function buildEditSystem() {
+  return `You are a lesson slide editor. You receive ONE existing slide as JSON plus an instruction, and you return an improved version of that single slide.
+
+## Editing rules
+- Keep the SAME "type" as the input slide unless the instruction explicitly asks to change it.
+- Apply the instruction faithfully. With no instruction, simply improve clarity, wording, and pedagogical quality while preserving the slide's intent.
+- Keep the content pedagogically correct: questions must keep at least one valid correct answer, ordered/timeline items must stay in correct order, etc.
+- Mathematics: ALWAYS use LaTeX — $inline$ and $$display$$. NEVER use ASCII math (no x^2, a/b, sqrt(x)).
+- Return ONLY {"slides":[<one slide>]} containing EXACTLY one slide. No prose, no markdown fences, no extra keys.
+
+${SLIDE_SCHEMA_REFERENCE}`;
 }
 
 /* ─── Stage 1 API call ───────────────────────────────────────────────────── */
@@ -411,4 +428,87 @@ async function generateLessonSlides(notes, opts = {}) {
   };
 }
 
-module.exports = { generateLessonSlides, getClient };
+/* ─── Single-slide AI edit ──────────────────────────────────────────────────
+ *
+ * Takes one existing slide + an instruction and returns a single normalized
+ * slide that conforms to the schema. With an empty instruction it acts as a
+ * "regenerate" — improving the slide while preserving its type and intent.
+ * One model call (the Stage-2 formatter model) does both the edit and the
+ * schema formatting.
+ */
+async function editSlide(slide, instruction = '', opts = {}) {
+  const client = getClient();
+  if (!client) {
+    const err = new Error('AI is not configured on the server.');
+    err.status = 503;
+    throw err;
+  }
+
+  // Normalize the input first so the model sees clean, canonical JSON.
+  const current = normalizeSlide(slide);
+  if (!current) {
+    const err = new Error('Invalid slide.');
+    err.status = 400;
+    throw err;
+  }
+
+  const trimmed = (instruction || '').toString().trim();
+  const task = trimmed
+    ? `Apply this instruction to the slide:\n"${trimmed}"`
+    : 'Regenerate and improve this slide. Keep the same slide type and core intent, but sharpen the wording, clarity, and pedagogical quality.';
+
+  const userMsg = [
+    task,
+    '',
+    '## Current slide',
+    JSON.stringify(current),
+    '',
+    'Return ONLY {"slides":[<the single edited slide>]}.',
+  ].join('\n');
+
+  const completion = await client.chat.completions.create({
+    model: opts.formatterModel || FORMATTER_MODEL_DEFAULT,
+    response_format: { type: 'json_object' },
+    messages: [
+      { role: 'system', content: buildEditSystem() },
+      { role: 'user', content: userMsg },
+    ],
+  });
+
+  const text = completion.choices?.[0]?.message?.content || '{}';
+
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    const err = new Error('AI returned non-JSON output. Try again.');
+    err.status = 502;
+    throw err;
+  }
+
+  const out = Array.isArray(parsed?.slides)
+    ? parsed.slides[0]
+    : Array.isArray(parsed)
+      ? parsed[0]
+      : parsed && typeof parsed === 'object' && parsed.type
+        ? parsed
+        : null;
+
+  if (!out) {
+    const err = new Error('AI returned no slide.');
+    err.status = 502;
+    throw err;
+  }
+
+  const result = validateSlides([out]);
+  if (!result.ok) {
+    const err = new Error('AI output failed schema validation.');
+    err.status = 502;
+    err.details = result.errors;
+    throw err;
+  }
+
+  return { slide: result.slides[0], warnings: [] };
+}
+
+module.exports = { generateLessonSlides, editSlide, getClient };

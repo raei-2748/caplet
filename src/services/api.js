@@ -261,6 +261,18 @@ class ApiService {
   }
 
   /**
+   * AI: edit or regenerate a single slide in place. Editor-gated.
+   * payload: { slide, instruction? }. Returns { slide, warnings: string[] }.
+   */
+  async aiEditSlide(payload) {
+    return this.request('/ai/edit-slide', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      auth: 'editor',
+    });
+  }
+
+  /**
    * Upload a file using a presigned POST (multipart/form-data).
    * `presign` is the object returned by /uploads/presign — must have uploadUrl + fields.
    * S3 enforces ContentLengthRange server-side; we also check client-side for a fast error.

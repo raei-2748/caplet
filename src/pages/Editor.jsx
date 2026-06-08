@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { normalizeSlide, warnSlide, SLIDE_DEFAULTS, slideKindLabel, SLIDE_PALETTE } from '../lib/slideSchema';
 import SlideForm from '../components/editor/SlideForms';
+import SlideRenderer from '../components/lesson/SlideRenderer';
 import LessonPreviewModal from '../components/editor/LessonPreviewModal';
 import AIChatPanel from '../components/editor/AIChatPanel';
 import AIGeneratePanel from '../components/editor/AIGeneratePanel';
@@ -393,11 +394,140 @@ function WorkspaceOverview({
   );
 }
 
+/* ── Per-slide AI edit panel ───────────────────────────────────────────────── */
+
+function AISlideEdit({ slide, onApply, onClose }) {
+  const [instruction, setInstruction] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [candidate, setCandidate] = useState(null); // { slide, warnings } once generated
+
+  const run = async (text) => {
+    setLoading(true);
+    setError('');
+    try {
+      const { _id, ...payloadSlide } = slide;
+      const res = await api.aiEditSlide({ slide: payloadSlide, instruction: text || '' });
+      setCandidate(res);
+    } catch (e) {
+      setError(e?.message || 'AI edit failed. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const apply = () => {
+    if (!candidate?.slide) return;
+    onApply(candidate.slide);
+    setCandidate(null);
+    setInstruction('');
+  };
+
+  return (
+    <div className="rounded-xl border border-accent/30 bg-accent/[0.04] p-4 space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 text-[12px] font-bold text-accent tracking-wide">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1l1.4 3.6L12 6l-3.6 1.4L7 11 5.6 7.4 2 6l3.6-1.4L7 1z" fill="currentColor" />
+          </svg>
+          Edit with AI
+        </span>
+        <button
+          type="button"
+          onClick={onClose}
+          className="text-text-dim hover:text-text-primary transition-colors duration-150"
+          aria-label="Close AI edit"
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+        </button>
+      </div>
+
+      {!candidate ? (
+        <>
+          <textarea
+            value={instruction}
+            onChange={(e) => setInstruction(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && instruction.trim() && !loading) run(instruction.trim());
+            }}
+            disabled={loading}
+            rows={2}
+            placeholder="Describe a change — e.g. “make this shorter”, “add a worked example”, “harder distractors”…"
+            className="w-full resize-none rounded-lg border border-line-soft bg-surface-raised px-3 py-2 text-[13px] text-text-primary placeholder:text-text-dim/70 focus:outline-none focus:border-accent/50 transition-colors duration-150 disabled:opacity-60"
+          />
+          {error && <p className="text-[12px] text-rose-500 leading-snug">{error}</p>}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => run(instruction.trim())}
+              disabled={loading || !instruction.trim()}
+              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-accent text-white text-[13px] font-semibold hover:opacity-90 disabled:opacity-40 transition-opacity duration-150"
+            >
+              {loading ? (
+                <><span className="w-3 h-3 rounded-full border-2 border-white/40 border-t-white animate-spin" />Working…</>
+              ) : 'Apply edit'}
+            </button>
+            <button
+              type="button"
+              onClick={() => run('')}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-line-soft text-text-muted hover:text-text-primary hover:border-text-dim text-[13px] font-medium disabled:opacity-40 transition-colors duration-150"
+              title="Re-run with no instruction"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M10 6a4 4 0 1 1-1.2-2.85M10 1.5V4H7.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              Regenerate
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="text-[11px] font-semibold text-text-dim uppercase tracking-[0.06em]">Preview — new version</p>
+          <div className="relative rounded-xl border border-line-soft bg-surface-raised overflow-hidden" style={{ height: 280 }}>
+            <div className="h-full flex flex-col overflow-y-auto">
+              <SlideRenderer slide={candidate.slide} variant="player" />
+            </div>
+          </div>
+          {candidate.warnings?.length > 0 && (
+            <ul className="space-y-0.5">
+              {candidate.warnings.map((w, i) => (
+                <li key={i} className="text-[11.5px] text-amber-600 dark:text-amber-400 leading-snug">{w}</li>
+              ))}
+            </ul>
+          )}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={apply}
+              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-accent text-white text-[13px] font-semibold hover:opacity-90 transition-opacity duration-150"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L5 9l4.5-5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              Apply
+            </button>
+            <button
+              type="button"
+              onClick={() => setCandidate(null)}
+              className="inline-flex items-center h-9 px-4 rounded-full border border-line-soft text-text-muted hover:text-text-primary hover:border-text-dim text-[13px] font-medium transition-colors duration-150"
+            >
+              Discard
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ── Single slide card ─────────────────────────────────────────────────────── */
 
 function SlideCard({
   slide, index, total, expanded, onToggle, onMove, onDuplicate, onDelete, onChange, lessonId,
 }) {
+  const [aiOpen, setAiOpen] = useState(false);
+
+  const openAi = () => {
+    if (!expanded) onToggle();
+    setAiOpen(true);
+  };
   const warnings = warnSlide(slide);
   const hasWarning = warnings.length > 0;
 
@@ -470,6 +600,16 @@ function SlideCard({
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4.5" y="1" width="6.5" height="7.5" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><rect x="1" y="3.5" width="6.5" height="7.5" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="var(--surface-raised)"/></svg>
             </button>
           </div>
+          {/* Edit with AI — always visible */}
+          <button
+            type="button"
+            onClick={openAi}
+            className="w-8 h-8 rounded-full border border-line-soft text-text-dim hover:text-accent hover:border-accent/50 transition-colors duration-150 flex items-center justify-center"
+            aria-label="Edit with AI"
+            title="Edit with AI"
+          >
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.4 3.6L12 6l-3.6 1.4L7 11 5.6 7.4 2 6l3.6-1.4L7 1z" fill="currentColor" /></svg>
+          </button>
           {/* Delete + expand — always visible */}
           <button
             type="button"
@@ -510,6 +650,13 @@ function SlideCard({
       <div className={`grid transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] ${expanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
         <div className="overflow-hidden">
           <div className="border-t border-line-soft/50 px-5 py-4 space-y-4">
+            {aiOpen && (
+              <AISlideEdit
+                slide={slide}
+                onApply={(newSlide) => { onChange(newSlide); setAiOpen(false); }}
+                onClose={() => setAiOpen(false)}
+              />
+            )}
             {hasWarning && (
               <div className="flex items-start gap-3 px-3.5 py-3 rounded-xl border border-amber-400/30 bg-amber-400/[0.04]">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 mt-[1px] text-amber-500">

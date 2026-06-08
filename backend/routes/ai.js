@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../middleware/auth');
-const { generateLessonSlides, getClient } = require('../services/lessonAI');
+const { generateLessonSlides, editSlide, getClient } = require('../services/lessonAI');
 
 const router = express.Router();
 
@@ -150,6 +150,30 @@ router.post('/lesson-chat', requireEditor, throttle, async (req, res) => {
     const status = e.status || 502;
     console.error('AI lesson-chat error:', e.message);
     return res.status(status).json({ message: e.message || 'AI request failed' });
+  }
+});
+
+// Edit (or regenerate) a single slide in place. Input: the target slide JSON
+// plus an optional natural-language instruction. Returns one normalized slide.
+router.post('/edit-slide', requireEditor, throttle, async (req, res) => {
+  const slide        = req.body?.slide;
+  const instruction  = (req.body?.instruction ?? '').toString().slice(0, 1000);
+  const formatterModel = FORMATTER_MODELS.includes(req.body?.formatterModel) ? req.body.formatterModel : 'gpt-5.4-mini';
+
+  if (!slide || typeof slide !== 'object' || Array.isArray(slide)) {
+    return res.status(400).json({ message: 'A slide object is required.' });
+  }
+
+  const client = getClient();
+  if (!client) return res.status(503).json({ message: 'AI not available — OPENAI_API_KEY not set.' });
+
+  try {
+    const out = await editSlide(slide, instruction, { formatterModel });
+    res.json(out);
+  } catch (e) {
+    const status = e.status || 502;
+    console.error('AI edit-slide error:', e.message, e.details || '');
+    res.status(status).json({ message: e.message || 'AI edit failed', details: e.details });
   }
 });
 
