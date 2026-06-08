@@ -32,8 +32,15 @@ AGENTS.md
 caplet.db
 backend/caplet.db
 backend/caplet.db.bak
+backend/dev.sqlite
 **/caplet.db
 **/caplet.db.bak
+
+# Local screenshot / scratch artifacts (root-level PNGs only; real assets live in public/)
+/*.png
+
+# Playwright MCP output
+.playwright-mcp/
 
 # Env and secrets (never commit)
 .env
