@@ -18,7 +18,7 @@ export const ThemeProvider = ({ children }) => {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  const [isSidebar, setIsSidebar] = useState(() => localStorage.getItem('navLayout') === 'sidebar');
+  const [isSidebar, setIsSidebar] = useState(() => localStorage.getItem('navLayout') !== 'horizontal');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('sidebarCollapsed') === 'true');
 
   useEffect(() => {
