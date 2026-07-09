@@ -45,8 +45,13 @@ import Revision from './pages/Revision';
 import EssayMemoriser from './pages/EssayMemoriser';
 import Library from './pages/Library';
 import LibrarySubject from './pages/LibrarySubject';
+import EconomicsHome from './pages/economics/EconomicsHome';
+import EconomicsFocusArea from './pages/economics/EconomicsFocusArea';
+import EconomicsExamPractice from './pages/economics/EconomicsExamPractice';
+import EconomicsAssessment from './pages/economics/EconomicsAssessment';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import DevAuth from './pages/DevAuth';
 import Classes from './pages/Classes';
 import ClassDetail from './pages/ClassDetail';
 import Settings from './pages/Settings';
@@ -129,6 +134,7 @@ function AppRoutes() {
           <Route path="/essays" element={<RequireAuth><EssayMemoriser /></RequireAuth>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          {import.meta.env.DEV && <Route path="/dev-auth" element={<DevAuth />} />}
           <Route path="/fintools" element={<FinancialTools />} />
           <Route path="/tools" element={<Navigate to="/fintools" replace />} />
           <Route path="/edutools" element={<EduTools />} />
@@ -178,6 +184,10 @@ function AppRoutes() {
           <Route path="/tools/capital-gains" element={<Navigate to="/fintools/capital-gains" replace />} />
           <Route path="/tools/financial-twin" element={<Navigate to="/fintools/financial-twin" replace />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/library/economics" element={<EconomicsHome />} />
+          <Route path="/library/economics/exam-practice" element={<EconomicsExamPractice />} />
+          <Route path="/library/economics/assessment" element={<EconomicsAssessment />} />
+          <Route path="/library/economics/:areaId" element={<EconomicsFocusArea />} />
           <Route path="/library/:subject" element={<LibrarySubject />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/resources" element={<Navigate to="/library/economics" replace />} />
@@ -224,7 +234,7 @@ function AppShell() {
 
   // Pages that suppress all chrome (their own full-bleed layouts).
   const bareChrome =
-    ['/login', '/register', '/play'].includes(pathname) ||
+    ['/login', '/register', '/play', '/dev-auth'].includes(pathname) ||
     pathname.startsWith('/live/host');
 
   // The vertical rail only makes sense for signed-in users, and never on the
